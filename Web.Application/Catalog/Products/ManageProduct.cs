@@ -107,6 +107,44 @@ namespace Web.Application.Catalog.Products
             throw new NotImplementedException();
         }
 
+        public async Task<PageResult<ProductViewModel>> GetAll()
+        {
+            // 1.Select join
+            var query = from p in _context.Products
+                        join pt in _context.ProductTranslations on p.Id equals pt.ProductId
+                        join pic in _context.ProductInCategories on p.Id equals pic.ProductId
+                        join c in _context.Categories on pic.CategoryId equals c.Id
+                        select new { p, pt, pic };
+
+            // 3 .Paging
+            int totalRow = await query.CountAsync();
+            var data = await query.Skip((1 - 1) * 0)
+                .Take(10)
+                .Select(x => new ProductViewModel()
+                {
+                    Id = x.p.Id,
+                    Price = x.p.Price,
+                    OriginalPrice = x.p.OriginalPrice,
+                    ViewCount = x.p.ViewCount,
+                    DateCreated = x.p.DateCreated,
+                    Name = x.pt.Name,
+                    Description = x.pt.Description,
+                    Details = x.pt.Details,
+                    SeoDescription = x.pt.SeoDescription,
+                    SeoTitle = x.pt.SeoTitle,
+                    SeoAlias = x.pt.SeoAlias,
+                    LanguageId = x.pt.LanguageId
+                }).ToListAsync();
+            // 4 Select Page Result
+            var pageResult = new PageResult<ProductViewModel>()
+            {
+                TotalRecord = totalRow,
+                Items = data
+            };
+
+            return pageResult;
+        }
+
         public async Task<PageResult<ProductViewModel>> GetAllPaging(GetManageProductPagingRequest request)
         {
             // 1.Select join

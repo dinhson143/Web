@@ -13,7 +13,10 @@ namespace Web.Data.Configurations
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {
-            throw new NotImplementedException();
+            builder.ToTable("Users");
+            builder.Property(x => x.FirstName).HasMaxLength(200).IsRequired();
+            builder.Property(x => x.LastName).HasMaxLength(200).IsRequired();
+            builder.Property(x => x.Dob).IsRequired();
         }
     }
 }

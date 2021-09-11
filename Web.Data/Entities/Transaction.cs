@@ -19,5 +19,7 @@ namespace Web.Data.Entities
         public TransactionStatus Status { set; get; }
         public string Provider { set; get; }
         public Guid UserId { set; get; }
+
+        public User User { get; set; }
     }
 }

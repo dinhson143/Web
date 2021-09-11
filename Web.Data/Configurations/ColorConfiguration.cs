@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Web.Data.Confihurations
+namespace Web.Data.Configurations
 {
     public class ColorConfiguration : IEntityTypeConfiguration<Color>
     {

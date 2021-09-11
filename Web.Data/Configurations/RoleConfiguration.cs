@@ -13,7 +13,8 @@ namespace Web.Data.Configurations
     {
         public void Configure(EntityTypeBuilder<Role> builder)
         {
-            throw new NotImplementedException();
+            builder.ToTable("Roles");
+            builder.Property(x => x.Description).HasMaxLength(200).IsRequired();
         }
     }
 }

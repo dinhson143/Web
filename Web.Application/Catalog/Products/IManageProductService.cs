@@ -36,6 +36,8 @@ namespace Web.Application.Catalog.Products
 
         public Task GetListImage();
 
+        public Task<PageResult<ProductViewModel>> GetAll();
+
         public Task<PageResult<ProductViewModel>> GetAllPaging(GetManageProductPagingRequest request);
     }
 }

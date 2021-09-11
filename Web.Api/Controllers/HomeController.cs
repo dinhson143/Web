@@ -20,7 +20,7 @@ namespace Web.Api.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            return Ok();
         }
 
         public IActionResult Privacy()

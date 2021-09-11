@@ -133,7 +133,6 @@ namespace Web.Application.Catalog.Products
                     SeoDescription = x.pt.SeoDescription,
                     SeoTitle = x.pt.SeoTitle,
                     SeoAlias = x.pt.SeoAlias,
-                    LanguageId = x.pt.LanguageId
                 }).ToListAsync();
             // 4 Select Page Result
             var pageResult = new PageResult<ProductViewModel>()
@@ -179,7 +178,7 @@ namespace Web.Application.Catalog.Products
                     SeoDescription = x.pt.SeoDescription,
                     SeoTitle = x.pt.SeoTitle,
                     SeoAlias = x.pt.SeoAlias,
-                    LanguageId = x.pt.LanguageId
+                    LanguageId = x.pt.LanguageId,
                 }).ToListAsync();
             // 4 Select Page Result
             var pageResult = new PageResult<ProductViewModel>()
@@ -204,6 +203,31 @@ namespace Web.Application.Catalog.Products
         public Task GetProductById()
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<List<Size_Color>> GetSize_Color(int productId)
+        {
+            List<Size_Color> list = new List<Size_Color>();
+            var query = from p in _context.PCSs
+                        join c in _context.Colors on p.ColorId equals c.Id
+                        join s in _context.Sizes on p.SizeId equals s.Id
+                        where p.ProductId == productId
+                        select new { p, c, s };
+
+            foreach (var pcs in query)
+            {
+                var x = new Size_Color()
+                {
+                    ColorId = pcs.p.ColorId,
+                    SizeId = pcs.p.ProductId,
+                    Mamau = pcs.c.Mamau,
+                    Tenmau = pcs.c.Name,
+                    Size = pcs.s.Name,
+                    Stock = pcs.p.Stock
+                };
+                list.Add(x);
+            }
+            return list;
         }
 
         public Task RemoveImage()

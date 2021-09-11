@@ -20,9 +20,16 @@ namespace Web.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> GetAll()
         {
             var listProduct = await _manageservice.GetAll();
+            return Ok(listProduct);
+        }
+
+        [HttpGet("{productId}")]
+        public async Task<IActionResult> GetSize_Color(int productId)
+        {
+            var listProduct = await _manageservice.GetSize_Color(productId);
             return Ok(listProduct);
         }
     }

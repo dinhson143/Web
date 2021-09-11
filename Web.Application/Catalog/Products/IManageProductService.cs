@@ -39,5 +39,7 @@ namespace Web.Application.Catalog.Products
         public Task<PageResult<ProductViewModel>> GetAll();
 
         public Task<PageResult<ProductViewModel>> GetAllPaging(GetManageProductPagingRequest request);
+
+        public Task<List<Size_Color>> GetSize_Color(int productId);
     }
 }

@@ -14,8 +14,12 @@ namespace Web.Data.Entities
         public decimal Giaban { get; set; }
         public int PhieuNXId { get; set; }
         public int ProductId { get; set; }
+        public int SizeId { get; set; }
+        public int ColorId { get; set; }
 
         public PhieuNhap_Xuat PhieuNX { get; set; }
-        public Product Product { get; set; }
+
+        //public Product Product { get; set; }
+        public Product_Color_Size Product_Color_Size { get; set; }
     }
 }

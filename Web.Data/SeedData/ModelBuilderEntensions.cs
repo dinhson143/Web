@@ -69,7 +69,7 @@ namespace Web.Data.SeedData
                      DateCreated = DateTime.Now,
                      OriginalPrice = 100000,
                      Price = 200000,
-                     Stock = 0,
+                     //Stock = 0,
                      ViewCount = 0,
                  }
             );
@@ -170,7 +170,7 @@ namespace Web.Data.SeedData
             );
             // PCS
             modelBuilder.Entity<Product_Color_Size>().HasData(
-               new Product_Color_Size() { ProductId = 1, ColorId = 1, SizeId = 1 }
+               new Product_Color_Size() { ProductId = 1, ColorId = 1, SizeId = 1, Stock = 0 }
            );
             // User
 

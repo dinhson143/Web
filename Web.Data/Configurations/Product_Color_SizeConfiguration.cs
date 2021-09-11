@@ -15,7 +15,7 @@ namespace Web.Data.Configurations
         {
             builder.HasKey(x => new { x.ProductId, x.ColorId, x.SizeId });
             builder.ToTable("PCSs");
-
+            builder.Property(x => x.Stock).IsRequired().HasDefaultValue(0);
             // 1 sản phẩm có thể thuộc nhiều màu siaze
             builder.HasOne(x => x.Product).WithMany(y => y.PCS).HasForeignKey(y => y.ProductId);
 

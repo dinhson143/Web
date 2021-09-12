@@ -1,8 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Web.Application.Catalog.Products;
 
@@ -10,11 +7,12 @@ namespace Web.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProductController : ControllerBase
+    [Authorize]
+    public class ProductsController : ControllerBase
     {
         private readonly IManageProductService _manageservice;
 
-        public ProductController(IManageProductService manageservice)
+        public ProductsController(IManageProductService manageservice)
         {
             _manageservice = manageservice;
         }

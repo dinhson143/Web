@@ -31,12 +31,21 @@ namespace Web.AdminApp
             services.AddControllersWithViews().AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<LoginRequestValidator>()); ;
             services.AddTransient<IUserApi, UserAPi>();
 
+            //Session
+            services.AddDistributedMemoryCache();
+
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
             // authenticatiom
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
                 {
-                    options.LoginPath = "/User/Login/";
-                    options.AccessDeniedPath = "/User/Forbidden/";
+                    options.LoginPath = "/Login/Login/";
+                    options.AccessDeniedPath = "/Login/Forbidden/";
                 });
         }
 
@@ -60,7 +69,7 @@ namespace Web.AdminApp
             app.UseRouting();
 
             app.UseAuthorization();
-
+            app.UseSession();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(

@@ -47,7 +47,7 @@ namespace Web.Api
             services.AddTransient<SignInManager<User>, SignInManager<User>>();
             services.AddTransient<RoleManager<Role>, RoleManager<Role>>();
             // DI
-            services.AddTransient<IManageProductService, ManageProduct>();
+            services.AddTransient<IProductService, ProductService>();
             services.AddTransient<IUserService, UserService>();
             // FluentValidator
             //services.AddTransient<IValidator<LoginRequest>, LoginRequestValidator>();

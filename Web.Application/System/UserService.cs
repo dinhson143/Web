@@ -1,14 +1,18 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using Web.Data.EF;
 using Web.Data.Entities;
 using Web.Utilities.Exceptions;
+using Web.ViewModels.Catalog.Common;
+using Web.ViewModels.Catalog.Users;
 using Web.ViewModels.System.User;
 
 namespace Web.Application.System
@@ -26,6 +30,38 @@ namespace Web.Application.System
             _userManager = userManager;
             _roleInManager = roleInManager;
             _config = config;
+        }
+
+        public async Task<PageResult<UserViewModel>> GetAllPaging(GetUserPagingRequest request)
+        {
+            var query = _userManager.Users;
+            if (!string.IsNullOrEmpty(request.Keyword))
+            {
+                query = query.Where(x => x.UserName.Contains(request.Keyword) || x.PhoneNumber.Contains(request.Keyword) || x.Email.Contains(request.Keyword));
+            }
+
+            // 3 .Paging
+            int totalRow = await query.CountAsync();
+            var data = await query.Skip((request.pageIndex - 1) * request.pageSize)
+                .Take(request.pageSize)
+                .Select(x => new UserViewModel()
+                {
+                    Id = x.Id,
+                    Dob = x.Dob,
+                    Email = x.Email,
+                    FirstName = x.FirstName,
+                    LastName = x.LastName,
+                    PhoneNumber = x.PhoneNumber,
+                    Username = x.UserName
+                }).ToListAsync();
+            // 4 Select Page Result
+            var pageResult = new PageResult<UserViewModel>()
+            {
+                TotalRecord = totalRow,
+                Items = data
+            };
+
+            return pageResult;
         }
 
         public async Task<string> Login(LoginRequest request)

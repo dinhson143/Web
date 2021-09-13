@@ -10,9 +10,9 @@ namespace Web.Api.Controllers
     [Authorize]
     public class ProductsController : ControllerBase
     {
-        private readonly IManageProductService _manageservice;
+        private readonly IProductService _manageservice;
 
-        public ProductsController(IManageProductService manageservice)
+        public ProductsController(IProductService manageservice)
         {
             _manageservice = manageservice;
         }

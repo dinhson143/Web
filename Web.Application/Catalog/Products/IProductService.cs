@@ -8,7 +8,7 @@ using Web.ViewModels.Catalog.Products;
 
 namespace Web.Application.Catalog.Products
 {
-    public interface IManageProductService
+    public interface IProductService
     {
         public Task<int> CreateProduct(ProductCreate request);
 
@@ -41,5 +41,7 @@ namespace Web.Application.Catalog.Products
         public Task<PageResult<ProductViewModel>> GetAllPaging(GetManageProductPagingRequest request);
 
         public Task<List<Size_Color>> GetSize_Color(int productId);
+
+        Task<PageResult<ProductViewModel>> GetAllByCategoryId(string languageId, GetPublicProductPagingRequest request);
     }
 }

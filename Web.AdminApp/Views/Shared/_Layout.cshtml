@@ -405,12 +405,12 @@
                 <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <form method="post" asp-controller="User" asp-action="Logout" data-toggle="modal" data-target="#logoutModal">
+                    <form method="post" asp-controller="Login" asp-action="Logout" data-toggle="modal" data-target="#logoutModal">
                         <button type="submit" class="btn btn-primary">
                             Logout
                         </button>
                     </form>
-                    <a href="/User/Login">test</a>
+                    @*<a href="/User/Login">test</a>*@
                 </div>
             </div>
         </div>

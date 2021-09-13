@@ -45,7 +45,7 @@
                                     <div class="text-center">
                                         <h1 class="h4 text-gray-900 mb-4">Welcome to BeanDy!</h1>
                                     </div>
-                                    <form class="user" asp-action="Login" asp-controller="User" method="post">
+                                    <form class="user" asp-action="Login" asp-controller="Login" method="post">
                                         @*Username*@
                                         <div class="form-group">
                                             <input type="text" class="form-control form-control-user"
@@ -61,8 +61,8 @@
                                         </div>
                                         <div class="form-group">
                                             <div class="custom-control custom-checkbox small">
-                                                <input type="checkbox" class="custom-control-input" asp-for="Rememberme">
-                                                <label class="custom-control-label">
+                                                <input id="customCheck" type="checkbox" class="custom-control-input" asp-for="Rememberme">
+                                                <label for="customCheck" class="custom-control-label">
                                                     Remember
                                                     Me
                                                 </label>

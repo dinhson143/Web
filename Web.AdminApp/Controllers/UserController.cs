@@ -38,29 +38,48 @@ namespace Web.AdminApp.Controllers
         }
 
         [HttpGet]
+        public async Task<IActionResult> Details(Guid IdUser)
+        {
+            var session = HttpContext.Session.GetString("Token");
+            var response = await _userApi.GetUserById(IdUser, session);
+
+            if (response.Email != null)
+            {
+                return View(response);
+            }
+            return RedirectToAction("Error", "Home");
+        }
+
+        [HttpGet]
         public async Task<IActionResult> Update(Guid IdUser)
         {
             var session = HttpContext.Session.GetString("Token");
             var response = await _userApi.GetUserById(IdUser, session);
 
-            var us = new UpdateUserRequest()
+            if (response.Email != null)
             {
-                Dob = response.Dob,
-                Email = response.Email,
-                FirstName = response.FirstName,
-                LastName = response.LastName,
-                Phonenumber = response.PhoneNumber
-            };
-            return View(us);
+                var us = new UpdateUserRequest()
+                {
+                    Dob = response.Dob,
+                    Email = response.Email,
+                    FirstName = response.FirstName,
+                    LastName = response.LastName,
+                    Phonenumber = response.PhoneNumber,
+                    Id = IdUser
+                };
+                return View(us);
+            }
+            return RedirectToAction("Error", "Home");
         }
 
         [HttpPost]
-        public async Task<IActionResult> Update(Guid IdUser, UpdateUserRequest request)
+        public async Task<IActionResult> Update(UpdateUserRequest request)
         {
             var session = HttpContext.Session.GetString("Token");
             request.BearerToken = session;
-            var response = await _userApi.Update(IdUser, request);
-            return View(response);
+            var response = await _userApi.Update(request.Id, request);
+            TempData["Message"] = response.ResultObj;
+            return RedirectToAction("Index", "User");
         }
     }
 }

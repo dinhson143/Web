@@ -104,10 +104,13 @@ namespace Web.AdminApp.Controllers
             }
 
             var result = await _userApi.Register(request);
+
             if (result.IsSuccess == false)
             {
-                return View();
+                ModelState.AddModelError("", result.Message);
+                return View(request);
             }
+            TempData["Message"] = result.ResultObj;
             return RedirectToAction("Index", "User");
         }
     }

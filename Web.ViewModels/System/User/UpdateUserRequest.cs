@@ -10,6 +10,8 @@ namespace Web.ViewModels.System.User
 {
     public class UpdateUserRequest : RequestBase
     {
+        public Guid Id { get; set; }
+
         [Display(Name = "Tên")]
         public string FirstName { get; set; }
 

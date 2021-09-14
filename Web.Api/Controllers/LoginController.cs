@@ -32,7 +32,7 @@ namespace Web.Api.Controllers
             var auth = await _userService.Login(request);
             if (auth.IsSuccess == false)
             {
-                return BadRequest("UserName or Password is Incorrect");
+                return BadRequest(auth.ResultObj);
             }
             return Ok(auth.ResultObj);
         }
@@ -46,11 +46,7 @@ namespace Web.Api.Controllers
                 return BadRequest(ModelState);
             }
             var result = await _userService.Register(request);
-            if (result.IsSuccess == false)
-            {
-                return BadRequest(result.Message);
-            }
-            return Ok(true);
+            return Ok(result);
         }
     }
 }

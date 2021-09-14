@@ -32,6 +32,21 @@ namespace Web.Application.System
             _config = config;
         }
 
+        public async Task<ResultApi<bool>> DeleteUser(Guid IdUser)
+        {
+            var user = await _userManager.FindByIdAsync(IdUser.ToString());
+            if (user == null)
+            {
+                return new ResultErrorApi<bool>("User không tồn tại");
+            }
+            var result = await _userManager.DeleteAsync(user);
+            if (result.Succeeded)
+            {
+                return new ResultSuccessApi<bool>();
+            }
+            return new ResultErrorApi<bool>("Xóa thất bại");
+        }
+
         public async Task<ResultApi<PageResult<UserViewModel>>> GetAllPaging(GetUserPagingRequest request)
         {
             var query = _userManager.Users;
@@ -42,8 +57,9 @@ namespace Web.Application.System
 
             // 3 .Paging
             int totalRow = await query.CountAsync();
-            var data = await query.Skip((request.pageIndex - 1) * request.pageSize)
-                .Take(request.pageSize)
+            var data = await query
+                //.Skip((request.pageIndex - 1) * request.pageSize)
+                //.Take(request.pageSize)
                 .Select(x => new UserViewModel()
                 {
                     Id = x.Id,
@@ -79,7 +95,7 @@ namespace Web.Application.System
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 PhoneNumber = user.PhoneNumber,
-                Username = user.UserName
+                Username = user.UserName,
             };
             return new ResultSuccessApi<UserViewModel>(userViewmodel);
         }
@@ -119,12 +135,15 @@ namespace Web.Application.System
             return new ResultSuccessApi<string>(new JwtSecurityTokenHandler().WriteToken(token));
         }
 
-        public async Task<ResultApi<bool>> Register(RegisterRequest request)
+        public async Task<ResultApi<string>> Register(RegisterRequest request)
         {
             var username = await _userManager.FindByNameAsync(request.Username);
-            if (username != null) return new ResultErrorApi<bool>("Username đã tồn tại");
+            if (username != null)
+            {
+                return new ResultErrorApi<string>("Username đã tồn tại");
+            }
             var email = await _userManager.FindByEmailAsync(request.Email);
-            if (email != null) return new ResultErrorApi<bool>("Email đã tồn tại");
+            if (email != null) return new ResultErrorApi<string>("Email đã tồn tại");
 
             var user = new User()
             {
@@ -138,25 +157,21 @@ namespace Web.Application.System
             var result = await _userManager.CreateAsync(user, request.Password);
             if (result.Succeeded)
             {
-                return new ResultSuccessApi<bool>();
+                return new ResultSuccessApi<string>("Đăng kí thành công");
             }
-            return new ResultErrorApi<bool>("Đăng kí thất bại");
+            return new ResultErrorApi<string>("Đăng kí thất bại");
         }
 
-        public async Task<ResultApi<bool>> Update(Guid IdUser, UpdateUserRequest request)
+        public async Task<ResultApi<string>> Update(Guid IdUser, UpdateUserRequest request)
         {
             var user = await _userManager.FindByIdAsync(IdUser.ToString());
             if (user == null)
             {
-                return new ResultErrorApi<bool>("User không tồn tại");
+                return new ResultErrorApi<string>("User không tồn tại");
             }
-            if (String.Compare(user.Email, request.Email, true) != 0)
+            if (await _userManager.Users.AnyAsync(x => x.Email == request.Email && x.Id != IdUser))
             {
-                var userem = await _userManager.FindByEmailAsync(request.Email);
-                if (String.Compare(userem.Email, request.Email, true) != 0 && userem != null)
-                {
-                    return new ResultErrorApi<bool>("Email đã tồn tại");
-                }
+                return new ResultErrorApi<string>("Email đã tồn tại");
             }
 
             user.Email = request.Email;
@@ -168,9 +183,9 @@ namespace Web.Application.System
             var result = await _userManager.UpdateAsync(user);
             if (result.Succeeded)
             {
-                return new ResultSuccessApi<bool>();
+                return new ResultSuccessApi<string>("Update thành công");
             }
-            return new ResultErrorApi<bool>("Update thất bại");
+            return new ResultErrorApi<string>("Update thất bại");
         }
     }
 }

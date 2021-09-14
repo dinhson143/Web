@@ -23,6 +23,22 @@ namespace Web.AdminApp.Service
             _configuration = configuration;
         }
 
+        public async Task<ResultApi<string>> DeleteUser(Guid IdUser, string BearerToken)
+        {
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", BearerToken);
+
+            var response = await client.GetAsync($"/api/Users/Delete/{IdUser}");
+
+            if (!response.IsSuccessStatusCode)
+            {
+                return new ResultErrorApi<string>("Xóa thất bại");
+            }
+
+            return new ResultSuccessApi<string>("Xóa thành công");
+        }
+
         public async Task<PageResult<UserViewModel>> GetAllPaging(GetUserPagingRequest request)
         {
             var client = _httpClientFactory.CreateClient();
@@ -63,7 +79,7 @@ namespace Web.AdminApp.Service
             return token;
         }
 
-        public async Task<ResultApi<bool>> Register(RegisterRequest request)
+        public async Task<ResultApi<string>> Register(RegisterRequest request)
         {
             var json = JsonConvert.SerializeObject(request);
             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
@@ -74,12 +90,12 @@ namespace Web.AdminApp.Service
 
             var result = await response.Content.ReadAsStringAsync();
             if (response.IsSuccessStatusCode)
-                return JsonConvert.DeserializeObject<ResultSuccessApi<bool>>(result);
+                return JsonConvert.DeserializeObject<ResultErrorApi<string>>(result);
 
-            return JsonConvert.DeserializeObject<ResultErrorApi<bool>>(result);
+            return JsonConvert.DeserializeObject<ResultErrorApi<string>>(result);
         }
 
-        public async Task<ResultApi<bool>> Update(Guid IdUser, UpdateUserRequest request)
+        public async Task<ResultApi<string>> Update(Guid IdUser, UpdateUserRequest request)
         {
             var client = _httpClientFactory.CreateClient();
             client.BaseAddress = new Uri(_configuration["BaseAddress"]);
@@ -91,10 +107,10 @@ namespace Web.AdminApp.Service
             var response = await client.PutAsync($"/api/Users/{IdUser}", httpContent);
 
             var result = await response.Content.ReadAsStringAsync();
-            if (response.IsSuccessStatusCode)
-                return JsonConvert.DeserializeObject<ResultSuccessApi<bool>>(result);
+            if (!response.IsSuccessStatusCode)
+                return new ResultErrorApi<string>(result);
 
-            return JsonConvert.DeserializeObject<ResultErrorApi<bool>>(result);
+            return new ResultSuccessApi<string>(result);
         }
     }
 }

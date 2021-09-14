@@ -32,7 +32,7 @@ namespace Web.Application.System
             _config = config;
         }
 
-        public async Task<PageResult<UserViewModel>> GetAllPaging(GetUserPagingRequest request)
+        public async Task<ResultApi<PageResult<UserViewModel>>> GetAllPaging(GetUserPagingRequest request)
         {
             var query = _userManager.Users;
             if (!string.IsNullOrEmpty(request.Keyword))
@@ -61,21 +61,41 @@ namespace Web.Application.System
                 Items = data
             };
 
-            return pageResult;
+            return new ResultSuccessApi<PageResult<UserViewModel>>(pageResult);
         }
 
-        public async Task<string> Login(LoginRequest request)
+        public async Task<ResultApi<UserViewModel>> GetUserById(Guid IdUser)
+        {
+            var user = await _userManager.FindByIdAsync(IdUser.ToString());
+            if (user == null)
+            {
+                return null;
+            }
+            var userViewmodel = new UserViewModel()
+            {
+                Id = user.Id,
+                Dob = user.Dob,
+                Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                PhoneNumber = user.PhoneNumber,
+                Username = user.UserName
+            };
+            return new ResultSuccessApi<UserViewModel>(userViewmodel);
+        }
+
+        public async Task<ResultApi<string>> Login(LoginRequest request)
         {
             var user = await _userManager.FindByNameAsync(request.Username);
             if (user == null)
             {
                 //throw new WebException("Cannot find Username");
-                return null;
+                return new ResultErrorApi<string>("Cannot find Username");
             }
             var result = await _signInManager.PasswordSignInAsync(user, request.Password, request.Rememberme, true);
             if (!result.Succeeded)
             {
-                return null;
+                return new ResultErrorApi<string>("Password sai");
             }
             var roles = await _userManager.GetRolesAsync(user);
             var claims = new[]
@@ -96,11 +116,16 @@ namespace Web.Application.System
                 expires: DateTime.Now.AddHours(3),
                 signingCredentials: creds);
 
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            return new ResultSuccessApi<string>(new JwtSecurityTokenHandler().WriteToken(token));
         }
 
-        public async Task<bool> Register(RegisterRequest request)
+        public async Task<ResultApi<bool>> Register(RegisterRequest request)
         {
+            var username = await _userManager.FindByNameAsync(request.Username);
+            if (username != null) return new ResultErrorApi<bool>("Username đã tồn tại");
+            var email = await _userManager.FindByEmailAsync(request.Email);
+            if (email != null) return new ResultErrorApi<bool>("Email đã tồn tại");
+
             var user = new User()
             {
                 Email = request.Email,
@@ -113,9 +138,39 @@ namespace Web.Application.System
             var result = await _userManager.CreateAsync(user, request.Password);
             if (result.Succeeded)
             {
-                return true;
+                return new ResultSuccessApi<bool>();
             }
-            return false;
+            return new ResultErrorApi<bool>("Đăng kí thất bại");
+        }
+
+        public async Task<ResultApi<bool>> Update(Guid IdUser, UpdateUserRequest request)
+        {
+            var user = await _userManager.FindByIdAsync(IdUser.ToString());
+            if (user == null)
+            {
+                return new ResultErrorApi<bool>("User không tồn tại");
+            }
+            if (String.Compare(user.Email, request.Email, true) != 0)
+            {
+                var userem = await _userManager.FindByEmailAsync(request.Email);
+                if (String.Compare(userem.Email, request.Email, true) != 0 && userem != null)
+                {
+                    return new ResultErrorApi<bool>("Email đã tồn tại");
+                }
+            }
+
+            user.Email = request.Email;
+            user.FirstName = request.FirstName;
+            user.LastName = request.LastName;
+            user.Dob = request.Dob;
+            user.PhoneNumber = request.Phonenumber;
+
+            var result = await _userManager.UpdateAsync(user);
+            if (result.Succeeded)
+            {
+                return new ResultSuccessApi<bool>();
+            }
+            return new ResultErrorApi<bool>("Update thất bại");
         }
     }
 }

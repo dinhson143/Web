@@ -88,5 +88,27 @@ namespace Web.AdminApp.Controllers
 
             return principal;
         }
+
+        [HttpGet]
+        public IActionResult Register()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Register(RegisterRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View();
+            }
+
+            var result = await _userApi.Register(request);
+            if (result.IsSuccess == false)
+            {
+                return View();
+            }
+            return RedirectToAction("Index", "User");
+        }
     }
 }

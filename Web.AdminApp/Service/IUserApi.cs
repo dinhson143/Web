@@ -12,7 +12,11 @@ namespace Web.AdminApp.Service
     {
         public Task<string> Login(LoginRequest request);
 
-        public Task<bool> Register(RegisterRequest request);
+        public Task<ResultApi<bool>> Register(RegisterRequest request);
+
+        public Task<ResultApi<bool>> Update(Guid IdUser, UpdateUserRequest request);
+
+        public Task<UserViewModel> GetUserById(Guid IdUser, string BearerToken);
 
         public Task<PageResult<UserViewModel>> GetAllPaging(GetUserPagingRequest request);
     }

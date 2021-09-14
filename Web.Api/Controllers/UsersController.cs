@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Web.Application.System;
 using Web.ViewModels.Catalog.Common;
 using Web.ViewModels.Catalog.Users;
+using Web.ViewModels.System.User;
 
 namespace Web.Api.Controllers
 {
@@ -30,8 +31,34 @@ namespace Web.Api.Controllers
             {
                 return null;
             }
-            var users = await _userService.GetAllPaging(request);
-            return users;
+            var result = await _userService.GetAllPaging(request);
+            return result.ResultObj;
+        }
+
+        [HttpGet("getUser/{IdUser}")]
+        public async Task<UserViewModel> GetUserById(Guid IdUser)
+        {
+            if (!ModelState.IsValid)
+            {
+                return null;
+            }
+            var result = await _userService.GetUserById(IdUser);
+            return result.ResultObj;
+        }
+
+        [HttpPut("{IdUser}")]
+        public async Task<IActionResult> Update(Guid IdUser, [FromBody] UpdateUserRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var result = await _userService.Update(IdUser, request);
+            if (result.IsSuccess == false)
+            {
+                return BadRequest(result.Message);
+            }
+            return Ok(true);
         }
     }
 }

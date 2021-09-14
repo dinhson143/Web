@@ -37,6 +37,19 @@ namespace Web.AdminApp.Service
             return list;
         }
 
+        public async Task<UserViewModel> GetUserById(Guid IdUser, string BearerToken)
+        {
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", BearerToken);
+
+            var response = await client.GetAsync($"/api/Users/getUser/{IdUser}");
+
+            var result = await response.Content.ReadAsStringAsync();
+
+            return JsonConvert.DeserializeObject<UserViewModel>(result);
+        }
+
         public async Task<string> Login(LoginRequest request)
         {
             var json = JsonConvert.SerializeObject(request);
@@ -50,9 +63,38 @@ namespace Web.AdminApp.Service
             return token;
         }
 
-        public Task<bool> Register(RegisterRequest request)
+        public async Task<ResultApi<bool>> Register(RegisterRequest request)
         {
-            throw new NotImplementedException();
+            var json = JsonConvert.SerializeObject(request);
+            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+            var response = await client.PostAsync("/api/Login/Register", httpContent);
+
+            var result = await response.Content.ReadAsStringAsync();
+            if (response.IsSuccessStatusCode)
+                return JsonConvert.DeserializeObject<ResultSuccessApi<bool>>(result);
+
+            return JsonConvert.DeserializeObject<ResultErrorApi<bool>>(result);
+        }
+
+        public async Task<ResultApi<bool>> Update(Guid IdUser, UpdateUserRequest request)
+        {
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", request.BearerToken);
+
+            var json = JsonConvert.SerializeObject(request);
+            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await client.PutAsync($"/api/Users/{IdUser}", httpContent);
+
+            var result = await response.Content.ReadAsStringAsync();
+            if (response.IsSuccessStatusCode)
+                return JsonConvert.DeserializeObject<ResultSuccessApi<bool>>(result);
+
+            return JsonConvert.DeserializeObject<ResultErrorApi<bool>>(result);
         }
     }
 }

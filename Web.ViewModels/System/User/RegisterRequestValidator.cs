@@ -12,9 +12,9 @@ namespace Web.ViewModels.System.User
         public RegisterRequestValidator()
         {
             RuleFor(x => x.FirstName).NotEmpty().WithMessage("FirstName is required")
-                .MinimumLength(200).WithMessage("FirstName at least 200 charaters");
+                .MaximumLength(200).WithMessage("FirstName at max 200 charaters");
             RuleFor(x => x.LastName).NotEmpty().WithMessage("LastName is required")
-                .MinimumLength(200).WithMessage("LastName at least 200 charaters");
+                .MaximumLength(200).WithMessage("LastName at max 200 charaters");
 
             RuleFor(x => x.Dob).NotEmpty().WithMessage("Birthday is required")
                 .GreaterThan(DateTime.Now.AddYears(-100)).WithMessage("Age can not greater than 100 years");

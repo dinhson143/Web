@@ -30,26 +30,27 @@ namespace Web.Api.Controllers
                 return BadRequest(ModelState);
             }
             var auth = await _userService.Login(request);
-            if (string.IsNullOrEmpty(auth))
+            if (auth.IsSuccess == false)
             {
                 return BadRequest("UserName or Password is Incorrect");
             }
-            return Ok(auth);
+            return Ok(auth.ResultObj);
         }
 
         [HttpPost("Register")]
+        [AllowAnonymous]
         public async Task<IActionResult> Register([FromBody] RegisterRequest request)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var isSuccess = await _userService.Register(request);
-            if (!isSuccess)
+            var result = await _userService.Register(request);
+            if (result.IsSuccess == false)
             {
-                return BadRequest("Register Failed");
+                return BadRequest(result.Message);
             }
-            return Ok("Register Successful");
+            return Ok(true);
         }
     }
 }

@@ -11,10 +11,14 @@ namespace Web.Application.System
 {
     public interface IUserService
     {
-        public Task<string> Login(LoginRequest request);
+        public Task<ResultApi<string>> Login(LoginRequest request);
 
-        public Task<bool> Register(RegisterRequest request);
+        public Task<ResultApi<bool>> Register(RegisterRequest request);
 
-        public Task<PageResult<UserViewModel>> GetAllPaging(GetUserPagingRequest request);
+        public Task<ResultApi<bool>> Update(Guid IdUser, UpdateUserRequest request);
+
+        public Task<ResultApi<UserViewModel>> GetUserById(Guid IdUser);
+
+        public Task<ResultApi<PageResult<UserViewModel>>> GetAllPaging(GetUserPagingRequest request);
     }
 }

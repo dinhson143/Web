@@ -62,14 +62,14 @@ namespace Web.Api.Controllers
         }
 
         [HttpDelete("Delete/{IdUser}")]
-        public async Task<ResultApi<bool>> DeleteUser(Guid IdUser)
+        public async Task<IActionResult> DeleteUser(Guid IdUser)
         {
             if (!ModelState.IsValid)
             {
                 return null;
             }
             var result = await _userService.DeleteUser(IdUser);
-            return new ResultSuccessApi<bool>(result.IsSuccess);
+            return Ok(result);
         }
     }
 }

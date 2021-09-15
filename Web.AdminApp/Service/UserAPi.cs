@@ -29,14 +29,12 @@ namespace Web.AdminApp.Service
             client.BaseAddress = new Uri(_configuration["BaseAddress"]);
             client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", BearerToken);
 
-            var response = await client.GetAsync($"/api/Users/Delete/{IdUser}");
+            var response = await client.DeleteAsync($"/api/Users/Delete/{IdUser}");
 
-            if (!response.IsSuccessStatusCode)
-            {
-                return new ResultErrorApi<string>("Xóa thất bại");
-            }
-
-            return new ResultSuccessApi<string>("Xóa thành công");
+            var result = await response.Content.ReadAsStringAsync();
+            if (response.IsSuccessStatusCode)
+                return JsonConvert.DeserializeObject<ResultSuccessApi<string>>(result);
+            return JsonConvert.DeserializeObject<ResultErrorApi<string>>(result);
         }
 
         public async Task<PageResult<UserViewModel>> GetAllPaging(GetUserPagingRequest request)
@@ -90,7 +88,7 @@ namespace Web.AdminApp.Service
 
             var result = await response.Content.ReadAsStringAsync();
             if (response.IsSuccessStatusCode)
-                return JsonConvert.DeserializeObject<ResultErrorApi<string>>(result);
+                return JsonConvert.DeserializeObject<ResultSuccessApi<string>>(result);
 
             return JsonConvert.DeserializeObject<ResultErrorApi<string>>(result);
         }

@@ -32,19 +32,19 @@ namespace Web.Application.System
             _config = config;
         }
 
-        public async Task<ResultApi<bool>> DeleteUser(Guid IdUser)
+        public async Task<ResultApi<string>> DeleteUser(Guid IdUser)
         {
             var user = await _userManager.FindByIdAsync(IdUser.ToString());
             if (user == null)
             {
-                return new ResultErrorApi<bool>("User không tồn tại");
+                return new ResultErrorApi<string>("User không tồn tại");
             }
             var result = await _userManager.DeleteAsync(user);
             if (result.Succeeded)
             {
-                return new ResultSuccessApi<bool>();
+                return new ResultSuccessApi<string>("Xóa thành công");
             }
-            return new ResultErrorApi<bool>("Xóa thất bại");
+            return new ResultErrorApi<string>("Xóa thất bại");
         }
 
         public async Task<ResultApi<PageResult<UserViewModel>>> GetAllPaging(GetUserPagingRequest request)

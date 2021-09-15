@@ -81,5 +81,14 @@ namespace Web.AdminApp.Controllers
             TempData["Message"] = response.ResultObj;
             return RedirectToAction("Index", "User");
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Delete(Guid IdUser)
+        {
+            var session = HttpContext.Session.GetString("Token");
+            var response = await _userApi.DeleteUser(IdUser, session);
+            TempData["Message"] = response.ResultObj;
+            return RedirectToAction("Index", "User");
+        }
     }
 }

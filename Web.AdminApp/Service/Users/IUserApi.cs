@@ -6,7 +6,7 @@ using Web.ViewModels.Catalog.Common;
 using Web.ViewModels.Catalog.Users;
 using Web.ViewModels.System.User;
 
-namespace Web.AdminApp.Service
+namespace Web.AdminApp.Service.Users
 {
     public interface IUserApi
     {
@@ -19,6 +19,8 @@ namespace Web.AdminApp.Service
         public Task<UserViewModel> GetUserById(Guid IdUser, string BearerToken);
 
         public Task<ResultApi<string>> DeleteUser(Guid IdUser, string BearerToken);
+
+        public Task<ResultApi<string>> RoleAssign(Guid IdUser, RoleAssignRequest request);
 
         public Task<PageResult<UserViewModel>> GetAllPaging(GetUserPagingRequest request);
     }

@@ -10,7 +10,8 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
-using Web.AdminApp.Service;
+using Web.AdminApp.Service.Users;
+using Web.Utilities.Contants;
 using Web.ViewModels.System.User;
 
 namespace Web.AdminApp.Controllers
@@ -54,7 +55,9 @@ namespace Web.AdminApp.Controllers
                 ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10),
                 IsPersistent = request.Rememberme   // tắt đi mở lại vẫn còn cookie login trước đó
             };
-            HttpContext.Session.SetString("Token", token);
+
+            HttpContext.Session.SetString(SystemContants.AppSettings.DefaultLanguageId, _config["DefaultLanguageId"]);
+            HttpContext.Session.SetString(SystemContants.AppSettings.Token, token);
             await HttpContext.SignInAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme,
                 userPricipal,

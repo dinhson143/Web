@@ -100,12 +100,13 @@
                                     @Html.DisplayFor(modelItem => item.Username)
                                 </td>
                                 <td>
-                                    @Html.ActionLink("Update", "Update", new { IdUser = item.Id }) |
-                                    @Html.ActionLink("Details", "Details", new { IdUser = item.Id }) |
-                                    @*@Html.ActionLink("Delete", "Delete", new { IdUser = item.Id })*@
-                                    <a class="" onclick=" return deleteUser('@item.Id');" href="#" data-toggle="modal" data-target="#logoutModal2">
-                                        Delete
-                                    </a>
+                                    @Html.ActionLink("Sửa", "Update", new { IdUser = item.Id }) |
+                                    @Html.ActionLink("Xem", "Details", new { IdUser = item.Id }) |
+                                    @Html.ActionLink("Xóa", "Delete", new { IdUser = item.Id }) |
+                                    @Html.ActionLink("Gán quyền", "RoleAssign", new { IdUser = item.Id })
+                                    @*<a class="" onclick=" return deleteUser('@item.Id');" href="#" data-toggle="modal" data-target="#logoutModal2">
+                                            Delete
+                                        </a>*@
                                 </td>
                             </tr>
                         }

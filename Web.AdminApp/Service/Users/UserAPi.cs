@@ -10,7 +10,7 @@ using Web.ViewModels.Catalog.Common;
 using Web.ViewModels.Catalog.Users;
 using Web.ViewModels.System.User;
 
-namespace Web.AdminApp.Service
+namespace Web.AdminApp.Service.Users
 {
     public class UserAPi : IUserApi
     {
@@ -91,6 +91,24 @@ namespace Web.AdminApp.Service
                 return JsonConvert.DeserializeObject<ResultSuccessApi<string>>(result);
 
             return JsonConvert.DeserializeObject<ResultErrorApi<string>>(result);
+        }
+
+        public async Task<ResultApi<string>> RoleAssign(Guid IdUser, RoleAssignRequest request)
+        {
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", request.BearerToken);
+
+            var json = JsonConvert.SerializeObject(request);
+            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await client.PutAsync($"/api/Users/{IdUser}/roles", httpContent);
+
+            var result = await response.Content.ReadAsStringAsync();
+            if (!response.IsSuccessStatusCode)
+                return new ResultErrorApi<string>(result);
+
+            return new ResultSuccessApi<string>(result);
         }
 
         public async Task<ResultApi<string>> Update(Guid IdUser, UpdateUserRequest request)

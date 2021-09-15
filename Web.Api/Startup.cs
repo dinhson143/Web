@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Web.Application.Catalog.Products;
+using Web.Application.Catalog.Roles;
 using Web.Application.System;
 using Web.Data.EF;
 using Web.Data.Entities;
@@ -49,6 +50,7 @@ namespace Web.Api
             // DI
             services.AddTransient<IProductService, ProductService>();
             services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IRoleService, RoleService>();
             // FluentValidator
             //services.AddTransient<IValidator<LoginRequest>, LoginRequestValidator>();
             // swagger

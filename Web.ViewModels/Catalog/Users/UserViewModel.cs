@@ -28,5 +28,7 @@ namespace Web.ViewModels.Catalog.Users
 
         [Display(Name = "Tài khoản")]
         public string Username { get; set; }
+
+        public IList<string> Roles { get; set; }
     }
 }

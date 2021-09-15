@@ -71,5 +71,20 @@ namespace Web.Api.Controllers
             var result = await _userService.DeleteUser(IdUser);
             return Ok(result);
         }
+
+        [HttpPut("{IdUser}/roles")]
+        public async Task<IActionResult> RoleAssign(Guid IdUser, [FromBody] RoleAssignRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var result = await _userService.RoleAssign(IdUser, request);
+            if (result.IsSuccess == false)
+            {
+                return BadRequest(result.ResultObj);
+            }
+            return Ok(result.ResultObj);
+        }
     }
 }

@@ -10,7 +10,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Web.AdminApp.Service;
+using Web.AdminApp.Service.Roles;
+using Web.AdminApp.Service.Users;
 using Web.ViewModels.System.User;
 
 namespace Web.AdminApp
@@ -30,6 +31,7 @@ namespace Web.AdminApp
             services.AddHttpClient();
             services.AddControllersWithViews().AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<LoginRequestValidator>()); ;
             services.AddTransient<IUserApi, UserAPi>();
+            services.AddTransient<IRoleApi, RoleApi>();
 
             //Session
             services.AddDistributedMemoryCache();

@@ -87,6 +87,7 @@ namespace Web.Application.System
             {
                 return null;
             }
+            var roles = await _userManager.GetRolesAsync(user);
             var userViewmodel = new UserViewModel()
             {
                 Id = user.Id,
@@ -96,6 +97,7 @@ namespace Web.Application.System
                 LastName = user.LastName,
                 PhoneNumber = user.PhoneNumber,
                 Username = user.UserName,
+                Roles = roles
             };
             return new ResultSuccessApi<UserViewModel>(userViewmodel);
         }
@@ -160,6 +162,34 @@ namespace Web.Application.System
                 return new ResultSuccessApi<string>("Đăng kí thành công");
             }
             return new ResultErrorApi<string>("Đăng kí thất bại");
+        }
+
+        public async Task<ResultApi<string>> RoleAssign(Guid IdUser, RoleAssignRequest request)
+        {
+            var user = await _userManager.FindByIdAsync(IdUser.ToString());
+            if (user == null)
+            {
+                return new ResultErrorApi<string>("User không tồn tại");
+            }
+
+            var removeRoles = request.Roles.Where(x => x.Selected == false).Select(x => x.Name).ToList();
+            foreach (var roleName in removeRoles)
+            {
+                if (await _userManager.IsInRoleAsync(user, roleName) == true)
+                {
+                    await _userManager.RemoveFromRoleAsync(user, roleName);
+                }
+            }
+
+            var addRoles = request.Roles.Where(x => x.Selected == true).Select(x => x.Name).ToList();
+            foreach (var roleName in addRoles)
+            {
+                if (await _userManager.IsInRoleAsync(user, roleName) == false)
+                {
+                    await _userManager.AddToRoleAsync(user, roleName);
+                }
+            }
+            return new ResultSuccessApi<string>("Cấp quyền thành công");
         }
 
         public async Task<ResultApi<string>> Update(Guid IdUser, UpdateUserRequest request)

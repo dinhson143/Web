@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -7,6 +8,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Web.AdminApp.Models;
+using Web.Utilities.Contants;
 
 namespace Web.AdminApp.Controllers
 {
@@ -35,6 +37,13 @@ namespace Web.AdminApp.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        [HttpPost]
+        public IActionResult Language(NavigationViewModel data)
+        {
+            HttpContext.Session.SetString(SystemContants.AppSettings.DefaultLanguageId, data.CurrentLanguageId);
+            return RedirectToAction("Index");
         }
     }
 }

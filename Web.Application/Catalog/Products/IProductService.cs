@@ -10,7 +10,7 @@ namespace Web.Application.Catalog.Products
 {
     public interface IProductService
     {
-        public Task<int> CreateProduct(ProductCreate request);
+        public Task<ResultApi<string>> CreateProduct(ProductCreate request);
 
         public Task UpdateProduct();
 
@@ -36,7 +36,7 @@ namespace Web.Application.Catalog.Products
 
         public Task GetListImage();
 
-        public Task<PageResult<ProductViewModel>> GetAll();
+        public Task<ResultApi<PageResult<ProductViewModel>>> GetAll(GetManageProductPagingRequest request);
 
         public Task<PageResult<ProductViewModel>> GetAllPaging(GetManageProductPagingRequest request);
 

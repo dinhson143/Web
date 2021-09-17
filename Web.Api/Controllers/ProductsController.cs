@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using Web.Application.Catalog.Products;
+using Web.ViewModels.Catalog.Products;
 
 namespace Web.Api.Controllers
 {
@@ -18,10 +19,10 @@ namespace Web.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] GetManageProductPagingRequest request)
         {
-            var listProduct = await _manageservice.GetAll();
-            return Ok(listProduct);
+            var listProduct = await _manageservice.GetAll(request);
+            return Ok(listProduct.ResultObj);
         }
 
         [HttpGet("{productId}")]
@@ -29,6 +30,15 @@ namespace Web.Api.Controllers
         {
             var listProduct = await _manageservice.GetSize_Color(productId);
             return Ok(listProduct);
+        }
+
+        [HttpPost]
+        [Consumes("multipart/form-data")]
+        [DisableRequestSizeLimit]
+        public async Task<IActionResult> Create([FromForm] ProductCreate request)
+        {
+            var result = await _manageservice.CreateProduct(request);
+            return Ok(result);
         }
     }
 }

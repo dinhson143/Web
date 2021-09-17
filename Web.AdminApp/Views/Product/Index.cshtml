@@ -1,24 +1,22 @@
-﻿@using Web.ViewModels.Catalog.Common
-@model PageResult<Web.ViewModels.Catalog.Users.UserViewModel>
+﻿@model IEnumerable<Web.ViewModels.Catalog.Products.ProductViewModel>
 
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
 <!-- Begin Page Content -->
 <div class="container-fluid">
 
     <!-- Page Heading -->
-    <h1 class="h3 mb-2 text-gray-800">DANH SÁCH NGƯỜI DÙNG</h1>
+    <h1 class="h3 mb-2 text-gray-800">DANH SÁCH SẢN PHẨM</h1>
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
         <div class="card-header py-3" style="display:flex">
-            <a asp-action="Register" asp-controller="Login" class="btn btn-success btn-icon-split">
+            <a asp-action="Create" asp-controller="Product" class="btn btn-success btn-icon-split">
                 <span class="icon text-white-50">
                     <i class="fas fa-plus-circle"></i>
                 </span>
-                <span class="text">Tạo mới người dùng</span>
+                <span class="text">Tạo mới sản phẩm</span>
             </a>
         </div>
         @if (@TempData["Message"] != null)
@@ -34,22 +32,13 @@
                     <thead>
                         <tr>
                             <th>
-                                FirstName
+                                @Html.DisplayNameFor(model => model.Name)
                             </th>
                             <th>
-                                LastName
+                                @Html.DisplayNameFor(model => model.Price)
                             </th>
                             <th>
-                                Day of Birth
-                            </th>
-                            <th>
-                                Email
-                            </th>
-                            <th>
-                                Phone Number
-                            </th>
-                            <th>
-                                UserName
+                                @Html.DisplayNameFor(model => model.OriginalPrice)
                             </th>
                             <th></th>
                         </tr>
@@ -57,53 +46,34 @@
                     <tfoot>
                         <tr>
                             <th>
-                                FirstName
+                                @Html.DisplayNameFor(model => model.Name)
                             </th>
                             <th>
-                                LastName
+                                @Html.DisplayNameFor(model => model.Price)
                             </th>
                             <th>
-                                Day of Birth
-                            </th>
-                            <th>
-                                Email
-                            </th>
-                            <th>
-                                Phone Number
-                            </th>
-                            <th>
-                                UserName
+                                @Html.DisplayNameFor(model => model.OriginalPrice)
                             </th>
                             <th></th>
                         </tr>
                     </tfoot>
                     <tbody>
-                        @foreach (var item in Model.Items)
+                        @foreach (var item in Model)
                         {
                             <tr>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.FirstName)
+                                    @Html.DisplayFor(modelItem => item.Name)
                                 </td>
+                                <th>
+                                    @Html.DisplayFor(modelItem => item.Price)
+                                </th>
+                                <th>
+                                    @Html.DisplayFor(modelItem => item.OriginalPrice)
+                                </th>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.LastName)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Dob)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Email)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.PhoneNumber)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Username)
-                                </td>
-                                <td>
-                                    @Html.ActionLink("Sửa", "Update", new { IdUser = item.Id }) |
-                                    @Html.ActionLink("Chi tiết", "Details", new { IdUser = item.Id }) |
-                                    @Html.ActionLink("Xóa", "Delete", new { IdUser = item.Id }) |
-                                    @Html.ActionLink("Gán quyền", "RoleAssign", new { IdUser = item.Id })
+                                    @Html.ActionLink("Sửa", "Edit", new { /* id=item.PrimaryKey */ }) |
+                                    @Html.ActionLink("Chi tiết", "Details", new { /* id=item.PrimaryKey */ }) |
+                                    @Html.ActionLink("Xóa", "Delete", new { /* id=item.PrimaryKey */ })
                                 </td>
                             </tr>
                         }

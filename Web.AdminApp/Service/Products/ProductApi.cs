@@ -73,7 +73,10 @@ namespace Web.AdminApp.Service.Products
             client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", request.BearerToken);
 
             var response = await client.GetAsync($"/api/Products?pageIndex=" +
-                $"{request.pageIndex}&pageSize={request.pageSize}&Keyword={request.Keyword}&LanguageId={request.LanguageId}");
+                $"{request.pageIndex}&pageSize={request.pageSize}&" +
+                $"Keyword={request.Keyword}" +
+                $"&LanguageId={request.LanguageId}" +
+                $"&categoryId={request.CategoryId}");
             var body = await response.Content.ReadAsStringAsync();
             var data = JsonConvert.DeserializeObject<PageResult<ProductViewModel>>(body);
             return data;

@@ -18,6 +18,17 @@
                 </span>
                 <span class="text">Tạo mới sản phẩm</span>
             </a>
+
+            <form asp-action="Index" method="get">
+                <div asp-action="Create" asp-controller="Product" style="margin:0 10px;" class="btn btn-success btn-icon-split">
+                    <span class="icon text-white-50">
+                        <i class="fas fa-sort-down"></i>
+                    </span>
+                    <select name="categoryId" onchange="this.form.submit()" asp-items="@ViewBag.Categories">
+                        <option>---Chọn danh mục---</option>
+                    </select>
+                </div>
+            </form>
         </div>
         @if (@TempData["Message"] != null)
         {

@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Web.AdminApp.Service.Categories;
 using Web.AdminApp.Service.Languages;
 using Web.AdminApp.Service.Products;
 using Web.AdminApp.Service.Roles;
@@ -36,6 +37,7 @@ namespace Web.AdminApp
             services.AddTransient<IRoleApi, RoleApi>();
             services.AddTransient<ILanguageApi, LanguageApi>();
             services.AddTransient<IProductApi, ProductApi>();
+            services.AddTransient<ICategoryApi, CategoryApi>();
 
             //Session
             services.AddDistributedMemoryCache();

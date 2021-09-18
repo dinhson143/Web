@@ -119,6 +119,10 @@ namespace Web.AdminApp.Controllers
         {
             var session = HttpContext.Session.GetString("Token");
             var response = await _roleApi.GetAll(session);
+            if (response.IsSuccess == false)
+            {
+                return null;
+            }
             var user = await _userApi.GetUserById(IdUser, session);
 
             var roleAssignRequest = new RoleAssignRequest();
@@ -126,16 +130,12 @@ namespace Web.AdminApp.Controllers
             {
                 roleAssignRequest.Roles.Add(new SelectItems()
                 {
-                    Id = role.Id,
+                    Id = role.Id.ToString(),
                     Name = role.Name,
                     Selected = user.Roles.Contains(role.Name)
                 });
             }
-            if (response.IsSuccess == true)
-            {
-                return roleAssignRequest;
-            }
-            return null;
+            return roleAssignRequest;
         }
     }
 }

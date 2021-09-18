@@ -82,9 +82,10 @@
                                     @Html.DisplayFor(modelItem => item.OriginalPrice)
                                 </th>
                                 <td>
-                                    @Html.ActionLink("Sửa", "Edit", new { /* id=item.PrimaryKey */ }) |
-                                    @Html.ActionLink("Chi tiết", "Details", new { /* id=item.PrimaryKey */ }) |
-                                    @Html.ActionLink("Xóa", "Delete", new { /* id=item.PrimaryKey */ })
+                                    @Html.ActionLink("Sửa", "Edit", new { id = item.Id }) |
+                                    @Html.ActionLink("Chi tiết", "Details", new { productID = item.Id }) |
+                                    @Html.ActionLink("Xóa", "Delete", new { id = item.Id })
+                                    @Html.ActionLink("Gán danh mục", "AssignCategory", new { id = item.Id })
                                 </td>
                             </tr>
                         }

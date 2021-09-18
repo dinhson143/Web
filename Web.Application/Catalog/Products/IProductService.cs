@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Web.ViewModels.Catalog.Categories;
 using Web.ViewModels.Catalog.Common;
 using Web.ViewModels.Catalog.Products;
 
@@ -16,7 +17,7 @@ namespace Web.Application.Catalog.Products
 
         public Task DeleteProduct();
 
-        public Task GetProductById();
+        public Task<ResultApi<ProductViewModel>> GetProductById(int productId, string languageId);
 
         public Task UpdatePrice();
 
@@ -43,5 +44,7 @@ namespace Web.Application.Catalog.Products
         public Task<List<Size_Color>> GetSize_Color(int productId);
 
         Task<PageResult<ProductViewModel>> GetAllByCategoryId(string languageId, GetPublicProductPagingRequest request);
+
+        public Task<ResultApi<bool>> AssignCategory(int productId, CategoryAssignRequest request);
     }
 }

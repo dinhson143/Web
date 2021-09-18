@@ -8,7 +8,7 @@ namespace Web.ViewModels.Catalog.Common
 {
     public class SelectItems
     {
-        public Guid Id { get; set; }
+        public string Id { get; set; }
         public string Name { get; set; }
         public bool Selected { get; set; }
     }

@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using Web.Data.EF;
 using Web.Data.Entities;
 using Web.Utilities.Exceptions;
+using Web.ViewModels.Catalog.Categories;
 using Web.ViewModels.Catalog.Common;
 using Web.ViewModels.Catalog.Products;
 
@@ -163,13 +164,15 @@ namespace Web.Application.Catalog.Products
 
         public async Task<ResultApi<PageResult<ProductViewModel>>> GetAll(GetManageProductPagingRequest request)
         {
-            // 1.Select join
-            var query = from p in _context.Products
-                        join pt in _context.ProductTranslations on p.Id equals pt.ProductId
-                        join pic in _context.ProductInCategories on p.Id equals pic.ProductId
-                        join c in _context.Categories on pic.CategoryId equals c.Id
-                        where pt.LanguageId == request.LanguageId
-                        select new { p, pt, pic };
+            // 1.Select join (Left Join)
+            var query = (from p in _context.Products
+                         join pt in _context.ProductTranslations on p.Id equals pt.ProductId
+                         join pic in _context.ProductInCategories on p.Id equals pic.ProductId into ppic
+                         from pic in ppic.DefaultIfEmpty()
+                         join c in _context.Categories on pic.CategoryId equals c.Id into picc
+                         from c in picc.DefaultIfEmpty()
+                         where pt.LanguageId == request.LanguageId
+                         select new { p, pt, pic });
             // 2. Filter
             if (!string.IsNullOrEmpty(request.Keyword))
             {
@@ -195,8 +198,19 @@ namespace Web.Application.Catalog.Products
                 SeoTitle = x.pt.SeoTitle,
                 SeoAlias = x.pt.SeoAlias,
             }).ToListAsync();
-
             // 4 Select Page Result
+
+            // remove phần tử trùng
+            for (var i = 0; i < data.Count; i++)
+            {
+                for (var j = i + 1; j < data.Count; j++)
+                {
+                    if (data[i].Id == data[j].Id)
+                    {
+                        data.Remove(data[j]);
+                    }
+                }
+            }
             var pageResult = new PageResult<ProductViewModel>()
             {
                 TotalRecord = totalRow,
@@ -262,9 +276,34 @@ namespace Web.Application.Catalog.Products
             throw new NotImplementedException();
         }
 
-        public Task GetProductById()
+        public async Task<ResultApi<ProductViewModel>> GetProductById(int productId, string languageId)
         {
-            throw new NotImplementedException();
+            var product = await _context.Products.FindAsync(productId);
+            var productTranslation = await _context.ProductTranslations.FirstOrDefaultAsync(x => x.ProductId == productId
+            && x.LanguageId == languageId);
+
+            var categories = await (from c in _context.Categories
+                                    join ct in _context.CategoryTranslations on c.Id equals ct.CategoryId
+                                    join pc in _context.ProductInCategories on c.Id equals pc.CategoryId
+                                    where pc.ProductId == productId && ct.LanguageId == languageId
+                                    select ct.Name).ToListAsync();
+            var data = new ProductViewModel()
+            {
+                Id = product.Id,
+                Price = product.Price,
+                OriginalPrice = product.OriginalPrice,
+                ViewCount = product.ViewCount,
+                DateCreated = product.DateCreated,
+                Name = productTranslation.Name,
+                Description = productTranslation.Description,
+                Details = productTranslation.Details,
+                SeoDescription = productTranslation.SeoDescription,
+                SeoTitle = productTranslation.SeoTitle,
+                SeoAlias = productTranslation.SeoAlias,
+                LanguageId = productTranslation.LanguageId,
+                Categories = categories
+            };
+            return new ResultSuccessApi<ProductViewModel>(data);
         }
 
         public async Task<List<Size_Color>> GetSize_Color(int productId)
@@ -360,6 +399,35 @@ namespace Web.Application.Catalog.Products
             };
 
             return pageResult;
+        }
+
+        public async Task<ResultApi<bool>> AssignCategory(int productId, CategoryAssignRequest request)
+        {
+            var user = await _context.Products.FindAsync(productId);
+            if (user == null)
+            {
+                return new ResultErrorApi<bool>($"Sản phẩm với id {productId} không tồn tại");
+            }
+            foreach (var category in request.Categories)
+            {
+                var productInCategory = await _context.ProductInCategories
+                    .FirstOrDefaultAsync(x => x.CategoryId == int.Parse(category.Id)
+                    && x.ProductId == productId);
+                if (productInCategory != null && category.Selected == false)
+                {
+                    _context.ProductInCategories.Remove(productInCategory);
+                }
+                else if (productInCategory == null && category.Selected)
+                {
+                    await _context.ProductInCategories.AddAsync(new ProductInCategory()
+                    {
+                        CategoryId = int.Parse(category.Id),
+                        ProductId = productId
+                    });
+                }
+            }
+            await _context.SaveChangesAsync();
+            return new ResultSuccessApi<bool>();
         }
     }
 }

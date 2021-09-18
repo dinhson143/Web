@@ -4,6 +4,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Web.Data.Entities;
+using Web.ViewModels.Catalog.Categories;
 
 namespace Web.ViewModels.Catalog.Products
 {
@@ -43,5 +45,7 @@ namespace Web.ViewModels.Catalog.Products
         public string SeoAlias { get; set; }
 
         public string LanguageId { set; get; }
+
+        public List<string> Categories { set; get; }
     }
 }

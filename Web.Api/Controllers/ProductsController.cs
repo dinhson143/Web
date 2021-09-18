@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using Web.Application.Catalog.Products;
+using Web.ViewModels.Catalog.Categories;
 using Web.ViewModels.Catalog.Products;
 
 namespace Web.Api.Controllers
@@ -32,6 +33,13 @@ namespace Web.Api.Controllers
             return Ok(listProduct);
         }
 
+        [HttpGet("product_detail/{productId}/{languageId}")]
+        public async Task<IActionResult> GetProductById(int productId, string languageId)
+        {
+            var Product = await _manageservice.GetProductById(productId, languageId);
+            return Ok(Product);
+        }
+
         [HttpPost]
         [Consumes("multipart/form-data")]
         [DisableRequestSizeLimit]
@@ -39,6 +47,21 @@ namespace Web.Api.Controllers
         {
             var result = await _manageservice.CreateProduct(request);
             return Ok(result);
+        }
+
+        [HttpPut("{productId}/categories")]
+        public async Task<IActionResult> CategoryAssign(int productId, [FromBody] CategoryAssignRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var result = await _manageservice.AssignCategory(productId, request);
+            if (result.IsSuccess == false)
+            {
+                return BadRequest(result.ResultObj);
+            }
+            return Ok(result.ResultObj);
         }
     }
 }

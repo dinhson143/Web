@@ -8,7 +8,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Web.AdminApp.Service.Categories;
 using Web.AdminApp.Service.Products;
+using Web.Data.Entities;
 using Web.Utilities.Contants;
+using Web.ViewModels.Catalog.Categories;
+using Web.ViewModels.Catalog.Common;
 using Web.ViewModels.Catalog.Products;
 
 namespace Web.AdminApp.Controllers
@@ -79,6 +82,67 @@ namespace Web.AdminApp.Controllers
                 return View(request);
             }
             return RedirectToAction("Index", "Product");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Details(int productID)
+        {
+            var token = HttpContext.Session.GetString(SystemContants.AppSettings.Token);
+            var languageId = HttpContext.Session.GetString(SystemContants.AppSettings.DefaultLanguageId);
+            var response = await _productApi.GetProductById(productID, token, languageId);
+
+            if (response.IsSuccess != false)
+            {
+                return View(response.ResultObj);
+            }
+            return RedirectToAction("Error", "Home");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> AssignCategory(int id)
+        {
+            var response = await GetCategoryAssignRequets(id);
+            return View(response);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AssignCategory(CategoryAssignRequest request)
+        {
+            var session = HttpContext.Session.GetString("Token");
+            request.BearerToken = session;
+            var response = await _productApi.AssignCategory(request.Id, request);
+            if (response.IsSuccess)
+            {
+                TempData["Message"] = "Gán danh mục thành công";
+                return RedirectToAction("Index", "Product");
+            }
+            var roles = await GetCategoryAssignRequets(request.Id);
+            return View();
+        }
+
+        private async Task<CategoryAssignRequest> GetCategoryAssignRequets(int productId)
+        {
+            var languageId = HttpContext.Session.GetString(SystemContants.AppSettings.DefaultLanguageId);
+            var token = HttpContext.Session.GetString(SystemContants.AppSettings.Token);
+            var categories = await _categoryApi.GetAll(languageId, token);
+            if (categories.IsSuccess == false)
+            {
+                return null;
+            }
+            var data = await _productApi.GetProductById(productId, token, languageId);
+            var product = data.ResultObj;
+
+            var CategoryAssignRequest = new CategoryAssignRequest();
+            foreach (var category in categories.ResultObj)
+            {
+                CategoryAssignRequest.Categories.Add(new SelectItems()
+                {
+                    Id = category.Id.ToString(),
+                    Name = category.Name,
+                    Selected = product.Categories.Contains(category.Name)
+                });
+            }
+            return CategoryAssignRequest;
         }
     }
 }

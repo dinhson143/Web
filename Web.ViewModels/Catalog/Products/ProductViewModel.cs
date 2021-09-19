@@ -44,6 +44,7 @@ namespace Web.ViewModels.Catalog.Products
         [Display(Name = "Link Seo")]
         public string SeoAlias { get; set; }
 
+        public bool? IsFeatured { get; set; }
         public string LanguageId { set; get; }
 
         public List<string> Categories { set; get; }

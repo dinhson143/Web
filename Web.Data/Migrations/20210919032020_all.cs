@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Web.Data.Migrations
 {
-    public partial class Initial : Migration
+    public partial class all : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -105,10 +105,10 @@ namespace Web.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     OriginalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Stock = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
                     ViewCount = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
                     DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Status = table.Column<int>(type: "int", nullable: false)
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    isExprized = table.Column<bool>(type: "bit", nullable: false, defaultValue: false)
                 },
                 constraints: table =>
                 {
@@ -404,7 +404,8 @@ namespace Web.Data.Migrations
                 {
                     ProductId = table.Column<int>(type: "int", nullable: false),
                     SizeId = table.Column<int>(type: "int", nullable: false),
-                    ColorId = table.Column<int>(type: "int", nullable: false)
+                    ColorId = table.Column<int>(type: "int", nullable: false),
+                    Stock = table.Column<int>(type: "int", nullable: false, defaultValue: 0)
                 },
                 constraints: table =>
                 {
@@ -550,21 +551,23 @@ namespace Web.Data.Migrations
                     Dongia = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Giaban = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     PhieuNXId = table.Column<int>(type: "int", nullable: false),
-                    ProductId = table.Column<int>(type: "int", nullable: false)
+                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    SizeId = table.Column<int>(type: "int", nullable: false),
+                    ColorId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_PhieuNXchitiets", x => x.Id);
                     table.ForeignKey(
+                        name: "FK_PhieuNXchitiets_PCSs_ProductId_ColorId_SizeId",
+                        columns: x => new { x.ProductId, x.ColorId, x.SizeId },
+                        principalTable: "PCSs",
+                        principalColumns: new[] { "ProductId", "ColorId", "SizeId" },
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
                         name: "FK_PhieuNXchitiets_PhieuNXs_PhieuNXId",
                         column: x => x.PhieuNXId,
                         principalTable: "PhieuNXs",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_PhieuNXchitiets_Products_ProductId",
-                        column: x => x.ProductId,
-                        principalTable: "Products",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -593,6 +596,101 @@ namespace Web.Data.Migrations
                         principalTable: "Products",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "Categories",
+                columns: new[] { "Id", "IsShowonHome", "ParentId", "SortOrder", "Status" },
+                values: new object[,]
+                {
+                    { 1, true, null, 1, 1 },
+                    { 2, true, null, 2, 1 },
+                    { 3, true, 1, 1, 1 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Colors",
+                columns: new[] { "Id", "Mamau", "Name" },
+                values: new object[,]
+                {
+                    { 5, "#D2691E", "Chocolate" },
+                    { 1, "#EE82EE", "Violet" },
+                    { 2, "#FF0000", "Red" },
+                    { 3, "#50c7c7", "80cm" },
+                    { 4, "#FFA500", "Orange" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Languages",
+                columns: new[] { "Id", "IsDefault", "Name" },
+                values: new object[,]
+                {
+                    { "en", false, "English" },
+                    { "vi", true, "Tiếng Việt" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Products",
+                columns: new[] { "Id", "DateCreated", "OriginalPrice", "Price", "Status" },
+                values: new object[] { 1, new DateTime(2021, 9, 19, 10, 20, 19, 476, DateTimeKind.Local).AddTicks(6126), 100000m, 200000m, 0 });
+
+            migrationBuilder.InsertData(
+                table: "Roles",
+                columns: new[] { "Id", "ConcurrencyStamp", "Description", "Name", "NormalizedName" },
+                values: new object[] { new Guid("0d5b7850-46c1-4c80-99c4-d94fc38a3ea7"), "85a18596-58fc-4ca4-b2fd-3bbc26bb731e", "Adminstrator Role ", "admin", "admin" });
+
+            migrationBuilder.InsertData(
+                table: "Sizes",
+                columns: new[] { "Id", "Name" },
+                values: new object[,]
+                {
+                    { 3, "80cm" },
+                    { 1, "50cm" },
+                    { 2, "60cm" },
+                    { 5, "1m4" },
+                    { 4, "1m1" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "UserRole",
+                columns: new[] { "RoleId", "UserId" },
+                values: new object[] { new Guid("0d5b7850-46c1-4c80-99c4-d94fc38a3ea7"), new Guid("b38060f2-8b1c-47ae-80aa-2cf1b518b812") });
+
+            migrationBuilder.InsertData(
+                table: "Users",
+                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Dob", "Email", "EmailConfirmed", "FirstName", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                values: new object[] { new Guid("b38060f2-8b1c-47ae-80aa-2cf1b518b812"), 0, "c3d896ff-96cc-469b-855f-ef1e92daf943", new DateTime(1999, 3, 14, 0, 0, 0, 0, DateTimeKind.Unspecified), "dinhson14399@gmail.com", true, "Dinh", "Son", false, null, "dinhson14399@gmail.com", "dinhson", "AQAAAAEAACcQAAAAEFqQTMQ9OkDrv1sij0iHWhnVKajHaa0aK/mUX3FJr+55em0WB6oYbovHYHdmugn+7w==", null, false, "", false, "dinhson" });
+
+            migrationBuilder.InsertData(
+                table: "CategoryTranslations",
+                columns: new[] { "Id", "CategoryId", "LanguageId", "Name", "SeoAlias", "SeoDescription", "SeoTitle" },
+                values: new object[,]
+                {
+                    { 1, 1, "vi", "Gấu Teddy", "gau-teddy", "Gấu bông Teddy", "Gấu bông Teddy" },
+                    { 3, 2, "vi", "Thú bông", "thu-bong", "Thú bông", "Thú bông" },
+                    { 5, 3, "vi", "Gấu bông Teddy to", "gau-teddy-to", "Gấu bông Teddy to", "Gấu bông Teddy to" },
+                    { 2, 1, "en", "Teddy bear", "teddy-bear", "Teddy bear", "Teddy bear" },
+                    { 4, 2, "en", "Stuffed Animal", "stuffed-animal", "Stuffed Animal", "Stuffed Animal" },
+                    { 6, 3, "en", "Big Teddy Bear", "big-teddy-bear", "Big Teddy Bear", "Big Teddy Bear" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "PCSs",
+                columns: new[] { "ColorId", "ProductId", "SizeId" },
+                values: new object[] { 1, 1, 1 });
+
+            migrationBuilder.InsertData(
+                table: "ProductInCategories",
+                columns: new[] { "CategoryId", "ProductId" },
+                values: new object[] { 3, 1 });
+
+            migrationBuilder.InsertData(
+                table: "ProductTranslations",
+                columns: new[] { "Id", "Description", "Details", "LanguageId", "Name", "ProductId", "SeoAlias", "SeoDescription", "SeoTitle" },
+                values: new object[,]
+                {
+                    { 1, "Gấu Bông Teddy Nhung Áo Đen Đại", "Gấu Bông Teddy Nhung Áo Đen Đại", "vi", "Gấu Bông Teddy Nhung Áo Đen Đại", 1, "gau-bong-teddy-nhung-ao-den-dai", "Gấu Bông Teddy Nhung Áo Đen Đại", "Gấu Bông Teddy Nhung Áo Đen Đại" },
+                    { 2, "Big Black Velvet Velvet Teddy Bear", "Big Black Velvet Velvet Teddy Bear", "en", "Big Black Velvet Velvet Teddy Bear", 1, "big-black-velvet-teddy-bear", "Big Black Velvet Velvet Teddy Bear", "Big Black Velvet Velvet Teddy Bear" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -651,9 +749,9 @@ namespace Web.Data.Migrations
                 column: "PhieuNXId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PhieuNXchitiets_ProductId",
+                name: "IX_PhieuNXchitiets_ProductId_ColorId_SizeId",
                 table: "PhieuNXchitiets",
-                column: "ProductId");
+                columns: new[] { "ProductId", "ColorId", "SizeId" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_PhieuNXs_CongTyId",
@@ -709,9 +807,6 @@ namespace Web.Data.Migrations
                 name: "OrderDetails");
 
             migrationBuilder.DropTable(
-                name: "PCSs");
-
-            migrationBuilder.DropTable(
                 name: "PhieuNXchitiets");
 
             migrationBuilder.DropTable(
@@ -751,10 +846,7 @@ namespace Web.Data.Migrations
                 name: "Orders");
 
             migrationBuilder.DropTable(
-                name: "Colors");
-
-            migrationBuilder.DropTable(
-                name: "Sizes");
+                name: "PCSs");
 
             migrationBuilder.DropTable(
                 name: "PhieuNXs");
@@ -766,10 +858,16 @@ namespace Web.Data.Migrations
                 name: "Languages");
 
             migrationBuilder.DropTable(
+                name: "Users");
+
+            migrationBuilder.DropTable(
+                name: "Colors");
+
+            migrationBuilder.DropTable(
                 name: "Products");
 
             migrationBuilder.DropTable(
-                name: "Users");
+                name: "Sizes");
 
             migrationBuilder.DropTable(
                 name: "CongTys");

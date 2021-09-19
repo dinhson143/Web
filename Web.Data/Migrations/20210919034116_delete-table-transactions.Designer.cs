@@ -10,8 +10,8 @@ using Web.Data.EF;
 namespace Web.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20210910162055_Initial")]
-    partial class Initial
+    [Migration("20210919034116_delete-table-transactions")]
+    partial class deletetabletransactions
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -92,6 +92,13 @@ namespace Web.Data.Migrations
                     b.HasKey("UserId", "RoleId");
 
                     b.ToTable("UserRole");
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = new Guid("b38060f2-8b1c-47ae-80aa-2cf1b518b812"),
+                            RoleId = new Guid("0d5b7850-46c1-4c80-99c4-d94fc38a3ea7")
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
@@ -173,6 +180,30 @@ namespace Web.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Categories");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            IsShowonHome = true,
+                            SortOrder = 1,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            IsShowonHome = true,
+                            SortOrder = 2,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            IsShowonHome = true,
+                            ParentId = 1,
+                            SortOrder = 1,
+                            Status = 1
+                        });
                 });
 
             modelBuilder.Entity("Web.Data.Entities.CategoryTranslation", b =>
@@ -218,6 +249,68 @@ namespace Web.Data.Migrations
                     b.HasIndex("LanguageId");
 
                     b.ToTable("CategoryTranslations");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CategoryId = 1,
+                            LanguageId = "vi",
+                            Name = "Gấu Teddy",
+                            SeoAlias = "gau-teddy",
+                            SeoDescription = "Gấu bông Teddy",
+                            SeoTitle = "Gấu bông Teddy"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CategoryId = 1,
+                            LanguageId = "en",
+                            Name = "Teddy bear",
+                            SeoAlias = "teddy-bear",
+                            SeoDescription = "Teddy bear",
+                            SeoTitle = "Teddy bear"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CategoryId = 2,
+                            LanguageId = "vi",
+                            Name = "Thú bông",
+                            SeoAlias = "thu-bong",
+                            SeoDescription = "Thú bông",
+                            SeoTitle = "Thú bông"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CategoryId = 2,
+                            LanguageId = "en",
+                            Name = "Stuffed Animal",
+                            SeoAlias = "stuffed-animal",
+                            SeoDescription = "Stuffed Animal",
+                            SeoTitle = "Stuffed Animal"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CategoryId = 3,
+                            LanguageId = "vi",
+                            Name = "Gấu bông Teddy to",
+                            SeoAlias = "gau-teddy-to",
+                            SeoDescription = "Gấu bông Teddy to",
+                            SeoTitle = "Gấu bông Teddy to"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            CategoryId = 3,
+                            LanguageId = "en",
+                            Name = "Big Teddy Bear",
+                            SeoAlias = "big-teddy-bear",
+                            SeoDescription = "Big Teddy Bear",
+                            SeoTitle = "Big Teddy Bear"
+                        });
                 });
 
             modelBuilder.Entity("Web.Data.Entities.Color", b =>
@@ -242,6 +335,38 @@ namespace Web.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Colors");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Mamau = "#EE82EE",
+                            Name = "Violet"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Mamau = "#FF0000",
+                            Name = "Red"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Mamau = "#50c7c7",
+                            Name = "80cm"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Mamau = "#FFA500",
+                            Name = "Orange"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Mamau = "#D2691E",
+                            Name = "Chocolate"
+                        });
                 });
 
             modelBuilder.Entity("Web.Data.Entities.Comment", b =>
@@ -371,6 +496,20 @@ namespace Web.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Languages");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "vi",
+                            IsDefault = true,
+                            Name = "Tiếng Việt"
+                        },
+                        new
+                        {
+                            Id = "en",
+                            IsDefault = false,
+                            Name = "English"
+                        });
                 });
 
             modelBuilder.Entity("Web.Data.Entities.LoaiPhieu", b =>
@@ -501,6 +640,9 @@ namespace Web.Data.Migrations
                         .HasAnnotation("SqlServer:IdentitySeed", 1)
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int>("ColorId")
+                        .HasColumnType("int");
+
                     b.Property<decimal>("Dongia")
                         .HasColumnType("decimal(18,2)");
 
@@ -513,6 +655,9 @@ namespace Web.Data.Migrations
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
+                    b.Property<int>("SizeId")
+                        .HasColumnType("int");
+
                     b.Property<int>("Soluong")
                         .HasColumnType("int");
 
@@ -520,7 +665,7 @@ namespace Web.Data.Migrations
 
                     b.HasIndex("PhieuNXId");
 
-                    b.HasIndex("ProductId");
+                    b.HasIndex("ProductId", "ColorId", "SizeId");
 
                     b.ToTable("PhieuNXchitiets");
                 });
@@ -544,19 +689,31 @@ namespace Web.Data.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
-                    b.Property<int>("Stock")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(0);
-
                     b.Property<int>("ViewCount")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasDefaultValue(0);
 
+                    b.Property<bool>("isExprized")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
                     b.HasKey("Id");
 
                     b.ToTable("Products");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            DateCreated = new DateTime(2021, 9, 19, 10, 41, 15, 894, DateTimeKind.Local).AddTicks(2418),
+                            OriginalPrice = 100000m,
+                            Price = 200000m,
+                            Status = 0,
+                            ViewCount = 0,
+                            isExprized = false
+                        });
                 });
 
             modelBuilder.Entity("Web.Data.Entities.ProductImage", b =>
@@ -613,6 +770,13 @@ namespace Web.Data.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("ProductInCategories");
+
+                    b.HasData(
+                        new
+                        {
+                            CategoryId = 3,
+                            ProductId = 1
+                        });
                 });
 
             modelBuilder.Entity("Web.Data.Entities.ProductTranslation", b =>
@@ -663,6 +827,32 @@ namespace Web.Data.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("ProductTranslations");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "Gấu Bông Teddy Nhung Áo Đen Đại",
+                            Details = "Gấu Bông Teddy Nhung Áo Đen Đại",
+                            LanguageId = "vi",
+                            Name = "Gấu Bông Teddy Nhung Áo Đen Đại",
+                            ProductId = 1,
+                            SeoAlias = "gau-bong-teddy-nhung-ao-den-dai",
+                            SeoDescription = "Gấu Bông Teddy Nhung Áo Đen Đại",
+                            SeoTitle = "Gấu Bông Teddy Nhung Áo Đen Đại"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "Big Black Velvet Velvet Teddy Bear",
+                            Details = "Big Black Velvet Velvet Teddy Bear",
+                            LanguageId = "en",
+                            Name = "Big Black Velvet Velvet Teddy Bear",
+                            ProductId = 1,
+                            SeoAlias = "big-black-velvet-teddy-bear",
+                            SeoDescription = "Big Black Velvet Velvet Teddy Bear",
+                            SeoTitle = "Big Black Velvet Velvet Teddy Bear"
+                        });
                 });
 
             modelBuilder.Entity("Web.Data.Entities.Product_Color_Size", b =>
@@ -676,6 +866,11 @@ namespace Web.Data.Migrations
                     b.Property<int>("SizeId")
                         .HasColumnType("int");
 
+                    b.Property<int>("Stock")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
+
                     b.HasKey("ProductId", "ColorId", "SizeId");
 
                     b.HasIndex("ColorId");
@@ -683,6 +878,15 @@ namespace Web.Data.Migrations
                     b.HasIndex("SizeId");
 
                     b.ToTable("PCSs");
+
+                    b.HasData(
+                        new
+                        {
+                            ProductId = 1,
+                            ColorId = 1,
+                            SizeId = 1,
+                            Stock = 0
+                        });
                 });
 
             modelBuilder.Entity("Web.Data.Entities.Promotion", b =>
@@ -750,6 +954,16 @@ namespace Web.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Roles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("0d5b7850-46c1-4c80-99c4-d94fc38a3ea7"),
+                            ConcurrencyStamp = "ee8ca763-563a-4a33-a200-fbddac6c58e9",
+                            Description = "Adminstrator Role ",
+                            Name = "admin",
+                            NormalizedName = "admin"
+                        });
                 });
 
             modelBuilder.Entity("Web.Data.Entities.Size", b =>
@@ -769,49 +983,33 @@ namespace Web.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Sizes");
-                });
 
-            modelBuilder.Entity("Web.Data.Entities.Transaction", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:IdentityIncrement", 1)
-                        .HasAnnotation("SqlServer:IdentitySeed", 1)
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("ExternalTransactionId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("Fee")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("Message")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Provider")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Result")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("TransactionDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Transactions");
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "50cm"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "60cm"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "80cm"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "1m1"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Name = "1m4"
+                        });
                 });
 
             modelBuilder.Entity("Web.Data.Entities.User", b =>
@@ -878,6 +1076,27 @@ namespace Web.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("b38060f2-8b1c-47ae-80aa-2cf1b518b812"),
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "950618b2-142d-4639-a0a8-533413c9883c",
+                            Dob = new DateTime(1999, 3, 14, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "dinhson14399@gmail.com",
+                            EmailConfirmed = true,
+                            FirstName = "Dinh",
+                            LastName = "Son",
+                            LockoutEnabled = false,
+                            NormalizedEmail = "dinhson14399@gmail.com",
+                            NormalizedUserName = "dinhson",
+                            PasswordHash = "AQAAAAEAACcQAAAAEDfZDLZublbfG3lmY9zQH/0njzr287Dr6FDHcIh7P/FC1/ormU7wC+nyvYPfijwP2g==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "",
+                            TwoFactorEnabled = false,
+                            UserName = "dinhson"
+                        });
                 });
 
             modelBuilder.Entity("Web.Data.Entities.Cart", b =>
@@ -994,15 +1213,15 @@ namespace Web.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Web.Data.Entities.Product", "Product")
+                    b.HasOne("Web.Data.Entities.Product_Color_Size", "Product_Color_Size")
                         .WithMany("PhieuNXchitiets")
-                        .HasForeignKey("ProductId")
+                        .HasForeignKey("ProductId", "ColorId", "SizeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("PhieuNX");
 
-                    b.Navigation("Product");
+                    b.Navigation("Product_Color_Size");
                 });
 
             modelBuilder.Entity("Web.Data.Entities.ProductImage", b =>
@@ -1081,17 +1300,6 @@ namespace Web.Data.Migrations
                     b.Navigation("Size");
                 });
 
-            modelBuilder.Entity("Web.Data.Entities.Transaction", b =>
-                {
-                    b.HasOne("Web.Data.Entities.User", "User")
-                        .WithMany("Transactions")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("Web.Data.Entities.Category", b =>
                 {
                     b.Navigation("CategoryTranslations");
@@ -1141,13 +1349,16 @@ namespace Web.Data.Migrations
 
                     b.Navigation("PCS");
 
-                    b.Navigation("PhieuNXchitiets");
-
                     b.Navigation("ProductImages");
 
                     b.Navigation("ProductInCategories");
 
                     b.Navigation("ProductTranslations");
+                });
+
+            modelBuilder.Entity("Web.Data.Entities.Product_Color_Size", b =>
+                {
+                    b.Navigation("PhieuNXchitiets");
                 });
 
             modelBuilder.Entity("Web.Data.Entities.Size", b =>
@@ -1162,8 +1373,6 @@ namespace Web.Data.Migrations
                     b.Navigation("Comments");
 
                     b.Navigation("Orders");
-
-                    b.Navigation("Transactions");
                 });
 #pragma warning restore 612, 618
         }

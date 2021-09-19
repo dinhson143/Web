@@ -19,6 +19,8 @@ namespace Web.Data.Entities
         public DateTime DateCreated { get; set; }
         public Status Status { get; set; }
 
+        public bool? IsFeatured { get; set; }
+
         public List<Cart> Carts { get; set; }
         public List<Comment> Comments { get; set; }
         public List<OrderDetail> OrderDetails { get; set; }

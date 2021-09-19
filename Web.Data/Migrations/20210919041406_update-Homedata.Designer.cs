@@ -10,8 +10,8 @@ using Web.Data.EF;
 namespace Web.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20210911010929_Seed-data")]
-    partial class Seeddata
+    [Migration("20210919041406_update-Homedata")]
+    partial class updateHomedata
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -255,7 +255,7 @@ namespace Web.Data.Migrations
                         {
                             Id = 1,
                             CategoryId = 1,
-                            LanguageId = "vi-VN",
+                            LanguageId = "vi",
                             Name = "Gấu Teddy",
                             SeoAlias = "gau-teddy",
                             SeoDescription = "Gấu bông Teddy",
@@ -265,7 +265,7 @@ namespace Web.Data.Migrations
                         {
                             Id = 2,
                             CategoryId = 1,
-                            LanguageId = "en-US",
+                            LanguageId = "en",
                             Name = "Teddy bear",
                             SeoAlias = "teddy-bear",
                             SeoDescription = "Teddy bear",
@@ -275,7 +275,7 @@ namespace Web.Data.Migrations
                         {
                             Id = 3,
                             CategoryId = 2,
-                            LanguageId = "vi-VN",
+                            LanguageId = "vi",
                             Name = "Thú bông",
                             SeoAlias = "thu-bong",
                             SeoDescription = "Thú bông",
@@ -285,7 +285,7 @@ namespace Web.Data.Migrations
                         {
                             Id = 4,
                             CategoryId = 2,
-                            LanguageId = "en-US",
+                            LanguageId = "en",
                             Name = "Stuffed Animal",
                             SeoAlias = "stuffed-animal",
                             SeoDescription = "Stuffed Animal",
@@ -295,7 +295,7 @@ namespace Web.Data.Migrations
                         {
                             Id = 5,
                             CategoryId = 3,
-                            LanguageId = "vi-VN",
+                            LanguageId = "vi",
                             Name = "Gấu bông Teddy to",
                             SeoAlias = "gau-teddy-to",
                             SeoDescription = "Gấu bông Teddy to",
@@ -305,7 +305,7 @@ namespace Web.Data.Migrations
                         {
                             Id = 6,
                             CategoryId = 3,
-                            LanguageId = "en-US",
+                            LanguageId = "en",
                             Name = "Big Teddy Bear",
                             SeoAlias = "big-teddy-bear",
                             SeoDescription = "Big Teddy Bear",
@@ -500,13 +500,13 @@ namespace Web.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "vi-VN",
+                            Id = "vi",
                             IsDefault = true,
                             Name = "Tiếng Việt"
                         },
                         new
                         {
-                            Id = "en-US",
+                            Id = "en",
                             IsDefault = false,
                             Name = "English"
                         });
@@ -640,6 +640,9 @@ namespace Web.Data.Migrations
                         .HasAnnotation("SqlServer:IdentitySeed", 1)
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int>("ColorId")
+                        .HasColumnType("int");
+
                     b.Property<decimal>("Dongia")
                         .HasColumnType("decimal(18,2)");
 
@@ -652,6 +655,9 @@ namespace Web.Data.Migrations
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
+                    b.Property<int>("SizeId")
+                        .HasColumnType("int");
+
                     b.Property<int>("Soluong")
                         .HasColumnType("int");
 
@@ -659,7 +665,7 @@ namespace Web.Data.Migrations
 
                     b.HasIndex("PhieuNXId");
 
-                    b.HasIndex("ProductId");
+                    b.HasIndex("ProductId", "ColorId", "SizeId");
 
                     b.ToTable("PhieuNXchitiets");
                 });
@@ -674,6 +680,9 @@ namespace Web.Data.Migrations
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool?>("IsFeatured")
+                        .HasColumnType("bit");
+
                     b.Property<decimal>("OriginalPrice")
                         .HasColumnType("decimal(18,2)");
 
@@ -682,11 +691,6 @@ namespace Web.Data.Migrations
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
-
-                    b.Property<int>("Stock")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(0);
 
                     b.Property<int>("ViewCount")
                         .ValueGeneratedOnAdd()
@@ -701,11 +705,10 @@ namespace Web.Data.Migrations
                         new
                         {
                             Id = 1,
-                            DateCreated = new DateTime(2021, 9, 11, 8, 9, 28, 802, DateTimeKind.Local).AddTicks(5329),
+                            DateCreated = new DateTime(2021, 9, 19, 11, 14, 5, 815, DateTimeKind.Local).AddTicks(5935),
                             OriginalPrice = 100000m,
                             Price = 200000m,
                             Status = 0,
-                            Stock = 0,
                             ViewCount = 0
                         });
                 });
@@ -828,7 +831,7 @@ namespace Web.Data.Migrations
                             Id = 1,
                             Description = "Gấu Bông Teddy Nhung Áo Đen Đại",
                             Details = "Gấu Bông Teddy Nhung Áo Đen Đại",
-                            LanguageId = "vi-VN",
+                            LanguageId = "vi",
                             Name = "Gấu Bông Teddy Nhung Áo Đen Đại",
                             ProductId = 1,
                             SeoAlias = "gau-bong-teddy-nhung-ao-den-dai",
@@ -840,7 +843,7 @@ namespace Web.Data.Migrations
                             Id = 2,
                             Description = "Big Black Velvet Velvet Teddy Bear",
                             Details = "Big Black Velvet Velvet Teddy Bear",
-                            LanguageId = "en-US",
+                            LanguageId = "en",
                             Name = "Big Black Velvet Velvet Teddy Bear",
                             ProductId = 1,
                             SeoAlias = "big-black-velvet-teddy-bear",
@@ -860,6 +863,11 @@ namespace Web.Data.Migrations
                     b.Property<int>("SizeId")
                         .HasColumnType("int");
 
+                    b.Property<int>("Stock")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
+
                     b.HasKey("ProductId", "ColorId", "SizeId");
 
                     b.HasIndex("ColorId");
@@ -873,7 +881,8 @@ namespace Web.Data.Migrations
                         {
                             ProductId = 1,
                             ColorId = 1,
-                            SizeId = 1
+                            SizeId = 1,
+                            Stock = 0
                         });
                 });
 
@@ -947,7 +956,7 @@ namespace Web.Data.Migrations
                         new
                         {
                             Id = new Guid("0d5b7850-46c1-4c80-99c4-d94fc38a3ea7"),
-                            ConcurrencyStamp = "f5e1f57f-f9c3-4386-b150-78e1a38203df",
+                            ConcurrencyStamp = "c16d734a-813b-4101-a300-14173387ab03",
                             Description = "Adminstrator Role ",
                             Name = "admin",
                             NormalizedName = "admin"
@@ -1000,7 +1009,7 @@ namespace Web.Data.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Web.Data.Entities.Transaction", b =>
+            modelBuilder.Entity("Web.Data.Entities.Slider", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1009,38 +1018,79 @@ namespace Web.Data.Migrations
                         .HasAnnotation("SqlServer:IdentitySeed", 1)
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
-                    b.Property<string>("ExternalTransactionId")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<string>("Image")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
-                    b.Property<decimal>("Fee")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
-                    b.Property<string>("Message")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Provider")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Result")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Status")
+                    b.Property<int>("SortOrder")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("TransactionDate")
-                        .HasColumnType("datetime2");
+                    b.Property<int>("Status")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(1);
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.ToTable("Sliders");
 
-                    b.ToTable("Transactions");
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.",
+                            Image = "/themes/images/carousel/5.png",
+                            Name = "slider 1",
+                            SortOrder = 1,
+                            Status = 1,
+                            Url = "#"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.",
+                            Image = "/themes/images/carousel/5.png",
+                            Name = "slider 1",
+                            SortOrder = 1,
+                            Status = 1,
+                            Url = "#"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Description = "Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.",
+                            Image = "/themes/images/carousel/5.png",
+                            Name = "slider 1",
+                            SortOrder = 1,
+                            Status = 1,
+                            Url = "#"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Description = "Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.",
+                            Image = "/themes/images/carousel/5.png",
+                            Name = "slider 1",
+                            SortOrder = 1,
+                            Status = 1,
+                            Url = "#"
+                        });
                 });
 
             modelBuilder.Entity("Web.Data.Entities.User", b =>
@@ -1113,7 +1163,7 @@ namespace Web.Data.Migrations
                         {
                             Id = new Guid("b38060f2-8b1c-47ae-80aa-2cf1b518b812"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "221e7f8a-79e5-4a5d-b434-f650baf8cf3d",
+                            ConcurrencyStamp = "ffea7bd5-c4ed-4a20-972e-5a95991eda94",
                             Dob = new DateTime(1999, 3, 14, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "dinhson14399@gmail.com",
                             EmailConfirmed = true,
@@ -1121,12 +1171,12 @@ namespace Web.Data.Migrations
                             LastName = "Son",
                             LockoutEnabled = false,
                             NormalizedEmail = "dinhson14399@gmail.com",
-                            NormalizedUserName = "admin",
-                            PasswordHash = "AQAAAAEAACcQAAAAEAxpHCZcZb9++7Ztyed9oXTZVFYo9YYBz2lWiCYNwAbGGmV/NKq8/lMWUqTTLy1bHA==",
+                            NormalizedUserName = "dinhson",
+                            PasswordHash = "AQAAAAEAACcQAAAAEECT8VWehKNE57MRenYs0PUpgkgONWYnegbOjsusXPvWo5BxQejt3zW+drGEnGgs6g==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
                             TwoFactorEnabled = false,
-                            UserName = "admin"
+                            UserName = "dinhson"
                         });
                 });
 
@@ -1244,15 +1294,15 @@ namespace Web.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Web.Data.Entities.Product", "Product")
+                    b.HasOne("Web.Data.Entities.Product_Color_Size", "Product_Color_Size")
                         .WithMany("PhieuNXchitiets")
-                        .HasForeignKey("ProductId")
+                        .HasForeignKey("ProductId", "ColorId", "SizeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("PhieuNX");
 
-                    b.Navigation("Product");
+                    b.Navigation("Product_Color_Size");
                 });
 
             modelBuilder.Entity("Web.Data.Entities.ProductImage", b =>
@@ -1331,17 +1381,6 @@ namespace Web.Data.Migrations
                     b.Navigation("Size");
                 });
 
-            modelBuilder.Entity("Web.Data.Entities.Transaction", b =>
-                {
-                    b.HasOne("Web.Data.Entities.User", "User")
-                        .WithMany("Transactions")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("Web.Data.Entities.Category", b =>
                 {
                     b.Navigation("CategoryTranslations");
@@ -1391,13 +1430,16 @@ namespace Web.Data.Migrations
 
                     b.Navigation("PCS");
 
-                    b.Navigation("PhieuNXchitiets");
-
                     b.Navigation("ProductImages");
 
                     b.Navigation("ProductInCategories");
 
                     b.Navigation("ProductTranslations");
+                });
+
+            modelBuilder.Entity("Web.Data.Entities.Product_Color_Size", b =>
+                {
+                    b.Navigation("PhieuNXchitiets");
                 });
 
             modelBuilder.Entity("Web.Data.Entities.Size", b =>
@@ -1412,8 +1454,6 @@ namespace Web.Data.Migrations
                     b.Navigation("Comments");
 
                     b.Navigation("Orders");
-
-                    b.Navigation("Transactions");
                 });
 #pragma warning restore 612, 618
         }

@@ -10,8 +10,8 @@ using Web.Data.EF;
 namespace Web.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20210911032723_fixPCS")]
-    partial class fixPCS
+    [Migration("20210919032020_all")]
+    partial class all
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -255,7 +255,7 @@ namespace Web.Data.Migrations
                         {
                             Id = 1,
                             CategoryId = 1,
-                            LanguageId = "vi-VN",
+                            LanguageId = "vi",
                             Name = "Gấu Teddy",
                             SeoAlias = "gau-teddy",
                             SeoDescription = "Gấu bông Teddy",
@@ -265,7 +265,7 @@ namespace Web.Data.Migrations
                         {
                             Id = 2,
                             CategoryId = 1,
-                            LanguageId = "en-US",
+                            LanguageId = "en",
                             Name = "Teddy bear",
                             SeoAlias = "teddy-bear",
                             SeoDescription = "Teddy bear",
@@ -275,7 +275,7 @@ namespace Web.Data.Migrations
                         {
                             Id = 3,
                             CategoryId = 2,
-                            LanguageId = "vi-VN",
+                            LanguageId = "vi",
                             Name = "Thú bông",
                             SeoAlias = "thu-bong",
                             SeoDescription = "Thú bông",
@@ -285,7 +285,7 @@ namespace Web.Data.Migrations
                         {
                             Id = 4,
                             CategoryId = 2,
-                            LanguageId = "en-US",
+                            LanguageId = "en",
                             Name = "Stuffed Animal",
                             SeoAlias = "stuffed-animal",
                             SeoDescription = "Stuffed Animal",
@@ -295,7 +295,7 @@ namespace Web.Data.Migrations
                         {
                             Id = 5,
                             CategoryId = 3,
-                            LanguageId = "vi-VN",
+                            LanguageId = "vi",
                             Name = "Gấu bông Teddy to",
                             SeoAlias = "gau-teddy-to",
                             SeoDescription = "Gấu bông Teddy to",
@@ -305,7 +305,7 @@ namespace Web.Data.Migrations
                         {
                             Id = 6,
                             CategoryId = 3,
-                            LanguageId = "en-US",
+                            LanguageId = "en",
                             Name = "Big Teddy Bear",
                             SeoAlias = "big-teddy-bear",
                             SeoDescription = "Big Teddy Bear",
@@ -500,13 +500,13 @@ namespace Web.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "vi-VN",
+                            Id = "vi",
                             IsDefault = true,
                             Name = "Tiếng Việt"
                         },
                         new
                         {
-                            Id = "en-US",
+                            Id = "en",
                             IsDefault = false,
                             Name = "English"
                         });
@@ -694,6 +694,11 @@ namespace Web.Data.Migrations
                         .HasColumnType("int")
                         .HasDefaultValue(0);
 
+                    b.Property<bool>("isExprized")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
                     b.HasKey("Id");
 
                     b.ToTable("Products");
@@ -702,11 +707,12 @@ namespace Web.Data.Migrations
                         new
                         {
                             Id = 1,
-                            DateCreated = new DateTime(2021, 9, 11, 10, 27, 22, 208, DateTimeKind.Local).AddTicks(6518),
+                            DateCreated = new DateTime(2021, 9, 19, 10, 20, 19, 476, DateTimeKind.Local).AddTicks(6126),
                             OriginalPrice = 100000m,
                             Price = 200000m,
                             Status = 0,
-                            ViewCount = 0
+                            ViewCount = 0,
+                            isExprized = false
                         });
                 });
 
@@ -828,7 +834,7 @@ namespace Web.Data.Migrations
                             Id = 1,
                             Description = "Gấu Bông Teddy Nhung Áo Đen Đại",
                             Details = "Gấu Bông Teddy Nhung Áo Đen Đại",
-                            LanguageId = "vi-VN",
+                            LanguageId = "vi",
                             Name = "Gấu Bông Teddy Nhung Áo Đen Đại",
                             ProductId = 1,
                             SeoAlias = "gau-bong-teddy-nhung-ao-den-dai",
@@ -840,7 +846,7 @@ namespace Web.Data.Migrations
                             Id = 2,
                             Description = "Big Black Velvet Velvet Teddy Bear",
                             Details = "Big Black Velvet Velvet Teddy Bear",
-                            LanguageId = "en-US",
+                            LanguageId = "en",
                             Name = "Big Black Velvet Velvet Teddy Bear",
                             ProductId = 1,
                             SeoAlias = "big-black-velvet-teddy-bear",
@@ -953,7 +959,7 @@ namespace Web.Data.Migrations
                         new
                         {
                             Id = new Guid("0d5b7850-46c1-4c80-99c4-d94fc38a3ea7"),
-                            ConcurrencyStamp = "e0cf3212-8356-4d4d-9c24-3b5871ea584d",
+                            ConcurrencyStamp = "85a18596-58fc-4ca4-b2fd-3bbc26bb731e",
                             Description = "Adminstrator Role ",
                             Name = "admin",
                             NormalizedName = "admin"
@@ -1119,7 +1125,7 @@ namespace Web.Data.Migrations
                         {
                             Id = new Guid("b38060f2-8b1c-47ae-80aa-2cf1b518b812"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "2054604e-4c70-42da-88bb-615d1e92aa6f",
+                            ConcurrencyStamp = "c3d896ff-96cc-469b-855f-ef1e92daf943",
                             Dob = new DateTime(1999, 3, 14, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "dinhson14399@gmail.com",
                             EmailConfirmed = true,
@@ -1127,12 +1133,12 @@ namespace Web.Data.Migrations
                             LastName = "Son",
                             LockoutEnabled = false,
                             NormalizedEmail = "dinhson14399@gmail.com",
-                            NormalizedUserName = "admin",
-                            PasswordHash = "AQAAAAEAACcQAAAAEHFXGkDomE3Qwne0WadFSLv9KM2Hm/QY+hACvWotBzOwiVET83s1qjhGWwpWz9dMtg==",
+                            NormalizedUserName = "dinhson",
+                            PasswordHash = "AQAAAAEAACcQAAAAEFqQTMQ9OkDrv1sij0iHWhnVKajHaa0aK/mUX3FJr+55em0WB6oYbovHYHdmugn+7w==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
                             TwoFactorEnabled = false,
-                            UserName = "admin"
+                            UserName = "dinhson"
                         });
                 });
 

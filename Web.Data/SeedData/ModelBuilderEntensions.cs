@@ -16,8 +16,8 @@ namespace Web.Data.SeedData
         {
             //Language
             modelBuilder.Entity<Language>().HasData(
-               new Language() { Id = "vi-VN", Name = "Tiếng Việt", IsDefault = true },
-               new Language() { Id = "en-US", Name = "English", IsDefault = false }
+               new Language() { Id = "vi", Name = "Tiếng Việt", IsDefault = true },
+               new Language() { Id = "en", Name = "English", IsDefault = false }
            );
 
             // Category
@@ -51,14 +51,14 @@ namespace Web.Data.SeedData
 
             modelBuilder.Entity<CategoryTranslation>().HasData(
                 // a
-                new CategoryTranslation() { Id = 1, CategoryId = 1, Name = "Gấu Teddy", LanguageId = "vi-VN", SeoAlias = "gau-teddy", SeoDescription = "Gấu bông Teddy", SeoTitle = "Gấu bông Teddy" },
-                new CategoryTranslation() { Id = 2, CategoryId = 1, Name = "Teddy bear", LanguageId = "en-US", SeoAlias = "teddy-bear", SeoDescription = "Teddy bear", SeoTitle = "Teddy bear" },
-                new CategoryTranslation() { Id = 3, CategoryId = 2, Name = "Thú bông", LanguageId = "vi-VN", SeoAlias = "thu-bong", SeoDescription = "Thú bông", SeoTitle = "Thú bông" },
-                new CategoryTranslation() { Id = 4, CategoryId = 2, Name = "Stuffed Animal", LanguageId = "en-US", SeoAlias = "stuffed-animal", SeoDescription = "Stuffed Animal", SeoTitle = "Stuffed Animal" },
+                new CategoryTranslation() { Id = 1, CategoryId = 1, Name = "Gấu Teddy", LanguageId = "vi", SeoAlias = "gau-teddy", SeoDescription = "Gấu bông Teddy", SeoTitle = "Gấu bông Teddy" },
+                new CategoryTranslation() { Id = 2, CategoryId = 1, Name = "Teddy bear", LanguageId = "en", SeoAlias = "teddy-bear", SeoDescription = "Teddy bear", SeoTitle = "Teddy bear" },
+                new CategoryTranslation() { Id = 3, CategoryId = 2, Name = "Thú bông", LanguageId = "vi", SeoAlias = "thu-bong", SeoDescription = "Thú bông", SeoTitle = "Thú bông" },
+                new CategoryTranslation() { Id = 4, CategoryId = 2, Name = "Stuffed Animal", LanguageId = "en", SeoAlias = "stuffed-animal", SeoDescription = "Stuffed Animal", SeoTitle = "Stuffed Animal" },
 
                 // con cate a-a
-                new CategoryTranslation() { Id = 5, CategoryId = 3, Name = "Gấu bông Teddy to", LanguageId = "vi-VN", SeoAlias = "gau-teddy-to", SeoDescription = "Gấu bông Teddy to", SeoTitle = "Gấu bông Teddy to" },
-                new CategoryTranslation() { Id = 6, CategoryId = 3, Name = "Big Teddy Bear", LanguageId = "en-US", SeoAlias = "big-teddy-bear", SeoDescription = "Big Teddy Bear", SeoTitle = "Big Teddy Bear" }
+                new CategoryTranslation() { Id = 5, CategoryId = 3, Name = "Gấu bông Teddy to", LanguageId = "vi", SeoAlias = "gau-teddy-to", SeoDescription = "Gấu bông Teddy to", SeoTitle = "Gấu bông Teddy to" },
+                new CategoryTranslation() { Id = 6, CategoryId = 3, Name = "Big Teddy Bear", LanguageId = "en", SeoAlias = "big-teddy-bear", SeoDescription = "Big Teddy Bear", SeoTitle = "Big Teddy Bear" }
             );
 
             // Product
@@ -69,7 +69,6 @@ namespace Web.Data.SeedData
                      DateCreated = DateTime.Now,
                      OriginalPrice = 100000,
                      Price = 200000,
-                     //Stock = 0,
                      ViewCount = 0,
                  }
             );
@@ -85,7 +84,7 @@ namespace Web.Data.SeedData
                     Id = 1,
                     ProductId = 1,
                     Name = "Gấu Bông Teddy Nhung Áo Đen Đại",
-                    LanguageId = "vi-VN",
+                    LanguageId = "vi",
                     SeoAlias = "gau-bong-teddy-nhung-ao-den-dai",
                     SeoDescription = "Gấu Bông Teddy Nhung Áo Đen Đại",
                     SeoTitle = "Gấu Bông Teddy Nhung Áo Đen Đại",
@@ -98,7 +97,7 @@ namespace Web.Data.SeedData
                     Id = 2,
                     ProductId = 1,
                     Name = "Big Black Velvet Velvet Teddy Bear",
-                    LanguageId = "en-US",
+                    LanguageId = "en",
                     SeoAlias = "big-black-velvet-teddy-bear",
                     SeoDescription = "Big Black Velvet Velvet Teddy Bear",
                     SeoTitle = "Big Black Velvet Velvet Teddy Bear",
@@ -190,12 +189,12 @@ namespace Web.Data.SeedData
             modelBuilder.Entity<User>().HasData(new User
             {
                 Id = ADMIN_ID,
-                UserName = "admin",
-                NormalizedUserName = "admin",
+                UserName = "dinhson",
+                NormalizedUserName = "dinhson",
                 Email = "dinhson14399@gmail.com",
                 NormalizedEmail = "dinhson14399@gmail.com",
                 EmailConfirmed = true,
-                PasswordHash = hasher.HashPassword(null, "123"),
+                PasswordHash = hasher.HashPassword(null, "Haquyet0506@"),
                 SecurityStamp = string.Empty,
                 FirstName = "Dinh",
                 LastName = "Son",
@@ -207,6 +206,50 @@ namespace Web.Data.SeedData
                 RoleId = ROLE_ID,
                 UserId = ADMIN_ID
             });
+
+            //Slider
+            modelBuilder.Entity<Slider>().HasData(
+               new Slider()
+               {
+                   Id = 1,
+                   Name = "slider 1",
+                   Description = "Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.",
+                   SortOrder = 1,
+                   Url = "#",
+                   Image = "/themes/images/carousel/5.png",
+                   Status = Status.Active
+               },
+               new Slider()
+               {
+                   Id = 2,
+                   Name = "slider 1",
+                   Description = "Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.",
+                   SortOrder = 2,
+                   Url = "#",
+                   Image = "/themes/images/carousel/5.png",
+                   Status = Status.Active
+               },
+               new Slider()
+               {
+                   Id = 3,
+                   Name = "slider 1",
+                   Description = "Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.",
+                   SortOrder = 3,
+                   Url = "#",
+                   Image = "/themes/images/carousel/5.png",
+                   Status = Status.Active
+               },
+               new Slider()
+               {
+                   Id = 4,
+                   Name = "slider 1",
+                   Description = "Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.",
+                   SortOrder = 4,
+                   Url = "#",
+                   Image = "/themes/images/carousel/5.png",
+                   Status = Status.Active
+               }
+           );
         }
     }
 }

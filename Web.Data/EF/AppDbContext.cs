@@ -37,7 +37,8 @@ namespace Web.Data.EF
             modelBuilder.ApplyConfiguration(new ProductTranlationConfiguration());
             modelBuilder.ApplyConfiguration(new PromotionConfiguration());
             modelBuilder.ApplyConfiguration(new SizeConfiguration());
-            modelBuilder.ApplyConfiguration(new TransactionConfiguration());
+            modelBuilder.ApplyConfiguration(new SliderConfiguration());
+            //modelBuilder.ApplyConfiguration(new TransactionConfiguration());
             modelBuilder.ApplyConfiguration(new Product_Color_SizeConfiguration());
 
             modelBuilder.ApplyConfiguration(new RoleConfiguration());
@@ -76,7 +77,8 @@ namespace Web.Data.EF
 
         public DbSet<Promotion> Promotions { get; set; }
         public DbSet<Size> Sizes { get; set; }
+        public DbSet<Slider> Sliders { get; set; }
 
-        public DbSet<Transaction> Transactions { get; set; }
+        //public DbSet<Transaction> Transactions { get; set; }
     }
 }

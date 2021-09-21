@@ -9,8 +9,8 @@
 
 <div class="span9">
     <ul class="breadcrumb">
-        <li><a href="index.html">Home</a> <span class="divider">/</span></li>
-        <li class="active">Products Name</li>
+        <li><a href="/@culture/Home/Index">Home</a> <span class="divider">/</span></li>
+        <li class="active">Products</li>
     </ul>
     <h3> Products Name <small class="pull-right"> 40 products are available </small></h3>
     <hr class="soft" />
@@ -77,7 +77,7 @@
                     var url = $"/{culture}/{_loc["productURL"]}/{item.Id}";
                     <li class="span3">
                         <div class="thumbnail">
-                            <a href="product_details.html"><img src="@item.Image" alt="" /></a>
+                            <a href="@url"><img src="@item.Image" alt="" /></a>
                             <div class="caption">
                                 <h5>@item.Name</h5>
                                 <p>

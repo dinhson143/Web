@@ -121,6 +121,10 @@
     <value>Thêm vào</value>
     <comment>/Home/Index</comment>
   </data>
+  <data name="Add to cart" xml:space="preserve">
+    <value>Thêm vào giỏ hàng</value>
+    <comment>/Product/Detail</comment>
+  </data>
   <data name="categoryURL" xml:space="preserve">
     <value>loai-san-pham</value>
     <comment>/Home/Index</comment>

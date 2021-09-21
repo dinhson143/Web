@@ -23,5 +23,7 @@ namespace Web.ServiceApi_Admin_User.Service.Products
         public Task<List<ProductViewModel>> GetLatestProducts(string languageId, int soluong);
 
         public Task<PageResult<ProductViewModel>> GetAllByCategoryId(GetPublicProductPagingRequest request);
+
+        public Task<ResultApi<List<ProductImagesModel>>> GetListImage(int productId);
     }
 }

@@ -121,6 +121,10 @@
     <value>Add to</value>
     <comment>/Home/Index</comment>
   </data>
+  <data name="Add to cart" xml:space="preserve">
+    <value>Add to cart</value>
+    <comment>/Product/Detail</comment>
+  </data>
   <data name="categoryURL" xml:space="preserve">
     <value>categories</value>
     <comment>/Home/Index</comment>

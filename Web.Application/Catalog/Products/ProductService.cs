@@ -273,9 +273,19 @@ namespace Web.Application.Catalog.Products
             throw new NotImplementedException();
         }
 
-        public Task GetListImage()
+        public async Task<ResultApi<List<ProductImagesModel>>> GetListImage(int productId)
         {
-            throw new NotImplementedException();
+            var product = await _context.Products.FindAsync(productId);
+            var images = from pi in _context.ProductImages
+                         where pi.ProductId == productId
+                         select pi;
+            var data = await images.Select(x => new ProductImagesModel()
+            {
+                URL = x.ImagePath,
+                isDefault = x.IsDefault,
+                Caption = x.Caption
+            }).ToListAsync();
+            return new ResultSuccessApi<List<ProductImagesModel>>(data);
         }
 
         public async Task<ResultApi<ProductViewModel>> GetProductById(int productId, string languageId)
@@ -303,7 +313,7 @@ namespace Web.Application.Catalog.Products
                 SeoTitle = productTranslation.SeoTitle,
                 SeoAlias = productTranslation.SeoAlias,
                 LanguageId = productTranslation.LanguageId,
-                Categories = categories
+                Categories = categories,
             };
             return new ResultSuccessApi<ProductViewModel>(data);
         }

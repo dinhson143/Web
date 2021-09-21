@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using Web.Models;
 using Web.ServiceApi_Admin_User.Service.Products;
 using Web.ViewModels.Catalog.Products;
 
@@ -41,9 +42,17 @@ namespace Web.Controllers
             return View(result);
         }
 
-        public IActionResult ProductDetail(int id)
+        public async Task<IActionResult> ProductDetail(int id)
         {
-            return View();
+            var culture = CultureInfo.CurrentCulture.Name;
+            var result = await _productApi.GetProductById(id, "", culture);
+            var images = await _productApi.GetListImage(id);
+            var product = new ProductDetailViewModel()
+            {
+                ProductInfo = result.ResultObj,
+                Images = images.ResultObj
+            };
+            return View(product);
         }
     }
 }

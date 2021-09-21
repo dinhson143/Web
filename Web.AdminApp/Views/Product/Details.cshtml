@@ -48,8 +48,8 @@
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Details)
         </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Details)
+        <dd class="col-sm-10">           
+           @Html.Raw(@Model.Details)
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.SeoDescription)

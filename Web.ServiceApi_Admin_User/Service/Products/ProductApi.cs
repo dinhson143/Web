@@ -105,7 +105,7 @@ namespace Web.ServiceApi_Admin_User.Service.Products
         {
             var client = _httpClientFactory.CreateClient();
             client.BaseAddress = new Uri(_configuration["BaseAddress"]);
-            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", BearerToken);
+            //client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", BearerToken);
 
             var response = await client.GetAsync($"/api/Products/product_detail/{productId}/{languageId}");
 
@@ -146,6 +146,17 @@ namespace Web.ServiceApi_Admin_User.Service.Products
             var body = await response.Content.ReadAsStringAsync();
             var data = JsonConvert.DeserializeObject<PageResult<ProductViewModel>>(body);
             return data;
+        }
+
+        public async Task<ResultApi<List<ProductImagesModel>>> GetListImage(int productId)
+        {
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+            var response = await client.GetAsync($"/api/Products/product_images/{productId}");
+
+            var result = await response.Content.ReadAsStringAsync();
+
+            return JsonConvert.DeserializeObject<ResultApi<List<ProductImagesModel>>>(result);
         }
     }
 }

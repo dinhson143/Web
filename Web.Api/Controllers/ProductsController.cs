@@ -27,6 +27,7 @@ namespace Web.Api.Controllers
         }
 
         [HttpGet("{productId}")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetSize_Color(int productId)
         {
             var listProduct = await _manageservice.GetSize_Color(productId);
@@ -34,6 +35,7 @@ namespace Web.Api.Controllers
         }
 
         [HttpGet("product_detail/{productId}/{languageId}")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetProductById(int productId, string languageId)
         {
             var Product = await _manageservice.GetProductById(productId, languageId);
@@ -86,6 +88,14 @@ namespace Web.Api.Controllers
         {
             var result = await _manageservice.GetAllByCategoryId(request);
             return Ok(result);
+        }
+
+        [HttpGet("product_images/{productId}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetImagesProductById(int productId)
+        {
+            var ProductImages = await _manageservice.GetListImage(productId);
+            return Ok(ProductImages);
         }
     }
 }

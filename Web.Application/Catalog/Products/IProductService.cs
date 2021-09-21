@@ -35,7 +35,7 @@ namespace Web.Application.Catalog.Products
 
         public Task GetImageId();
 
-        public Task GetListImage();
+        public Task<ResultApi<List<ProductImagesModel>>> GetListImage(int productId);
 
         public Task<ResultApi<PageResult<ProductViewModel>>> GetAll(GetManageProductPagingRequest request);
 

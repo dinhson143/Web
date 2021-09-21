@@ -9,10 +9,16 @@
     <PackageReference Include="LazZiya.ExpressLocalization" Version="4.0.4" />
     <PackageReference Include="LazZiya.TagHelpers" Version="5.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="5.0.9" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.2" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="wwwroot\themes\less\oregional\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Web.ServiceApi_Admin_User\Web.ServiceApi_Admin_User.csproj" />
+    <ProjectReference Include="..\Web.ViewModels\Web.ViewModels.csproj" />
   </ItemGroup>
 
 </Project>

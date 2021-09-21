@@ -2,13 +2,12 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Web.ViewModels.Catalog.Categories;
 using Web.ViewModels.Catalog.Common;
 
-namespace Web.AdminApp.Service.Categories
+namespace Web.ServiceApi_Admin_User.Service.Categories
 {
     public class CategoryApi : ICategoryApi
     {
@@ -26,9 +25,9 @@ namespace Web.AdminApp.Service.Categories
             var client = _httpClientFactory.CreateClient();
             client.BaseAddress = new Uri(_configuration["BaseAddress"]);
 
-            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", BearerToken);
+            //client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", BearerToken);
 
-            var response = await client.GetAsync("/api/Categories/categories?languageId=" + languageId);
+            var response = await client.GetAsync("/api/Categories/danh-sach?languageId=" + languageId);
             if (response.IsSuccessStatusCode)
             {
                 var body = await response.Content.ReadAsStringAsync();

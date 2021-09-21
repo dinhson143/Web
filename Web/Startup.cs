@@ -1,17 +1,16 @@
 using LazZiya.ExpressLocalization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Threading.Tasks;
 using Web.LocalizationResources;
+using Web.ServiceApi_Admin_User.Service.Categories;
+using Web.ServiceApi_Admin_User.Service.Products;
+using Web.ServiceApi_Admin_User.Service.Sliders;
 
 namespace Web
 {
@@ -27,6 +26,17 @@ namespace Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
+            services.AddHttpClient();
+            // Regiter DI
+            services.AddTransient<ISliderApi, SliderApi>();
+            services.AddTransient<IProductApi, ProductApi>();
+            services.AddTransient<ICategoryApi, CategoryApi>();
             // * mutiple language
             //1. add culture
             var cultures = new[]
@@ -88,9 +98,40 @@ namespace Web
             app.UseRouting();
 
             app.UseAuthorization();
+            app.UseSession();
             app.UseRequestLocalization();
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapControllerRoute(
+                    name: "Product Category En",
+                    pattern: "{culture}/categories/{id}", new
+                    {
+                        controller = "Product",
+                        action = "ProductforCategory"
+                    });
+                endpoints.MapControllerRoute(
+                    name: "Product Category Vn",
+                    pattern: "{culture}/loai-san-pham/{id}", new
+                    {
+                        controller = "Product",
+                        action = "ProductforCategory"
+                    });
+
+                endpoints.MapControllerRoute(
+                    name: "Product Detail En",
+                    pattern: "{culture}/products/{id}", new
+                    {
+                        controller = "Product",
+                        action = "ProductDetail"
+                    });
+                endpoints.MapControllerRoute(
+                    name: "Product Detail Vn",
+                    pattern: "{culture}/san-pham/{id}", new
+                    {
+                        controller = "Product",
+                        action = "ProductDetail"
+                    });
+
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{culture=vi}/{controller=Home}/{action=Index}/{id?}");

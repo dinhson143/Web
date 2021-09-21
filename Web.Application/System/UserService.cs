@@ -73,7 +73,7 @@ namespace Web.Application.System
             // 4 Select Page Result
             var pageResult = new PageResult<UserViewModel>()
             {
-                TotalRecord = totalRow,
+                TotalRecords = totalRow,
                 Items = data
             };
 

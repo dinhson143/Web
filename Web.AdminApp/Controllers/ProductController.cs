@@ -2,13 +2,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Web.AdminApp.Service.Categories;
-using Web.AdminApp.Service.Products;
-using Web.Data.Entities;
+using Web.ServiceApi_Admin_User.Service.Categories;
+using Web.ServiceApi_Admin_User.Service.Products;
 using Web.Utilities.Contants;
 using Web.ViewModels.Catalog.Categories;
 using Web.ViewModels.Catalog.Common;

@@ -11,7 +11,7 @@ using Web.ViewModels.Catalog.Categories;
 using Web.ViewModels.Catalog.Common;
 using Web.ViewModels.Catalog.Products;
 
-namespace Web.AdminApp.Service.Products
+namespace Web.ServiceApi_Admin_User.Service.Products
 {
     public class ProductApi : IProductApi
     {
@@ -112,6 +112,40 @@ namespace Web.AdminApp.Service.Products
             var result = await response.Content.ReadAsStringAsync();
 
             return JsonConvert.DeserializeObject<ResultApi<ProductViewModel>>(result);
+        }
+
+        public async Task<List<ProductViewModel>> GetFeaturedProducts(string languageId, int soluong)
+        {
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+            var response = await client.GetAsync($"/api/Products/featured-product/{languageId}/{soluong}");
+            var result = await response.Content.ReadAsStringAsync();
+
+            return JsonConvert.DeserializeObject<List<ProductViewModel>>(result);
+        }
+
+        public async Task<List<ProductViewModel>> GetLatestProducts(string languageId, int soluong)
+        {
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+            var response = await client.GetAsync($"/api/Products/latest-product/{languageId}/{soluong}");
+            var result = await response.Content.ReadAsStringAsync();
+
+            return JsonConvert.DeserializeObject<List<ProductViewModel>>(result);
+        }
+
+        public async Task<PageResult<ProductViewModel>> GetAllByCategoryId(GetPublicProductPagingRequest request)
+        {
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+
+            var response = await client.GetAsync($"/api/Products/products-category?pageIndex=" +
+                $"{request.pageIndex}&pageSize={request.pageSize}&" +
+                $"&LanguageId={request.LanguageId}" +
+                $"&categoryId={request.CategoryId}");
+            var body = await response.Content.ReadAsStringAsync();
+            var data = JsonConvert.DeserializeObject<PageResult<ProductViewModel>>(body);
+            return data;
         }
     }
 }

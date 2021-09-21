@@ -6,7 +6,7 @@ using Web.ViewModels.Catalog.Categories;
 using Web.ViewModels.Catalog.Common;
 using Web.ViewModels.Catalog.Products;
 
-namespace Web.AdminApp.Service.Products
+namespace Web.ServiceApi_Admin_User.Service.Products
 {
     public interface IProductApi
     {
@@ -17,5 +17,11 @@ namespace Web.AdminApp.Service.Products
         public Task<ResultApi<string>> AssignCategory(int productId, CategoryAssignRequest request);
 
         public Task<ResultApi<ProductViewModel>> GetProductById(int productId, string BearerToken, string languageId);
+
+        public Task<List<ProductViewModel>> GetFeaturedProducts(string languageId, int soluong);
+
+        public Task<List<ProductViewModel>> GetLatestProducts(string languageId, int soluong);
+
+        public Task<PageResult<ProductViewModel>> GetAllByCategoryId(GetPublicProductPagingRequest request);
     }
 }

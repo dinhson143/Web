@@ -43,8 +43,12 @@ namespace Web.Application.Catalog.Products
 
         public Task<List<Size_Color>> GetSize_Color(int productId);
 
-        Task<PageResult<ProductViewModel>> GetAllByCategoryId(string languageId, GetPublicProductPagingRequest request);
+        Task<PageResult<ProductViewModel>> GetAllByCategoryId(GetPublicProductPagingRequest request);
 
         public Task<ResultApi<bool>> AssignCategory(int productId, CategoryAssignRequest request);
+
+        public Task<List<ProductViewModel>> GetFeaturedProducts(string languageId, int soluong);
+
+        public Task<List<ProductViewModel>> GetLatestProducts(string languageId, int soluong);
     }
 }

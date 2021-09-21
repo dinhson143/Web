@@ -6,9 +6,13 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Web.Models;
+using Web.ServiceApi_Admin_User.Service.Products;
+using Web.ServiceApi_Admin_User.Service.Sliders;
+using Web.Utilities.Contants;
 
 namespace Web.Controllers
 {
@@ -16,16 +20,32 @@ namespace Web.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly ISharedCultureLocalizer _loc;
+        private readonly ISliderApi _sliderApi;
+        private readonly IProductApi _productApi;
 
-        public HomeController(ILogger<HomeController> logger, ISharedCultureLocalizer loc)
+        public HomeController(ILogger<HomeController> logger, ISharedCultureLocalizer loc, ISliderApi sliderApi, IProductApi productApi)
         {
             _logger = logger;
             _loc = loc;
+            _sliderApi = sliderApi;
+            _productApi = productApi;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            //var token = HttpContext.Session.GetString(SystemContants.AppSettings.Token);
+            var culture = CultureInfo.CurrentCulture.Name;
+            var msg = _loc.GetLocalizedString("Vietnamese");
+            var Sliders = await _sliderApi.GetAll();
+            var FeaturedProducts = await _productApi.GetFeaturedProducts(culture, 4);
+            var LatestProducts = await _productApi.GetLatestProducts(culture, 6);
+            var data = new HomeModel()
+            {
+                sliders = Sliders.ResultObj,
+                featured_products = FeaturedProducts,
+                latest_products = LatestProducts
+            };
+            return View(data);
         }
 
         public IActionResult Privacy()

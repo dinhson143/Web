@@ -47,6 +47,8 @@ namespace Web.ViewModels.Catalog.Products
         public bool? IsFeatured { get; set; }
         public string LanguageId { set; get; }
 
+        public string Image { set; get; }
+
         public List<string> Categories { set; get; }
     }
 }

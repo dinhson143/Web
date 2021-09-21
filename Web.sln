@@ -15,7 +15,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Web.ViewModels", "Web.ViewM
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Web.Api", "Web.Api\Web.Api.csproj", "{CE0F0977-91A2-4CBC-8D46-1943523EC7FA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web.AdminApp", "Web.AdminApp\Web.AdminApp.csproj", "{ADBD6E15-4228-40DE-8E8C-5C56A3789827}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Web.AdminApp", "Web.AdminApp\Web.AdminApp.csproj", "{ADBD6E15-4228-40DE-8E8C-5C56A3789827}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web.ServiceApi_Admin_User", "Web.ServiceApi_Admin_User\Web.ServiceApi_Admin_User.csproj", "{AE97D9F6-83B8-4A8B-AAD3-33AD085D4C97}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{ADBD6E15-4228-40DE-8E8C-5C56A3789827}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ADBD6E15-4228-40DE-8E8C-5C56A3789827}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ADBD6E15-4228-40DE-8E8C-5C56A3789827}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AE97D9F6-83B8-4A8B-AAD3-33AD085D4C97}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE97D9F6-83B8-4A8B-AAD3-33AD085D4C97}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AE97D9F6-83B8-4A8B-AAD3-33AD085D4C97}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AE97D9F6-83B8-4A8B-AAD3-33AD085D4C97}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

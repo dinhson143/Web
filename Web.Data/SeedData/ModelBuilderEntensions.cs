@@ -70,6 +70,7 @@ namespace Web.Data.SeedData
                      OriginalPrice = 100000,
                      Price = 200000,
                      ViewCount = 0,
+                     Status = Status.Active
                  }
             );
 

@@ -10,5 +10,6 @@ namespace Web.ViewModels.Catalog.Products
     public class GetPublicProductPagingRequest : PagingRequest
     {
         public int? CategoryId { get; set; }
+        public string LanguageId { get; set; }
     }
 }

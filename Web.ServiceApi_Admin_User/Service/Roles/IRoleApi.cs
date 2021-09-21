@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Web.ViewModels.Catalog.Common;
 using Web.ViewModels.Catalog.Roles;
 
-namespace Web.AdminApp.Service.Roles
+namespace Web.ServiceApi_Admin_User.Service.Roles
 {
     public interface IRoleApi
     {

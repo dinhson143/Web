@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Web.ViewModels.Catalog.Categories;
 using Web.ViewModels.Catalog.Common;
 
-namespace Web.AdminApp.Service.Categories
+namespace Web.ServiceApi_Admin_User.Service.Categories
 {
     public interface ICategoryApi
     {

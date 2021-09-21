@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Web.Application.Catalog.Categories;
+using Web.Application.Catalog.Sliders;
 using Web.ViewModels.Catalog.Categories;
 
 namespace Web.Api.Controllers
@@ -20,7 +22,8 @@ namespace Web.Api.Controllers
             _categoryService = categoryService;
         }
 
-        [HttpGet("categories")]
+        [HttpGet("danh-sach")]
+        [AllowAnonymous]
         public async Task<List<CategoryViewModel>> GetAll(string languageID)
         {
             var result = await _categoryService.GetAll(languageID);

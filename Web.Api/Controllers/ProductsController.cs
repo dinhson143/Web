@@ -63,5 +63,29 @@ namespace Web.Api.Controllers
             }
             return Ok(result.ResultObj);
         }
+
+        [HttpGet("featured-product/{languagedID}/{soluong}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetFeaturedProducts(string languagedID, int soluong)
+        {
+            var result = await _manageservice.GetFeaturedProducts(languagedID, soluong);
+            return Ok(result);
+        }
+
+        [HttpGet("latest-product/{languagedID}/{soluong}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetLatestProducts(string languagedID, int soluong)
+        {
+            var result = await _manageservice.GetLatestProducts(languagedID, soluong);
+            return Ok(result);
+        }
+
+        [HttpGet("products-category")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetProductsByCategoryId([FromQuery] GetPublicProductPagingRequest request)
+        {
+            var result = await _manageservice.GetAllByCategoryId(request);
+            return Ok(result);
+        }
     }
 }

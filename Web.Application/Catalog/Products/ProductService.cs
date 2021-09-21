@@ -2,17 +2,16 @@
 using Firebase.Storage;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Web.Data.EF;
 using Web.Data.Entities;
+using Web.Data.Enums;
 using Web.Utilities.Exceptions;
 using Web.ViewModels.Catalog.Categories;
 using Web.ViewModels.Catalog.Common;
@@ -71,6 +70,7 @@ namespace Web.Application.Catalog.Products
                 //Stock = request.Stock,
                 ViewCount = 0,
                 DateCreated = DateTime.Now,
+                Status = Status.Active,
                 ProductTranslations = new List<ProductTranslation>()
                 {
                     new ProductTranslation()
@@ -213,7 +213,7 @@ namespace Web.Application.Catalog.Products
             }
             var pageResult = new PageResult<ProductViewModel>()
             {
-                TotalRecord = totalRow,
+                TotalRecords = totalRow,
                 Items = data
             };
             return new ResultSuccessApi<PageResult<ProductViewModel>>(pageResult);
@@ -222,12 +222,14 @@ namespace Web.Application.Catalog.Products
         public async Task<PageResult<ProductViewModel>> GetAllPaging(GetManageProductPagingRequest request)
         {
             // 1.Select join
-            var query = from p in _context.Products
-                        join pt in _context.ProductTranslations on p.Id equals pt.ProductId
-                        join pic in _context.ProductInCategories on p.Id equals pic.ProductId
-                        join c in _context.Categories on pic.CategoryId equals c.Id
-                        where pt.LanguageId == request.LanguageId
-                        select new { p, pt, pic };
+            var query = (from p in _context.Products
+                         join pt in _context.ProductTranslations on p.Id equals pt.ProductId
+                         join pic in _context.ProductInCategories on p.Id equals pic.ProductId into ppic
+                         from pic in ppic.DefaultIfEmpty()
+                         join c in _context.Categories on pic.CategoryId equals c.Id into picc
+                         from c in picc.DefaultIfEmpty()
+                         where pt.LanguageId == request.LanguageId
+                         select new { p, pt, pic });
             // 2. Filter
             if (!string.IsNullOrEmpty(request.Keyword))
             {
@@ -259,7 +261,7 @@ namespace Web.Application.Catalog.Products
             // 4 Select Page Result
             var pageResult = new PageResult<ProductViewModel>()
             {
-                TotalRecord = totalRow,
+                TotalRecords = totalRow,
                 Items = data
             };
 
@@ -356,15 +358,19 @@ namespace Web.Application.Catalog.Products
             throw new NotImplementedException();
         }
 
-        public async Task<PageResult<ProductViewModel>> GetAllByCategoryId(string languageId, GetPublicProductPagingRequest request)
+        public async Task<PageResult<ProductViewModel>> GetAllByCategoryId(GetPublicProductPagingRequest request)
         {
             // 1. Select Join
-            var query = from p in _context.Products
-                        join pt in _context.ProductTranslations on p.Id equals pt.ProductId
-                        join pic in _context.ProductInCategories on p.Id equals pic.ProductId
-                        join c in _context.Categories on pic.CategoryId equals c.Id
-                        where pt.LanguageId == languageId
-                        select new { p, pt, pic };
+            var query = (from p in _context.Products
+                         join pt in _context.ProductTranslations on p.Id equals pt.ProductId
+                         join pic in _context.ProductInCategories on p.Id equals pic.ProductId into ppic
+                         from pic in ppic.DefaultIfEmpty()
+                         join pi in _context.ProductImages on p.Id equals pi.ProductId into ppi
+                         from pi in ppi.DefaultIfEmpty()
+                         join c in _context.Categories on pic.CategoryId equals c.Id into picc
+                         from c in picc.DefaultIfEmpty()
+                         where pt.LanguageId == request.LanguageId && p.Status == Status.Active && (pi.IsDefault == true || pi == null)
+                         select new { p, pt, pic, pi });
 
             // 2. Filter
             if (request.CategoryId.Value > 0 && request.CategoryId.HasValue)
@@ -390,11 +396,14 @@ namespace Web.Application.Catalog.Products
                     SeoTitle = x.pt.SeoTitle,
                     SeoAlias = x.pt.SeoAlias,
                     LanguageId = x.pt.LanguageId,
+                    Image = x.pi.ImagePath
                 }).ToListAsync();
             // 4 Select Page Result
             var pageResult = new PageResult<ProductViewModel>()
             {
-                TotalRecord = totalRow,
+                TotalRecords = totalRow,
+                PageIndex = request.pageIndex,
+                PageSize = request.pageSize,
                 Items = data
             };
 
@@ -428,6 +437,98 @@ namespace Web.Application.Catalog.Products
             }
             await _context.SaveChangesAsync();
             return new ResultSuccessApi<bool>();
+        }
+
+        public async Task<List<ProductViewModel>> GetFeaturedProducts(string languageId, int soluong)
+        {
+            // 1.Select join
+            var query = from p in _context.Products
+                        join pt in _context.ProductTranslations on p.Id equals pt.ProductId
+                        join pic in _context.ProductInCategories on p.Id equals pic.ProductId into ppic
+                        from pic in ppic.DefaultIfEmpty()
+                        join pi in _context.ProductImages on p.Id equals pi.ProductId into ppi
+                        from pi in ppi.DefaultIfEmpty()
+                        join c in _context.Categories on pic.CategoryId equals c.Id into picc
+                        from c in picc.DefaultIfEmpty()
+                        where pt.LanguageId == languageId && p.Status == Status.Active && p.IsFeatured == true && (pi.IsDefault == true || pi == null)
+                        select new { p, pt, pic, pi };
+
+            // 3 .Paging
+            int totalRow = await query.CountAsync();
+            var data = await query.OrderByDescending(x => x.p.DateCreated).Take(soluong).Select(x => new ProductViewModel()
+            {
+                Id = x.p.Id,
+                Price = x.p.Price,
+                OriginalPrice = x.p.OriginalPrice,
+                ViewCount = x.p.ViewCount,
+                DateCreated = x.p.DateCreated,
+                Name = x.pt.Name,
+                Description = x.pt.Description,
+                Details = x.pt.Details,
+                SeoDescription = x.pt.SeoDescription,
+                SeoTitle = x.pt.SeoTitle,
+                SeoAlias = x.pt.SeoAlias,
+                LanguageId = x.pt.LanguageId,
+                Image = x.pi.ImagePath
+            }).ToListAsync();
+
+            for (var i = 0; i < data.Count; i++)
+            {
+                for (var j = i + 1; j < data.Count; j++)
+                {
+                    if (data[i].Id == data[j].Id)
+                    {
+                        data.Remove(data[j]);
+                    }
+                }
+            }
+            return new List<ProductViewModel>(data);
+        }
+
+        public async Task<List<ProductViewModel>> GetLatestProducts(string languageId, int soluong)
+        {
+            // 1.Select join
+            var query = from p in _context.Products
+                        join pt in _context.ProductTranslations on p.Id equals pt.ProductId
+                        join pic in _context.ProductInCategories on p.Id equals pic.ProductId into ppic
+                        from pic in ppic.DefaultIfEmpty()
+                        join pi in _context.ProductImages on p.Id equals pi.ProductId into ppi
+                        from pi in ppi.DefaultIfEmpty()
+                        join c in _context.Categories on pic.CategoryId equals c.Id into picc
+                        from c in picc.DefaultIfEmpty()
+                        where pt.LanguageId == languageId && (pi.IsDefault == true || pi == null)
+                        select new { p, pt, pic, pi };
+
+            // 3 .Paging
+            int totalRow = await query.CountAsync();
+            var data = await query.OrderByDescending(x => x.p.DateCreated).Take(soluong).Select(x => new ProductViewModel()
+            {
+                Id = x.p.Id,
+                Price = x.p.Price,
+                OriginalPrice = x.p.OriginalPrice,
+                ViewCount = x.p.ViewCount,
+                DateCreated = x.p.DateCreated,
+                Name = x.pt.Name,
+                Description = x.pt.Description,
+                Details = x.pt.Details,
+                SeoDescription = x.pt.SeoDescription,
+                SeoTitle = x.pt.SeoTitle,
+                SeoAlias = x.pt.SeoAlias,
+                LanguageId = x.pt.LanguageId,
+                Image = x.pi.ImagePath
+            }).ToListAsync();
+
+            for (var i = 0; i < data.Count; i++)
+            {
+                for (var j = i + 1; j < data.Count; j++)
+                {
+                    if (data[i].Id == data[j].Id)
+                    {
+                        data.Remove(data[j]);
+                    }
+                }
+            }
+            return new List<ProductViewModel>(data);
         }
     }
 }

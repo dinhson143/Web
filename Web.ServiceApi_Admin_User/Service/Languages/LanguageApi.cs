@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Web.ViewModels.Catalog.Common;
 using Web.ViewModels.Catalog.Languages;
 
-namespace Web.AdminApp.Service.Languages
+namespace Web.ServiceApi_Admin_User.Service.Languages
 {
     public class LanguageApi : ILanguageApi
     {

@@ -1,12 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Web.AdminApp.Models;
-using Web.AdminApp.Service.Languages;
+using Web.ServiceApi_Admin_User.Service.Languages;
 using Web.Utilities.Contants;
 
 namespace Web.AdminApp.Controllers.Components

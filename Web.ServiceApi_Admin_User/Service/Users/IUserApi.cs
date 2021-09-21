@@ -6,7 +6,7 @@ using Web.ViewModels.Catalog.Common;
 using Web.ViewModels.Catalog.Users;
 using Web.ViewModels.System.User;
 
-namespace Web.AdminApp.Service.Users
+namespace Web.ServiceApi_Admin_User.Service.Users
 {
     public interface IUserApi
     {

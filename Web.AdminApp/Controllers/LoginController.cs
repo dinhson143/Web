@@ -6,13 +6,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
 using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
-using Web.AdminApp.Service.Users;
+using Web.ServiceApi_Admin_User.Service.Users;
 using Web.Utilities.Contants;
 using Web.ViewModels.System.User;
 

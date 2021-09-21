@@ -1,8 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Web.Data.EF;
 using Web.ViewModels.Catalog.Categories;
@@ -27,7 +25,8 @@ namespace Web.Application.Catalog.Categories
             return await query.Select(x => new CategoryViewModel()
             {
                 Id = x.c.Id,
-                Name = x.ct.Name
+                Name = x.ct.Name,
+                ParentId = x.c.ParentId
             }).ToListAsync();
         }
     }

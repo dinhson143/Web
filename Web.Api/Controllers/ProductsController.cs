@@ -107,5 +107,16 @@ namespace Web.Api.Controllers
             var result = await _manageservice.Update(request);
             return Ok(result);
         }
+
+        [HttpDelete("Delete/{productId}")]
+        public async Task<IActionResult> DeleteProduct(int productId)
+        {
+            if (!ModelState.IsValid)
+            {
+                return null;
+            }
+            var result = await _manageservice.DeleteProduct(productId);
+            return Ok(result);
+        }
     }
 }

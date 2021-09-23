@@ -196,5 +196,16 @@ namespace Web.ServiceApi_Admin_User.Service.Products
             var response = await client.PutAsync("/api/Products/" + request.Id, requestContent);
             return response.IsSuccessStatusCode;
         }
+
+        public async Task<bool> DeleteProduct(int productId, string BearerToken)
+        {
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", BearerToken);
+
+            var response = await client.DeleteAsync($"/api/Products/Delete/{productId}");
+
+            return response.IsSuccessStatusCode;
+        }
     }
 }

@@ -27,5 +27,7 @@ namespace Web.ServiceApi_Admin_User.Service.Products
         public Task<ResultApi<List<ProductImagesModel>>> GetListImage(int productId);
 
         public Task<bool> Update(ProductUpdateRequest request);
+
+        public Task<bool> DeleteProduct(int productId, string BearerToken);
     }
 }

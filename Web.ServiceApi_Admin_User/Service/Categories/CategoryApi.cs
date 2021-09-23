@@ -36,5 +36,22 @@ namespace Web.ServiceApi_Admin_User.Service.Categories
             }
             return new ResultErrorApi<List<CategoryViewModel>>("Không thể lấy danh sách Categories");
         }
+
+        public async Task<CategoryViewModel> GetCategoryById(int id, string languageId)
+        {
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+
+            //client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", BearerToken);
+
+            var response = await client.GetAsync($"/api/Categories/category_detail/{id}/{languageId}");
+            if (response.IsSuccessStatusCode)
+            {
+                var body = await response.Content.ReadAsStringAsync();
+                var list = JsonConvert.DeserializeObject<CategoryViewModel>(body);
+                return list;
+            }
+            return null;
+        }
     }
 }

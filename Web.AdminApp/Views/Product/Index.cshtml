@@ -43,6 +43,9 @@
                     <thead>
                         <tr>
                             <th>
+                                @Html.DisplayNameFor(model => model.Id)
+                            </th>
+                            <th>
                                 @Html.DisplayNameFor(model => model.Name)
                             </th>
                             <th>
@@ -81,16 +84,41 @@
                                 <td>
                                     @Html.DisplayFor(modelItem => item.Name)
                                 </td>
-                                <th>
+                                <td>
                                     @Html.DisplayFor(modelItem => item.Price)
-                                </th>
-                                <th>
+                                </td>
+                                <td>
                                     @Html.DisplayFor(modelItem => item.OriginalPrice)
-                                </th>
+                                </td>
                                 <td>
                                     @Html.ActionLink("Sửa", "Edit", new { id = item.Id }) |
                                     @Html.ActionLink("Chi tiết", "Details", new { id = item.Id }) |
-                                    @Html.ActionLink("Xóa", "Delete", new { id = item.Id })
+                                    @Html.ActionLink(" Xóa", "Delete", new { id = item.Id }) |
+                                    @*<a class="" href="#" data-toggle="modal" data-target="#logoutModal2">
+                                        Xóa |
+                                    </a>
+                                    <div class="modal fade" id="logoutModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                                         aria-hidden="true">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLabel">Xác nhận xóa? @item.Id</h5>
+                                                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">×</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">Select "Delete" product.</div>
+                                                <div class="modal-footer">
+                                                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                                                    <form data-toggle="modal" data-target="#logoutModal2">
+                                                        <button class="btn btn-danger" style="color:#fff">
+                                                            @Html.ActionLink(" Xác nhận", "Delete", new { id = item.Id })
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>*@
                                     @Html.ActionLink("Gán danh mục", "AssignCategory", new { id = item.Id })
                                 </td>
                             </tr>
@@ -101,33 +129,9 @@
         </div>
     </div>
 </div>
-<div class="modal fade" id="logoutModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Xác nhận xóa?</h5>
-                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                </button>
-            </div>
-            <div class="modal-body">Select "Delete" user.</div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                <form method="post" asp-controller="User" asp-action="Delete" data-toggle="modal" data-target="#logoutModal2">
-                    <button type="submit" class="btn btn-danger" style="color:#fff">
-                    </button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
+
 @section Scripts {
     <script>
-        function deleteUser(id) {
-
-        }
-
         setTimeout(function () {
             $(".alert").fadeOut('slow');
         }, 2000);

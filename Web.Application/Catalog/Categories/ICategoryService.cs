@@ -10,5 +10,7 @@ namespace Web.Application.Catalog.Categories
     public interface ICategoryService
     {
         public Task<List<CategoryViewModel>> GetAll(string languageId);
+
+        public Task<CategoryViewModel> GetCategoryById(int id, string languageId);
     }
 }

@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Web.Models;
+using Web.ServiceApi_Admin_User.Service.Categories;
 using Web.ServiceApi_Admin_User.Service.Products;
 using Web.ViewModels.Catalog.Products;
 
@@ -13,10 +14,12 @@ namespace Web.Controllers
     public class ProductController : Controller
     {
         private readonly IProductApi _productApi;
+        private readonly ICategoryApi _categoryApi;
 
-        public ProductController(IProductApi productApi)
+        public ProductController(IProductApi productApi, ICategoryApi categoryApi)
         {
             _productApi = productApi;
+            _categoryApi = categoryApi;
         }
 
         public IActionResult Index()
@@ -38,8 +41,15 @@ namespace Web.Controllers
                 pageIndex = PageIndex,
                 pageSize = 2
             };
+            var category = await _categoryApi.GetCategoryById(id, culture);
+
             var result = await _productApi.GetAllByCategoryId(request);
-            return View(result);
+            var data = new ProductForCategoryViewModel()
+            {
+                Products = result,
+                Categories = category
+            };
+            return View(data);
         }
 
         public async Task<IActionResult> ProductDetail(int id)

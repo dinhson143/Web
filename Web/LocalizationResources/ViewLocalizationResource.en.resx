@@ -145,9 +145,17 @@
     <value>Login</value>
     <comment>Layouts</comment>
   </data>
+  <data name="products are available" xml:space="preserve">
+    <value>products are available</value>
+    <comment>Product/ProductForCategory</comment>
+  </data>
   <data name="productURL" xml:space="preserve">
     <value>prducts</value>
     <comment>/Home/Index</comment>
+  </data>
+  <data name="Sort By" xml:space="preserve">
+    <value>Sort By</value>
+    <comment>Product/ProductForCategory</comment>
   </data>
   <data name="Specials Offer" xml:space="preserve">
     <value>Specials Offer</value>
@@ -160,5 +168,9 @@
   <data name="View" xml:space="preserve">
     <value>View</value>
     <comment>/Home/Index</comment>
+  </data>
+  <data name="View Details" xml:space="preserve">
+    <value>View Details</value>
+    <comment>Product/ProductForCategory</comment>
   </data>
 </root>

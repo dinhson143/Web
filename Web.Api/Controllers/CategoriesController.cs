@@ -29,5 +29,13 @@ namespace Web.Api.Controllers
             var result = await _categoryService.GetAll(languageID);
             return result;
         }
+
+        [HttpGet("category_detail/{categoryId}/{languageId}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetCategoryById(int categoryId, string languageId)
+        {
+            var Category = await _categoryService.GetCategoryById(categoryId, languageId);
+            return Ok(Category);
+        }
     }
 }

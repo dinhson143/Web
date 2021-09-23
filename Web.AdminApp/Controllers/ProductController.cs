@@ -196,5 +196,22 @@ namespace Web.AdminApp.Controllers
             }
             return RedirectToAction("Index", "Product");
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Delete(int Id)
+        {
+            var token = HttpContext.Session.GetString(SystemContants.AppSettings.Token);
+            var response = await _productApi.DeleteProduct(Id, token);
+            if (response == true)
+            {
+                TempData["Message"] = "Xóa product thành công";
+                return RedirectToAction("Index", "Product");
+            }
+            else
+            {
+                TempData["Message"] = "Xóa product thất bại";
+                return RedirectToAction("Index", "Product");
+            }
+        }
     }
 }

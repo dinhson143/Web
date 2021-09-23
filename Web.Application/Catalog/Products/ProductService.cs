@@ -188,11 +188,6 @@ namespace Web.Application.Catalog.Products
             return new ResultErrorApi<string>("Thêm sản phẩm thất bại");
         }
 
-        public Task DeleteProduct()
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<ResultApi<PageResult<ProductViewModel>>> GetAll(GetManageProductPagingRequest request)
         {
             // 1.Select join (Left Join)
@@ -647,6 +642,16 @@ namespace Web.Application.Catalog.Products
                 }
                 product.ProductImages = list;
             }
+
+            return await _context.SaveChangesAsync();
+        }
+
+        public async Task<int> DeleteProduct(int productId)
+        {
+            var product = await _context.Products.FindAsync(productId);
+            if (product == null) throw new WebException($"Cannot find a product: {productId}");
+
+            _context.Products.Remove(product);
 
             return await _context.SaveChangesAsync();
         }

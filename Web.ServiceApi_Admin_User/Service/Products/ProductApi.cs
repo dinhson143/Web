@@ -158,5 +158,43 @@ namespace Web.ServiceApi_Admin_User.Service.Products
 
             return JsonConvert.DeserializeObject<ResultApi<List<ProductImagesModel>>>(result);
         }
+
+        public async Task<bool> Update(ProductUpdateRequest request)
+        {
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", request.BearerToken);
+
+            var requestContent = new MultipartFormDataContent();
+            if (request.ImageURL != null && request.ImageURL.Length > 0)
+            {
+                List<ByteArrayContent> bytes = new List<ByteArrayContent>();
+                for (var i = 0; i < request.ImageURL.Length; i++)
+                {
+                    byte[] data;
+                    using (var br = new BinaryReader(request.ImageURL[i].OpenReadStream()))
+                    {
+                        data = br.ReadBytes((int)request.ImageURL[i].OpenReadStream().Length);
+                    }
+                    ByteArrayContent bytesData = new ByteArrayContent(data);
+                    requestContent.Add(bytesData, "imageURL", request.ImageURL[i].FileName);
+                    bytes.Add(bytesData);
+                }
+            }
+            requestContent.Add(new StringContent(request.Name.ToString()), "name");
+            requestContent.Add(new StringContent(request.Description.ToString()), "description");
+
+            requestContent.Add(new StringContent(request.Details.ToString()), "details");
+            requestContent.Add(new StringContent(request.SeoDescription.ToString()), "seoDescription");
+            requestContent.Add(new StringContent(request.SeoTitle.ToString()), "seoTitle");
+            requestContent.Add(new StringContent(request.SeoAlias.ToString()), "seoAlias");
+            requestContent.Add(new StringContent(request.LanguageId.ToString()), "languageId");
+            requestContent.Add(new StringContent(request.IsFeatured.ToString()), "isFeatured");
+            requestContent.Add(new StringContent(request.BearerToken.ToString()), "bearerToken");
+
+            var response = await client.PutAsync("/api/Products/" + request.Id, requestContent);
+            return response.IsSuccessStatusCode;
+        }
     }
 }

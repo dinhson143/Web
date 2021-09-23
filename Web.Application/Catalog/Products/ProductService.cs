@@ -63,17 +63,13 @@ namespace Web.Application.Catalog.Products
         public async Task<ResultApi<string>> CreateProduct(ProductCreate request)
         {
             List<ProductImage> list = new List<ProductImage>();
-            var product = new Product()
+            var languages = _context.Languages;
+            var tranlations = new List<ProductTranslation>();
+            foreach (var language in languages)
             {
-                Price = request.Price,
-                OriginalPrice = request.OriginalPrice,
-                //Stock = request.Stock,
-                ViewCount = 0,
-                DateCreated = DateTime.Now,
-                Status = Status.Active,
-                ProductTranslations = new List<ProductTranslation>()
+                if (language.Id == request.LanguageId)
                 {
-                    new ProductTranslation()
+                    tranlations.Add(new ProductTranslation()
                     {
                         Name = request.Name,
                         Description = request.Description,
@@ -82,8 +78,27 @@ namespace Web.Application.Catalog.Products
                         SeoAlias = request.SeoAlias,
                         SeoTitle = request.SeoTitle,
                         LanguageId = request.LanguageId
-                    }
+                    });
                 }
+                else
+                {
+                    tranlations.Add(new ProductTranslation()
+                    {
+                        Name = "N/A",
+                        SeoAlias = "N/A",
+                        LanguageId = language.Id
+                    });
+                }
+            }
+            var product = new Product()
+            {
+                Price = request.Price,
+                OriginalPrice = request.OriginalPrice,
+                //Stock = request.Stock,
+                ViewCount = 0,
+                DateCreated = DateTime.Now,
+                Status = Status.Active,
+                ProductTranslations = tranlations
             };
 
             if (request.ImageURL.Length > 0)
@@ -129,16 +144,32 @@ namespace Web.Application.Catalog.Products
                     {
                         var linkImg = upload;
                         dem++;
-                        var x = new ProductImage()
+                        if (dem == 1)
                         {
-                            ImagePath = linkImg,
-                            Caption = request.Name,
-                            DateCreated = DateTime.Now,
-                            FileSize = item.Length,
-                            IsDefault = true,
-                            SortOrder = dem,
-                        };
-                        list.Add(x);
+                            var x = new ProductImage()
+                            {
+                                ImagePath = linkImg,
+                                Caption = request.Name,
+                                DateCreated = DateTime.Now,
+                                FileSize = item.Length,
+                                IsDefault = true,
+                                SortOrder = dem,
+                            };
+                            list.Add(x);
+                        }
+                        else
+                        {
+                            var x = new ProductImage()
+                            {
+                                ImagePath = linkImg,
+                                Caption = request.Name,
+                                DateCreated = DateTime.Now,
+                                FileSize = item.Length,
+                                IsDefault = false,
+                                SortOrder = dem,
+                            };
+                            list.Add(x);
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -314,6 +345,7 @@ namespace Web.Application.Catalog.Products
                 SeoAlias = productTranslation.SeoAlias,
                 LanguageId = productTranslation.LanguageId,
                 Categories = categories,
+                IsFeatured = product.IsFeatured
             };
             return new ResultSuccessApi<ProductViewModel>(data);
         }
@@ -354,11 +386,6 @@ namespace Web.Application.Catalog.Products
         }
 
         public Task UpdatePrice()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task UpdateProduct()
         {
             throw new NotImplementedException();
         }
@@ -539,6 +566,89 @@ namespace Web.Application.Catalog.Products
                 }
             }
             return new List<ProductViewModel>(data);
+        }
+
+        public async Task<int> Update(ProductUpdateRequest request)
+        {
+            var product = await _context.Products.FindAsync(request.Id);
+            var productTranslations = await _context.ProductTranslations.FirstOrDefaultAsync(x => x.ProductId == request.Id
+            && x.LanguageId == request.LanguageId);
+
+            if (product == null || productTranslations == null) throw new WebException($"Cannot find a product with id: {request.Id}");
+
+            productTranslations.Name = request.Name;
+            productTranslations.SeoAlias = request.SeoAlias;
+            productTranslations.SeoDescription = request.SeoDescription;
+            productTranslations.SeoTitle = request.SeoTitle;
+            productTranslations.Description = request.Description;
+            productTranslations.Details = request.Details;
+            product.IsFeatured = request.IsFeatured;
+            //Save image
+            List<ProductImage> list = new List<ProductImage>();
+            if (request.ImageURL != null && request.ImageURL.Length > 0)
+            {
+                var dem = 0;
+                string folderName = "firebaseFiles";
+                string path = Path.Combine(_env.WebRootPath, $"images/{folderName}");
+                // firebase uploading
+                var auth = new FirebaseAuthProvider(new FirebaseConfig(ApiKey));
+                var a = await auth.SignInWithEmailAndPasswordAsync(AuthEmail, AuthPassword);
+                foreach (var item in request.ImageURL)
+                {
+                    FileStream fs = null;
+                    // upload file to firebase
+                    if (Directory.Exists(path))
+                    {
+                        using (fs = new FileStream(Path.Combine(path, item.FileName), FileMode.Create))
+                        {
+                            await item.CopyToAsync(fs);
+                        }
+
+                        fs = new FileStream(Path.Combine(path, item.FileName), FileMode.Open);
+                    }
+                    else
+                    {
+                        Directory.CreateDirectory(path);
+                    }
+
+                    // Cacellation token
+                    var cancellation = new CancellationTokenSource();
+                    var upload = await new FirebaseStorage(
+                            Bucket,
+                            new FirebaseStorageOptions
+                            {
+                                AuthTokenAsyncFactory = () => Task.FromResult(a.FirebaseToken),
+                                ThrowOnCancel = true
+                            }
+                        )
+                        .Child("assets")
+                        .Child($"{item.FileName}.{Path.GetExtension(item.FileName).Substring(1)}")
+                        .PutAsync(fs, cancellation.Token);
+                    try
+                    {
+                        var linkImg = upload;
+                        dem++;
+                        var x = new ProductImage()
+                        {
+                            ImagePath = linkImg,
+                            Caption = request.Name,
+                            DateCreated = DateTime.Now,
+                            FileSize = item.Length,
+                            IsDefault = false,
+                            SortOrder = dem,
+                        };
+                        list.Add(x);
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(ex);
+                        throw;
+                    }
+                }
+                product.ProductImages = list;
+            }
+
+            return await _context.SaveChangesAsync();
         }
     }
 }

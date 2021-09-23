@@ -43,7 +43,7 @@ namespace Web.AdminApp.Controllers
         public IActionResult Language(NavigationViewModel data)
         {
             HttpContext.Session.SetString(SystemContants.AppSettings.DefaultLanguageId, data.CurrentLanguageId);
-            return RedirectToAction("Index");
+            return Redirect(data.ReturnURL);
         }
     }
 }

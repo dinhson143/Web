@@ -82,11 +82,11 @@ namespace Web.AdminApp.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Details(int productID)
+        public async Task<IActionResult> Details(int id)
         {
             var token = HttpContext.Session.GetString(SystemContants.AppSettings.Token);
             var languageId = HttpContext.Session.GetString(SystemContants.AppSettings.DefaultLanguageId);
-            var response = await _productApi.GetProductById(productID, token, languageId);
+            var response = await _productApi.GetProductById(id, token, languageId);
 
             if (response.IsSuccess != false)
             {
@@ -140,6 +140,61 @@ namespace Web.AdminApp.Controllers
                 });
             }
             return CategoryAssignRequest;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
+        {
+            var languageId = HttpContext.Session.GetString(SystemContants.AppSettings.DefaultLanguageId);
+            var token = HttpContext.Session.GetString(SystemContants.AppSettings.Token);
+            var result = await _productApi.GetProductById(id, token, languageId);
+            var product = result.ResultObj;
+            bool kiemtraFeatured;
+            if (product.IsFeatured == null)
+            {
+                kiemtraFeatured = false;
+            }
+            else
+            {
+                kiemtraFeatured = (bool)product.IsFeatured;
+            }
+            var editVm = new ProductUpdateRequest()
+            {
+                Id = product.Id,
+                Description = product.Description,
+                Details = product.Details,
+                Name = product.Name,
+                SeoAlias = product.SeoAlias,
+                SeoDescription = product.SeoDescription,
+                SeoTitle = product.SeoTitle,
+                IsFeatured = kiemtraFeatured
+            };
+            return View(editVm);
+        }
+
+        [HttpPost]
+        [Consumes("multipart/form-data")]
+        [DisableRequestSizeLimit]
+        public async Task<IActionResult> Edit([FromForm] ProductUpdateRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View();
+            }
+            request.BearerToken = HttpContext.Session.GetString(SystemContants.AppSettings.Token);
+            request.LanguageId = HttpContext.Session.GetString(SystemContants.AppSettings.DefaultLanguageId);
+            var result = await _productApi.Update(request);
+            string message = "";
+            if (result == true)
+            {
+                message = "Thêm mới thành công";
+                TempData["Message"] = message;
+            }
+            else
+            {
+                return View(request);
+            }
+            return RedirectToAction("Index", "Product");
         }
     }
 }

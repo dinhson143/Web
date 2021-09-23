@@ -57,6 +57,9 @@
                     <tfoot>
                         <tr>
                             <th>
+                                @Html.DisplayNameFor(model => model.Id)
+                            </th>
+                            <th>
                                 @Html.DisplayNameFor(model => model.Name)
                             </th>
                             <th>
@@ -73,6 +76,9 @@
                         {
                             <tr>
                                 <td>
+                                    @Html.DisplayFor(modelItem => item.Id)
+                                </td>
+                                <td>
                                     @Html.DisplayFor(modelItem => item.Name)
                                 </td>
                                 <th>
@@ -83,7 +89,7 @@
                                 </th>
                                 <td>
                                     @Html.ActionLink("Sửa", "Edit", new { id = item.Id }) |
-                                    @Html.ActionLink("Chi tiết", "Details", new { productID = item.Id }) |
+                                    @Html.ActionLink("Chi tiết", "Details", new { id = item.Id }) |
                                     @Html.ActionLink("Xóa", "Delete", new { id = item.Id })
                                     @Html.ActionLink("Gán danh mục", "AssignCategory", new { id = item.Id })
                                 </td>

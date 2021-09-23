@@ -13,8 +13,6 @@ namespace Web.Application.Catalog.Products
     {
         public Task<ResultApi<string>> CreateProduct(ProductCreate request);
 
-        public Task UpdateProduct();
-
         public Task DeleteProduct();
 
         public Task<ResultApi<ProductViewModel>> GetProductById(int productId, string languageId);
@@ -32,6 +30,8 @@ namespace Web.Application.Catalog.Products
         public Task RemoveImage();
 
         public Task UpdateImage();
+
+        public Task<int> Update(ProductUpdateRequest request);
 
         public Task GetImageId();
 

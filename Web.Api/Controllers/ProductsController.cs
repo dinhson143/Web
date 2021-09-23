@@ -97,5 +97,15 @@ namespace Web.Api.Controllers
             var ProductImages = await _manageservice.GetListImage(productId);
             return Ok(ProductImages);
         }
+
+        [HttpPut("{productId}")]
+        [Consumes("multipart/form-data")]
+        [DisableRequestSizeLimit]
+        public async Task<IActionResult> Update(int productId, [FromForm] ProductUpdateRequest request)
+        {
+            request.Id = productId;
+            var result = await _manageservice.Update(request);
+            return Ok(result);
+        }
     }
 }

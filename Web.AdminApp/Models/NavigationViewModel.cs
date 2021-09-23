@@ -10,5 +10,6 @@ namespace Web.AdminApp.Models
     {
         public List<LanguageViewModel> Languages { get; set; }
         public string CurrentLanguageId { get; set; }
+        public string ReturnURL { get; set; }
     }
 }

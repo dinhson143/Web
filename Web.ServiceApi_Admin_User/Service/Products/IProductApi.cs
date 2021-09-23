@@ -25,5 +25,7 @@ namespace Web.ServiceApi_Admin_User.Service.Products
         public Task<PageResult<ProductViewModel>> GetAllByCategoryId(GetPublicProductPagingRequest request);
 
         public Task<ResultApi<List<ProductImagesModel>>> GetListImage(int productId);
+
+        public Task<bool> Update(ProductUpdateRequest request);
     }
 }

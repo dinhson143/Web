@@ -145,6 +145,10 @@
     <value>Login</value>
     <comment>Layouts</comment>
   </data>
+  <data name="Logout" xml:space="preserve">
+    <value>Logout</value>
+    <comment>/Home/Index</comment>
+  </data>
   <data name="products are available" xml:space="preserve">
     <value>products are available</value>
     <comment>Product/ProductForCategory</comment>

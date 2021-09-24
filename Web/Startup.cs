@@ -1,4 +1,5 @@
 using LazZiya.ExpressLocalization;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Localization;
@@ -10,7 +11,9 @@ using System.Globalization;
 using Web.LocalizationResources;
 using Web.ServiceApi_Admin_User.Service.Categories;
 using Web.ServiceApi_Admin_User.Service.Products;
+using Web.ServiceApi_Admin_User.Service.Roles;
 using Web.ServiceApi_Admin_User.Service.Sliders;
+using Web.ServiceApi_Admin_User.Service.Users;
 
 namespace Web
 {
@@ -32,8 +35,17 @@ namespace Web
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
             });
+            // authenticatiom
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    options.LoginPath = "/Account/Login/";
+                    options.AccessDeniedPath = "/Login/Forbidden/";
+                });
             services.AddHttpClient();
             // Regiter DI
+            services.AddTransient<IUserApi, UserAPi>();
+            services.AddTransient<IRoleApi, RoleApi>();
             services.AddTransient<ISliderApi, SliderApi>();
             services.AddTransient<IProductApi, ProductApi>();
             services.AddTransient<ICategoryApi, CategoryApi>();
@@ -94,7 +106,7 @@ namespace Web
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
+            app.UseAuthentication();
             app.UseRouting();
 
             app.UseAuthorization();

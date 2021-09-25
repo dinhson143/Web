@@ -66,7 +66,8 @@ namespace Web.AdminApp.Controllers
                     FirstName = response.FirstName,
                     LastName = response.LastName,
                     Phonenumber = response.PhoneNumber,
-                    Id = IdUser
+                    Id = IdUser,
+                    Address = response.Address
                 };
                 return View(us);
             }

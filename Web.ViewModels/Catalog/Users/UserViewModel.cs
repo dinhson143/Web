@@ -20,6 +20,9 @@ namespace Web.ViewModels.Catalog.Users
         [Display(Name = "Ngày sinh")]
         public DateTime Dob { get; set; }
 
+        [Display(Name = "Địa chỉ")]
+        public string Address { get; set; }
+
         [Display(Name = "Email")]
         public string Email { get; set; }
 

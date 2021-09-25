@@ -28,7 +28,7 @@ namespace Web.AdminApp
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddHttpClient();
-            services.AddControllersWithViews().AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<LoginRequestValidator>()); ;
+            services.AddControllersWithViews().AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<LoginRequestValidator>());
             services.AddTransient<IUserApi, UserAPi>();
             services.AddTransient<IRoleApi, RoleApi>();
             services.AddTransient<ILanguageApi, LanguageApi>();

@@ -16,6 +16,7 @@ namespace Web.Data.Configurations
             builder.ToTable("Users");
             builder.Property(x => x.FirstName).HasMaxLength(200).IsRequired();
             builder.Property(x => x.LastName).HasMaxLength(200).IsRequired();
+            builder.Property(x => x.Address).HasMaxLength(500).IsRequired();
             builder.Property(x => x.Dob).IsRequired();
         }
     }

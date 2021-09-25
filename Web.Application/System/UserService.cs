@@ -64,6 +64,7 @@ namespace Web.Application.System
                 {
                     Id = x.Id,
                     Dob = x.Dob,
+                    Address = x.Address,
                     Email = x.Email,
                     FirstName = x.FirstName,
                     LastName = x.LastName,
@@ -92,6 +93,7 @@ namespace Web.Application.System
             {
                 Id = user.Id,
                 Dob = user.Dob,
+                Address = user.Address,
                 Email = user.Email,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
@@ -151,6 +153,7 @@ namespace Web.Application.System
             {
                 Email = request.Email,
                 Dob = request.Dob,
+                Address = request.Address,
                 FirstName = request.FirstName,
                 LastName = request.LastName,
                 UserName = request.Username,
@@ -203,7 +206,7 @@ namespace Web.Application.System
             {
                 return new ResultErrorApi<string>("Email đã tồn tại");
             }
-
+            user.Address = request.Address;
             user.Email = request.Email;
             user.FirstName = request.FirstName;
             user.LastName = request.LastName;

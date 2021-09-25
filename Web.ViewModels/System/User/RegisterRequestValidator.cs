@@ -23,7 +23,7 @@ namespace Web.ViewModels.System.User
                .EmailAddress().WithMessage("Value is not Email");
 
             RuleFor(x => x.Phonenumber).NotEmpty().WithMessage("Phonenumber is required");
-
+            RuleFor(x => x.Address).NotEmpty().WithMessage("Address is required");
             RuleFor(x => x.Username).NotEmpty().WithMessage("Username is required");
             RuleFor(x => x.Password).NotEmpty().WithMessage("Password is required")
                                     .MinimumLength(6).WithMessage("Password is at list 6 characters");

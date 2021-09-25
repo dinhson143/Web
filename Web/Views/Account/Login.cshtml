@@ -1,4 +1,5 @@
-﻿@{
+﻿@model Web.ViewModels.System.User.LoginRequest
+@{
     ViewData["Title"] = "Login";
     Layout = "~/Views/Shared/_Layout.cshtml";
     var culture = CultureInfo.CurrentCulture.Name;
@@ -16,16 +17,9 @@
         <div class="span4">
             <div class="well">
                 <h5>CREATE YOUR ACCOUNT</h5><br />
-                Enter your e-mail address to create an account.<br /><br /><br />
                 <form action="register.html">
-                    <div class="control-group">
-                        <label class="control-label" for="inputEmail0">E-mail address</label>
-                        <div class="controls">
-                            <input class="span3" type="text" id="inputEmail0" placeholder="Email">
-                        </div>
-                    </div>
                     <div class="controls">
-                        <button type="submit" class="btn block">Create Your Account</button>
+                        <a href="/@culture/Account/Register" class="btn block">Create Your Account</a>
                     </div>
                 </form>
             </div>
@@ -39,12 +33,14 @@
                         <label class="control-label" for="inputEmail1">Username</label>
                         <div class="controls">
                             <input class="span3" type="text" name="Username" placeholder="Username">
+                            <span asp-validation-for="Username" class="text-error"></span>
                         </div>
                     </div>
                     <div class="control-group">
                         <label class="control-label" for="inputPassword1">Password</label>
                         <div class="controls">
                             <input type="password" class="span3" name="Password" placeholder="Password">
+                            <span asp-validation-for="Password" class="text-error"></span>
                         </div>
                     </div>
                     <div class="control-group">

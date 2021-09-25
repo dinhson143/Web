@@ -199,7 +199,8 @@ namespace Web.Data.SeedData
                 SecurityStamp = string.Empty,
                 FirstName = "Dinh",
                 LastName = "Son",
-                Dob = new DateTime(1999, 03, 14)
+                Dob = new DateTime(1999, 03, 14),
+                Address = "Hcm city"
             }); ;
 
             modelBuilder.Entity<IdentityUserRole<Guid>>().HasData(new IdentityUserRole<Guid>

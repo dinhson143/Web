@@ -1,3 +1,4 @@
+using FluentValidation.AspNetCore;
 using LazZiya.ExpressLocalization;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
@@ -14,6 +15,7 @@ using Web.ServiceApi_Admin_User.Service.Products;
 using Web.ServiceApi_Admin_User.Service.Roles;
 using Web.ServiceApi_Admin_User.Service.Sliders;
 using Web.ServiceApi_Admin_User.Service.Users;
+using Web.ViewModels.System.User;
 
 namespace Web
 {
@@ -58,6 +60,7 @@ namespace Web
             };
             //2. AddExpressLocalization
             services.AddControllersWithViews()
+                    .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<LoginRequestValidator>())
                     .AddExpressLocalization<ExpressLocalizationResource, ViewLocalizationResource>(ops =>
                      {
                          // When using all the culture providers, the localization process will

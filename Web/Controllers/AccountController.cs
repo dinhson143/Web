@@ -40,13 +40,14 @@ namespace Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return View();
+                return View(request);
             }
 
             var token = await _userApi.Login(request);
 
             if (string.IsNullOrEmpty(token))
             {
+                ModelState.AddModelError("", "Login failure");
                 return View();
             }
             var userPricipal = this.ValidateToken(token);
@@ -71,6 +72,56 @@ namespace Web.Controllers
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             HttpContext.Session.Remove("Token");
+            return RedirectToAction("Index", "Home");
+        }
+
+        [HttpGet]
+        public IActionResult Register()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Register(RegisterRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(request);
+            }
+
+            var result = await _userApi.Register(request);
+
+            if (result.IsSuccess == false)
+            {
+                ModelState.AddModelError("", result.Message);
+                return View(request);
+            }
+
+            var token = await _userApi.Login(new LoginRequest()
+            {
+                Password = request.Password,
+                Username = request.Username,
+                Rememberme = true
+            });
+
+            if (string.IsNullOrEmpty(token))
+            {
+                return View();
+            }
+            var userPricipal = this.ValidateToken(token);
+            var authProperties = new AuthenticationProperties
+            {
+                ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10),
+                IsPersistent = false   // tắt đi mở lại vẫn còn cookie login trước đó
+            };
+
+            //HttpContext.Session.SetString(SystemContants.AppSettings.DefaultLanguageId, _config["DefaultLanguageId"]);
+            HttpContext.Session.SetString(SystemContants.AppSettings.Token, token);
+            await HttpContext.SignInAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                userPricipal,
+                authProperties);
+
             return RedirectToAction("Index", "Home");
         }
 

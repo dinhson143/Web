@@ -58,7 +58,7 @@
                         <form class="form-horizontal qtyFrm">
                             <h3>@item.Price</h3>
 
-                            <a href="@url" class="btn btn-large btn-primary"><localize>Add to</localize><i class=" icon-shopping-cart"></i></a>
+                            <a href="@url" data-id="@item.Id" class="btn btn-large btn-add-card btn-primary"><localize>Add to</localize><i class=" icon-shopping-cart"></i></a>
                             <a href="@url" class="btn btn-large"><i class="icon-zoom-in"></i></a>
                         </form>
                     </div>
@@ -84,12 +84,12 @@
                                     <a class="btn" href="@url">
                                         <i class="icon-zoom-in"></i>
                                     </a>
-                                    <a class="btn" href="#">
+                                    <a class="btn btn-add-card" href="#">
                                         <localize>Add to</localize>
                                         <i class="icon-shopping-cart"></i>
                                     </a>
                                     <a class="btn btn-primary" href="#">
-                                        @item.Price.ToString("C",culture)
+                                        @item.Price.ToString("C", culture)
                                     </a>
                                 </h4>
                             </div>

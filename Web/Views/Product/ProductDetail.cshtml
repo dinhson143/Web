@@ -32,13 +32,13 @@
                         @foreach (var image in @Model.Images)
                         {
                             <a href="@image.URL"> <img style="width:29%" src="@image.URL" alt="" /></a>
-                        }                      
+                        }
                     </div>
                     <div class="item">
                         @foreach (var image in @Model.Images)
                         {
                             <a href="@image.URL"> <img style="width:29%" src="@image.URL" alt="" /></a>
-                        }                       
+                        }
                     </div>
                 </div>
                 <!--
@@ -67,7 +67,7 @@
                     <label class="control-label"><span>@Model.ProductInfo.Price</span></label>
                     <div class="controls">
                         <input type="number" class="span1" placeholder="Qty." />
-                        <button type="submit" class="btn btn-large btn-primary pull-right"><localize>Add to cart</localize><i class=" icon-shopping-cart"></i></button>
+                        <button type="submit" data-id="@Model.ProductInfo.Id" class="btn btn-large btn-add-card btn-primary pull-right"><localize>Add to cart</localize><i class=" icon-shopping-cart"></i></button>
                     </div>
                 </div>
             </form>

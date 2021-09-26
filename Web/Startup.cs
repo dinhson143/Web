@@ -33,7 +33,7 @@ namespace Web
         {
             services.AddSession(options =>
             {
-                options.IdleTimeout = TimeSpan.FromMinutes(30);
+                options.IdleTimeout = TimeSpan.FromDays(15);
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
             });

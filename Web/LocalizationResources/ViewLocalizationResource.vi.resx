@@ -129,6 +129,10 @@
     <value>loai-san-pham</value>
     <comment>/Home/Index</comment>
   </data>
+  <data name="Comments" xml:space="preserve">
+    <value>Bình luận</value>
+    <comment>ProductDetail</comment>
+  </data>
   <data name="English" xml:space="preserve">
     <value>Tiếng Anh</value>
     <comment>Layouts</comment>
@@ -136,6 +140,10 @@
   <data name="Featured Products" xml:space="preserve">
     <value>Sản phẩm nổi bật</value>
     <comment>/Home/Index</comment>
+  </data>
+  <data name="Items in your cart" xml:space="preserve">
+    <value>Sản phẩm trong giỏ hàng</value>
+    <comment>Home/Slidebar</comment>
   </data>
   <data name="Latest Products" xml:space="preserve">
     <value>Sản phẩm mới nhất</value>
@@ -149,6 +157,14 @@
     <value>Đăng xuất</value>
     <comment>/Home/Index</comment>
   </data>
+  <data name="Orders" xml:space="preserve">
+    <value>Đơn hàng</value>
+    <comment>Home/Index</comment>
+  </data>
+  <data name="Personal" xml:space="preserve">
+    <value>Cá nhân</value>
+    <comment>Home/Index</comment>
+  </data>
   <data name="products are available" xml:space="preserve">
     <value>Sản phẩm có sẵn</value>
     <comment>Product/ProductForCategory</comment>
@@ -156,6 +172,10 @@
   <data name="productURL" xml:space="preserve">
     <value>san-pham</value>
     <comment>/Home/Index</comment>
+  </data>
+  <data name="Related Products" xml:space="preserve">
+    <value>Sản phẩm liên quan</value>
+    <comment>ProductDetail</comment>
   </data>
   <data name="Sort By" xml:space="preserve">
     <value>Sắp xếp theo</value>
@@ -176,5 +196,9 @@
   <data name="View Details" xml:space="preserve">
     <value>Xem chi tiết</value>
     <comment>Product/ProductForCategory</comment>
+  </data>
+  <data name="You are not logged in" xml:space="preserve">
+    <value>Bạn chưa đăng nhập !</value>
+    <comment>Home/Index</comment>
   </data>
 </root>

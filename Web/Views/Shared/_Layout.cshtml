@@ -9,14 +9,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
-    <!--Less styles -->
-    <!-- Other Less css file //different less files has different color scheam
-     <link rel="stylesheet/less" type="text/css" href="/themes/less/simplex.less">
-     <link rel="stylesheet/less" type="text/css" href="/themes/less/classified.less">
-     <link rel="stylesheet/less" type="text/css" href="/themes/less/amelia.less">  MOVE DOWN TO activate
-     -->
-    <!--<link rel="stylesheet/less" type="text/css" href="/themes/less/bootshop.less">
-    <script src="/themes/js/less.js" type="text/javascript"></script> -->
     <!-- Bootstrap style -->
     <link id="callCss" rel="stylesheet" href="/themes/bootshop/bootstrap.min.css" media="screen" />
     <link href="/themes/css/base.css" rel="stylesheet" media="screen" />
@@ -26,11 +18,12 @@
     <!-- Google-code-prettify -->
     <link href="/themes/js/google-code-prettify/prettify.css" rel="stylesheet" />
     <!-- fav and touch icons -->
-    <link rel="shortcut icon" href="/themes/images/ico/favicon.ico">
+    <link rel="shortcut icon" href="/themes/Logo.png">
     <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/themes/images/ico/apple-touch-icon-144-precomposed.png">
     <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/themes/images/ico/apple-touch-icon-114-precomposed.png">
     <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/themes/images/ico/apple-touch-icon-72-precomposed.png">
     <link rel="apple-touch-icon-precomposed" href="/themes/images/ico/apple-touch-icon-57-precomposed.png">
+
     <style type="text/css" id="enject">
         .dropdown {
             margin: 0 10px;
@@ -58,7 +51,7 @@
                 }
                 else
                 {
-                    <div class="span6">Bạn chưa đăng nhập!<strong> </strong></div>
+                    <div class="span6"><strong><localize>You are not logged in</localize></strong></div>
                 }
                 <div class="span6">
                     <div class="pull-right" style="display:flex">
@@ -67,7 +60,7 @@
                         </language-nav>
                         <a href="/@culture/Cart">
                             <span class="btn btn-mini btn-primary">
-                                <i class="icon-shopping-cart icon-white"></i> [ <span id="lbl_numberItem_layout">0</span> ] Itemes in your cart
+                                <i class="icon-shopping-cart icon-white"></i> [ <span id="lbl_numberItem_layout">0</span> ] <localize>Items in your cart</localize>
                             </span>
                         </a>
                     </div>
@@ -81,23 +74,15 @@
                     <span class="icon-bar"></span>
                 </a>
                 <div class="navbar-inner">
-                    <a class="brand" href="index.html"><img src="/themes/images/logo.png" alt="Bootsshop" /></a>
+                    <a class="brand" href="/@culture/Home/Index"><img style="width:193px;height:47px;border-radius:20px" src="/themes/Logo.png" alt="Bootsshop" /></a>
                     <form class="form-inline navbar-search" method="post" action="products.html">
                         <input id="srchFld" class="srchTxt" type="text" />
-                        <select class="srchTxt">
-                            <option>All</option>
-                            <option>CLOTHES </option>
-                            <option>FOOD AND BEVERAGES </option>
-                            <option>HEALTH & BEAUTY </option>
-                            <option>SPORTS & LEISURE </option>
-                            <option>BOOKS & ENTERTAINMENTS </option>
-                        </select>
                         <button type="submit" id="submitButton" class="btn btn-primary">Go</button>
                     </form>
                     <ul id="topMenu" class="nav pull-right">
                         <li class=""><a asp-route-culture="@culture" localize-content>Specials Offer</a></li>
-                        <li class=""><a asp-route-culture="@culture" localize-content>Delivery</a></li>
-                        <li class=""><a asp-route-culture="@culture" localize-content>Contact</a></li>
+                        <li class=""><a asp-route-culture="@culture" localize-content>Orders</a></li>
+                        <li class=""><a asp-route-culture="@culture" localize-content>Personal</a></li>
                         <li class="">
                             @if (User.Identity.IsAuthenticated)
                             {

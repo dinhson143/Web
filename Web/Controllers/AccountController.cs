@@ -11,6 +11,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Web.ServiceApi_Admin_User.Service.Users;
 using Web.Utilities.Contants;
@@ -63,7 +64,6 @@ namespace Web.Controllers
                 CookieAuthenticationDefaults.AuthenticationScheme,
                 userPricipal,
                 authProperties);
-
             return RedirectToAction("Index", "Home");
         }
 

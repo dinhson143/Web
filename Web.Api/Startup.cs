@@ -12,6 +12,7 @@ using Microsoft.OpenApi.Models;
 using System.Collections.Generic;
 using Web.Application.Catalog.Categories;
 using Web.Application.Catalog.Languages;
+using Web.Application.Catalog.Orders;
 using Web.Application.Catalog.Products;
 using Web.Application.Catalog.Roles;
 using Web.Application.Catalog.Sliders;
@@ -52,6 +53,7 @@ namespace Web.Api
             services.AddTransient<IRoleService, RoleService>();
             services.AddTransient<ILanguageService, LanguageService>();
             services.AddTransient<ISliderService, SliderService>();
+            services.AddTransient<IOrderService, OrderService>();
             // FluentValidator
             //services.AddTransient<IValidator<LoginRequest>, LoginRequestValidator>();
             // swagger

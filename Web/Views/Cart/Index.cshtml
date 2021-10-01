@@ -1,6 +1,7 @@
 ﻿@{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var culture = CultureInfo.CurrentCulture.Name;
 }
 
 @section Scripts{
@@ -10,15 +11,16 @@
         cartController.initialize();
     </script>
 }
+@*<input type="hidden" id="hidCulture" value="@culture" />*@
 <div class="span9">
     <ul class="breadcrumb">
-        <li><a href="index.html">Home</a> <span class="divider">/</span></li>
+        <li><a href="/">Home</a> <span class="divider">/</span></li>
         <li class="active"> SHOPPING CART</li>
     </ul>
-    <h3>  SHOPPING CART [ <small><span id="lbl_numberItem">0</span> Item(s) </small>]<a href="products.html" class="btn btn-large pull-right"><i class="icon-arrow-left"></i> Continue Shopping </a></h3>
+    <h3>  SHOPPING CART [ <small><span id="lbl_numberItem">0</span> Item(s) </small>]<a href="/" class="btn btn-large pull-right"><i class="icon-arrow-left"></i> Continue Shopping </a></h3>
     <hr class="soft" />
 
-    <table class="table table-bordered">
+    <table class="table table-bordered" id="tbl_cart">
         <thead>
             <tr>
                 <th>Product</th>
@@ -38,6 +40,6 @@
         </tfoot>
     </table>
 
-    <a href="products.html" class="btn btn-large"><i class="icon-arrow-left"></i> Continue Shopping </a>
-    <a href="login.html" class="btn btn-large pull-right">Next <i class="icon-arrow-right"></i></a>
+    <a href="/" class="btn btn-large"><i class="icon-arrow-left"></i> Continue Shopping </a>
+    <a href="/@culture/Cart/Checkout" class="btn btn-large pull-right">Next <i class="icon-arrow-right"></i></a>
 </div>

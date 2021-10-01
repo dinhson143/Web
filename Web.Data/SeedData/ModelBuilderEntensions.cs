@@ -218,7 +218,7 @@ namespace Web.Data.SeedData
                    Description = "Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.",
                    SortOrder = 1,
                    Url = "#",
-                   Image = "/themes/images/carousel/5.png",
+                   Image = "https://gaubongonline.vn/wp-content/uploads/2021/06/gaubongonline1.jpg",
                    Status = Status.Active
                },
                new Slider()
@@ -228,7 +228,7 @@ namespace Web.Data.SeedData
                    Description = "Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.",
                    SortOrder = 2,
                    Url = "#",
-                   Image = "/themes/images/carousel/5.png",
+                   Image = "https://gaubongonline.vn/wp-content/uploads/2021/06/gaubongonline.jpg",
                    Status = Status.Active
                },
                new Slider()
@@ -238,17 +238,7 @@ namespace Web.Data.SeedData
                    Description = "Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.",
                    SortOrder = 3,
                    Url = "#",
-                   Image = "/themes/images/carousel/5.png",
-                   Status = Status.Active
-               },
-               new Slider()
-               {
-                   Id = 4,
-                   Name = "slider 1",
-                   Description = "Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.",
-                   SortOrder = 4,
-                   Url = "#",
-                   Image = "/themes/images/carousel/5.png",
+                   Image = "https://gaubongonline.vn/wp-content/uploads/2021/05/web-gaubongonline.vn_.jpg",
                    Status = Status.Active
                }
            );

@@ -123,6 +123,8 @@ namespace Web.Application.System
                 new Claim(ClaimTypes.Email,user.Email),
                 new Claim(ClaimTypes.GivenName,user.FirstName),
                 new Claim(ClaimTypes.Name,user.UserName),
+                new Claim(ClaimTypes.MobilePhone,user.PhoneNumber),
+                new Claim(ClaimTypes.StreetAddress,user.Address),
                 new Claim(ClaimTypes.Role,string.Join(";",roles))
             };
 

@@ -10,9 +10,8 @@
             url: "/" + culture + '/Cart/GetListItem',
             dataType: 'json',
             success: function (res) {
-                $("#lbl_numberItem_layout").text(res.length);               
+                $("#lbl_numberItem_layout").text(res.length);
                 $("#lbl_numberItem_sidebar").text(res.length);
-                $("#total_sidebar").text(res.length);
             },
             error: function (err) {
                 console.log(err);
@@ -31,6 +30,8 @@
                 dataType: 'json',
                 success: function (res) {
                     $("#lbl_numberItem_layout").text(res.length);
+                    $("#lbl_numberItem_sidebar").text(res.length);
+                    /*$("#total_sidebar").text(numberWithCommas(total));*/
                 },
                 error: function (err) {
                     console.log(err);

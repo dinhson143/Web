@@ -18,7 +18,7 @@ namespace Web.ViewModels.Catalog.Products
             RuleFor(x => x.Details).NotEmpty().WithMessage("Details is required")
                 .MaximumLength(500).WithMessage("Details at max 200 charaters");
 
-            RuleFor(x => x.SeoDescription).NotEmpty().WithMessage("Email is required");
+            RuleFor(x => x.SeoDescription).NotEmpty().WithMessage("SeoDescription is required");
 
             RuleFor(x => x.SeoTitle).NotEmpty().WithMessage("SeoTitle is required");
             RuleFor(x => x.SeoAlias).NotEmpty().WithMessage("SeoAlias is required");

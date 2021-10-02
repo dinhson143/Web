@@ -27,7 +27,6 @@ namespace Web.Data.SeedData
                      Id = 1,
                      IsShowonHome = true,
                      ParentId = null,
-                     SortOrder = 1,
                      Status = Status.Active,
                  },
                  new Category()
@@ -35,7 +34,6 @@ namespace Web.Data.SeedData
                      Id = 2,
                      IsShowonHome = true,
                      ParentId = null,
-                     SortOrder = 2,
                      Status = Status.Active,
                  },
                  // cây danh mục cate
@@ -44,7 +42,6 @@ namespace Web.Data.SeedData
                      Id = 3,
                      IsShowonHome = true,
                      ParentId = 1,
-                     SortOrder = 1,
                      Status = Status.Active,
                  }
             );

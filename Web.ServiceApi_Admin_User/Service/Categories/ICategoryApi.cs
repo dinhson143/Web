@@ -10,5 +10,15 @@ namespace Web.ServiceApi_Admin_User.Service.Categories
         public Task<ResultApi<List<CategoryViewModel>>> GetAll(string languageId, string BearerToken);
 
         public Task<CategoryViewModel> GetCategoryById(int id, string languageId);
+
+        public Task<ResultApi<List<CategoryViewModel>>> GetAllCategory_parent(string languageId, string BearerToken);
+
+        public Task<ResultApi<List<CategoryViewModel>>> GetAllCategory_child(int parentId, string languageId, string BearerToken);
+
+        public Task<ResultApi<string>> CreateCategory(CategoryCreate request, string BearerToken);
+
+        public Task<bool> Update(CategoryUpdateRequest request, string BearerToken);
+
+        public Task<bool> Delete(int categoryId, string BearerToken);
     }
 }

@@ -37,5 +37,43 @@ namespace Web.Api.Controllers
             var Category = await _categoryService.GetCategoryById(categoryId, languageId);
             return Ok(Category);
         }
+
+        [HttpGet("category/{languageId}")]
+        //[AllowAnonymous]
+        public async Task<IActionResult> GetAllCategory_parent(string languageId)
+        {
+            var Category = await _categoryService.GetAllCategory_parent(languageId);
+            return Ok(Category);
+        }
+
+        [HttpGet("category_child/{languageId}/{parentId}")]
+        //[AllowAnonymous]
+        public async Task<IActionResult> GetAllCategory_child(int parentId, string languageId)
+        {
+            var Category = await _categoryService.GetAllCategory_child(parentId, languageId);
+            return Ok(Category);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] CategoryCreate request)
+        {
+            var result = await _categoryService.CreateCategory(request);
+            return Ok(result);
+        }
+
+        [HttpPut("{categoryId}")]
+        public async Task<IActionResult> Update(int categoryId, [FromBody] CategoryUpdateRequest request)
+        {
+            request.Id = categoryId;
+            var result = await _categoryService.UpdateCategory(request);
+            return Ok(result);
+        }
+
+        [HttpDelete("Delete/{categoryId}")]
+        public async Task<IActionResult> Delete(int categoryId)
+        {
+            var result = await _categoryService.Delete(categoryId);
+            return Ok(result);
+        }
     }
 }

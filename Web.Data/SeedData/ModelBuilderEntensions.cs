@@ -64,8 +64,6 @@ namespace Web.Data.SeedData
                  {
                      Id = 1,
                      DateCreated = DateTime.Now,
-                     OriginalPrice = 100000,
-                     Price = 200000,
                      ViewCount = 0,
                      Status = Status.Active
                  }
@@ -133,41 +131,41 @@ namespace Web.Data.SeedData
                 }
             );
             // color
-            modelBuilder.Entity<Color>().HasData(
-                new Color()
-                {
-                    Id = 1,
-                    Name = "Violet",
-                    Mamau = "#EE82EE"
-                },
-                new Color()
-                {
-                    Id = 2,
-                    Name = "Red",
-                    Mamau = "#FF0000"
-                },
-                new Color()
-                {
-                    Id = 3,
-                    Name = "80cm",
-                    Mamau = "#50c7c7"
-                },
-                new Color()
-                {
-                    Id = 4,
-                    Name = "Orange",
-                    Mamau = "#FFA500"
-                },
-                new Color()
-                {
-                    Id = 5,
-                    Name = "Chocolate",
-                    Mamau = "#D2691E"
-                }
-            );
+            //modelBuilder.Entity<Color>().HasData(
+            //    new Color()
+            //    {
+            //        Id = 1,
+            //        Name = "Violet",
+            //        Mamau = "#EE82EE"
+            //    },
+            //    new Color()
+            //    {
+            //        Id = 2,
+            //        Name = "Red",
+            //        Mamau = "#FF0000"
+            //    },
+            //    new Color()
+            //    {
+            //        Id = 3,
+            //        Name = "80cm",
+            //        Mamau = "#50c7c7"
+            //    },
+            //    new Color()
+            //    {
+            //        Id = 4,
+            //        Name = "Orange",
+            //        Mamau = "#FFA500"
+            //    },
+            //    new Color()
+            //    {
+            //        Id = 5,
+            //        Name = "Chocolate",
+            //        Mamau = "#D2691E"
+            //    }
+            //);
             // PCS
-            modelBuilder.Entity<Product_Color_Size>().HasData(
-               new Product_Color_Size() { ProductId = 1, ColorId = 1, SizeId = 1, Stock = 0 }
+            modelBuilder.Entity<Product_Size>().HasData(
+               new Product_Size() { ProductId = 1, SizeId = 1, Stock = 0 }
            );
             // User
 
@@ -213,8 +211,8 @@ namespace Web.Data.SeedData
                    Id = 1,
                    Name = "slider 1",
                    Description = "Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.",
-                   SortOrder = 1,
                    Url = "#",
+                   DateCreated = DateTime.Now,
                    Image = "https://gaubongonline.vn/wp-content/uploads/2021/06/gaubongonline1.jpg",
                    Status = Status.Active
                },
@@ -223,8 +221,8 @@ namespace Web.Data.SeedData
                    Id = 2,
                    Name = "slider 1",
                    Description = "Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.",
-                   SortOrder = 2,
                    Url = "#",
+                   DateCreated = DateTime.Now,
                    Image = "https://gaubongonline.vn/wp-content/uploads/2021/06/gaubongonline.jpg",
                    Status = Status.Active
                },
@@ -233,8 +231,8 @@ namespace Web.Data.SeedData
                    Id = 3,
                    Name = "slider 1",
                    Description = "Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.",
-                   SortOrder = 3,
                    Url = "#",
+                   DateCreated = DateTime.Now,
                    Image = "https://gaubongonline.vn/wp-content/uploads/2021/05/web-gaubongonline.vn_.jpg",
                    Status = Status.Active
                }

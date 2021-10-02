@@ -11,6 +11,6 @@ namespace Web.Data.Entities
         public int Id { get; set; }
         public string Name { get; set; }
 
-        public List<Product_Color_Size> PCS { get; set; }
+        public List<Product_Size> PCS { get; set; }
     }
 }

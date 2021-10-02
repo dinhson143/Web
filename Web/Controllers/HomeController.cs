@@ -13,6 +13,7 @@ using Web.Models;
 using Web.ServiceApi_Admin_User.Service.Products;
 using Web.ServiceApi_Admin_User.Service.Sliders;
 using Web.Utilities.Contants;
+using Web.ViewModels.Catalog.Sliders;
 
 namespace Web.Controllers
 {
@@ -37,11 +38,16 @@ namespace Web.Controllers
             var culture = CultureInfo.CurrentCulture.Name;
             var msg = _loc.GetLocalizedString("Vietnamese");
             var Sliders = await _sliderApi.GetAll();
+            var sliders = new List<SliderViewModel>();
+            for (int i = 0; i < 4; i++)
+            {
+                sliders.Add(Sliders.ResultObj[i]);
+            }
             var FeaturedProducts = await _productApi.GetFeaturedProducts(culture, 4);
             var LatestProducts = await _productApi.GetLatestProducts(culture, 6);
             var data = new HomeModel()
             {
-                sliders = Sliders.ResultObj,
+                sliders = sliders,
                 featured_products = FeaturedProducts,
                 latest_products = LatestProducts
             };

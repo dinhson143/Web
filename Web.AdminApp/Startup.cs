@@ -10,6 +10,7 @@ using Web.ServiceApi_Admin_User.Service.Categories;
 using Web.ServiceApi_Admin_User.Service.Languages;
 using Web.ServiceApi_Admin_User.Service.Products;
 using Web.ServiceApi_Admin_User.Service.Roles;
+using Web.ServiceApi_Admin_User.Service.Sliders;
 using Web.ServiceApi_Admin_User.Service.Users;
 using Web.ViewModels.System.User;
 
@@ -34,6 +35,7 @@ namespace Web.AdminApp
             services.AddTransient<ILanguageApi, LanguageApi>();
             services.AddTransient<IProductApi, ProductApi>();
             services.AddTransient<ICategoryApi, CategoryApi>();
+            services.AddTransient<ISliderApi, SliderApi>();
 
             //Session
             services.AddDistributedMemoryCache();

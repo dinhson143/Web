@@ -44,12 +44,11 @@ namespace Web.Application.Catalog.Products
             var product = await _context.Products.FindAsync(productId);
             if (product == null) throw new WebException($"Can not find a Product: {productId}");
 
-            product.PCS = new List<Product_Color_Size>()
+            product.PCS = new List<Product_Size>()
             {
-                new Product_Color_Size()
+                new Product_Size()
                 {
                     Stock = 0,
-                    ColorId = request.ColorId,
                     SizeId = request.SizeId
                 }
             };
@@ -92,8 +91,8 @@ namespace Web.Application.Catalog.Products
             }
             var product = new Product()
             {
-                Price = request.Price,
-                OriginalPrice = request.OriginalPrice,
+                //Price = request.Price,
+                //OriginalPrice = request.OriginalPrice,
                 //Stock = request.Stock,
                 ViewCount = 0,
                 DateCreated = DateTime.Now,
@@ -213,8 +212,8 @@ namespace Web.Application.Catalog.Products
             var data = await query.Select(x => new ProductViewModel()
             {
                 Id = x.p.Id,
-                Price = x.p.Price,
-                OriginalPrice = x.p.OriginalPrice,
+                //Price = x.p.Price,
+                //OriginalPrice = x.p.OriginalPrice,
                 ViewCount = x.p.ViewCount,
                 DateCreated = x.p.DateCreated,
                 Name = x.pt.Name,
@@ -272,8 +271,8 @@ namespace Web.Application.Catalog.Products
                 .Select(x => new ProductViewModel()
                 {
                     Id = x.p.Id,
-                    Price = x.p.Price,
-                    OriginalPrice = x.p.OriginalPrice,
+                    //Price = x.p.Price,
+                    //OriginalPrice = x.p.OriginalPrice,
                     ViewCount = x.p.ViewCount,
                     DateCreated = x.p.DateCreated,
                     Name = x.pt.Name,
@@ -328,8 +327,8 @@ namespace Web.Application.Catalog.Products
             var data = new ProductViewModel()
             {
                 Id = product.Id,
-                Price = product.Price,
-                OriginalPrice = product.OriginalPrice,
+                //Price = product.Price,
+                //OriginalPrice = product.OriginalPrice,
                 ViewCount = product.ViewCount,
                 DateCreated = product.DateCreated,
                 Name = productTranslation.Name,
@@ -349,19 +348,15 @@ namespace Web.Application.Catalog.Products
         {
             List<Size_Color> list = new List<Size_Color>();
             var query = from p in _context.PCSs
-                        join c in _context.Colors on p.ColorId equals c.Id
                         join s in _context.Sizes on p.SizeId equals s.Id
                         where p.ProductId == productId
-                        select new { p, c, s };
+                        select new { p, s };
 
             foreach (var pcs in query)
             {
                 var x = new Size_Color()
                 {
-                    ColorId = pcs.p.ColorId,
                     SizeId = pcs.p.ProductId,
-                    Mamau = pcs.c.Mamau,
-                    Tenmau = pcs.c.Name,
                     Size = pcs.s.Name,
                     Stock = pcs.p.Stock
                 };
@@ -401,8 +396,10 @@ namespace Web.Application.Catalog.Products
                          from pi in ppi.DefaultIfEmpty()
                          join c in _context.Categories on pic.CategoryId equals c.Id into picc
                          from c in picc.DefaultIfEmpty()
+                         join ps in _context.PCSs on p.Id equals ps.ProductId into pps
+                         from ps in pps.DefaultIfEmpty()
                          where pt.LanguageId == request.LanguageId && p.Status == Status.Active && (pi.IsDefault == true || pi == null)
-                         select new { p, pt, pic, pi });
+                         select new { p, pt, pic, pi, ps });
 
             // 2. Filter
             if (request.CategoryId.Value > 0 && request.CategoryId.HasValue)
@@ -417,8 +414,8 @@ namespace Web.Application.Catalog.Products
                 .Select(x => new ProductViewModel()
                 {
                     Id = x.p.Id,
-                    Price = x.p.Price,
-                    OriginalPrice = x.p.OriginalPrice,
+                    Price = x.ps.Price,
+                    OriginalPrice = x.ps.OriginalPrice,
                     ViewCount = x.p.ViewCount,
                     DateCreated = x.p.DateCreated,
                     Name = x.pt.Name,
@@ -490,8 +487,8 @@ namespace Web.Application.Catalog.Products
             var data = await query.OrderByDescending(x => x.p.DateCreated).Take(soluong).Select(x => new ProductViewModel()
             {
                 Id = x.p.Id,
-                Price = x.p.Price,
-                OriginalPrice = x.p.OriginalPrice,
+                //Price = x.p.Price,
+                //OriginalPrice = x.p.OriginalPrice,
                 ViewCount = x.p.ViewCount,
                 DateCreated = x.p.DateCreated,
                 Name = x.pt.Name,
@@ -536,8 +533,8 @@ namespace Web.Application.Catalog.Products
             var data = await query.OrderByDescending(x => x.p.DateCreated).Take(soluong).Select(x => new ProductViewModel()
             {
                 Id = x.p.Id,
-                Price = x.p.Price,
-                OriginalPrice = x.p.OriginalPrice,
+                //Price = x.p.Price,
+                //OriginalPrice = x.p.OriginalPrice,
                 ViewCount = x.p.ViewCount,
                 DateCreated = x.p.DateCreated,
                 Name = x.pt.Name,

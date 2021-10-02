@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Configuration;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Web.ServiceApi_Admin_User.Service.Categories;
@@ -31,8 +32,16 @@ namespace Web.AdminApp.Controllers
             var languageId = HttpContext.Session.GetString(SystemContants.AppSettings.DefaultLanguageId);
             var token = HttpContext.Session.GetString(SystemContants.AppSettings.Token);
 
-            var categories = await _categoryApi.GetAll(languageId, token);
-            ViewBag.Categories = categories.ResultObj.Select(x => new SelectListItem()
+            var result = await _categoryApi.GetAll(languageId, token);
+            var categories = new List<CategoryViewModel>();
+            foreach (var item in result.ResultObj)
+            {
+                if (item.ParentId != null)
+                {
+                    categories.Add(item);
+                }
+            }
+            ViewBag.Categories = categories.Select(x => new SelectListItem()
             {
                 Text = x.Name,
                 Value = x.Id.ToString(),
@@ -121,16 +130,26 @@ namespace Web.AdminApp.Controllers
         {
             var languageId = HttpContext.Session.GetString(SystemContants.AppSettings.DefaultLanguageId);
             var token = HttpContext.Session.GetString(SystemContants.AppSettings.Token);
-            var categories = await _categoryApi.GetAll(languageId, token);
-            if (categories.IsSuccess == false)
+            var result = await _categoryApi.GetAll(languageId, token);
+
+            if (result.IsSuccess == false)
             {
                 return null;
+            }
+
+            var categories = new List<CategoryViewModel>();
+            foreach (var item in result.ResultObj)
+            {
+                if (item.ParentId != null)
+                {
+                    categories.Add(item);
+                }
             }
             var data = await _productApi.GetProductById(productId, token, languageId);
             var product = data.ResultObj;
 
             var CategoryAssignRequest = new CategoryAssignRequest();
-            foreach (var category in categories.ResultObj)
+            foreach (var category in categories)
             {
                 CategoryAssignRequest.Categories.Add(new SelectItems()
                 {

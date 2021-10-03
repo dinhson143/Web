@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Web.ViewModels.Catalog.Categories;
 using Web.ViewModels.Catalog.Common;
 using Web.ViewModels.Catalog.Products;
+using Web.ViewModels.Catalog.Sizes;
 
 namespace Web.ServiceApi_Admin_User.Service.Products
 {
@@ -206,6 +207,24 @@ namespace Web.ServiceApi_Admin_User.Service.Products
             var response = await client.DeleteAsync($"/api/Products/Delete/{productId}");
 
             return response.IsSuccessStatusCode;
+        }
+
+        public async Task<ResultApi<string>> AssignSize(int productId, SizeAssignRequest request)
+        {
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", request.BearerToken);
+
+            var json = JsonConvert.SerializeObject(request);
+            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await client.PutAsync($"/api/Products/{productId}/sizes", httpContent);
+
+            var result = await response.Content.ReadAsStringAsync();
+            if (!response.IsSuccessStatusCode)
+                return new ResultErrorApi<string>(result);
+
+            return new ResultSuccessApi<string>("");
         }
     }
 }

@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Web.Application.Catalog.Products;
 using Web.ViewModels.Catalog.Categories;
 using Web.ViewModels.Catalog.Products;
+using Web.ViewModels.Catalog.Sizes;
 
 namespace Web.Api.Controllers
 {
@@ -59,6 +60,21 @@ namespace Web.Api.Controllers
                 return BadRequest(ModelState);
             }
             var result = await _manageservice.AssignCategory(productId, request);
+            if (result.IsSuccess == false)
+            {
+                return BadRequest(result.ResultObj);
+            }
+            return Ok(result.ResultObj);
+        }
+
+        [HttpPut("{productId}/sizes")]
+        public async Task<IActionResult> SizeAssign(int productId, [FromBody] SizeAssignRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var result = await _manageservice.AssignSize(productId, request);
             if (result.IsSuccess == false)
             {
                 return BadRequest(result.ResultObj);

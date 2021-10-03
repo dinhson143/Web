@@ -7,10 +7,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Web.ServiceApi_Admin_User.Service.Categories;
 using Web.ServiceApi_Admin_User.Service.Products;
+using Web.ServiceApi_Admin_User.Service.Sizes;
 using Web.Utilities.Contants;
 using Web.ViewModels.Catalog.Categories;
 using Web.ViewModels.Catalog.Common;
 using Web.ViewModels.Catalog.Products;
+using Web.ViewModels.Catalog.Sizes;
 
 namespace Web.AdminApp.Controllers
 {
@@ -19,12 +21,14 @@ namespace Web.AdminApp.Controllers
         private readonly IProductApi _productApi;
         private readonly IConfiguration _config;
         private readonly ICategoryApi _categoryApi;
+        private readonly ISizeApi _sizeApi;
 
-        public ProductController(IProductApi productApi, IConfiguration config, ICategoryApi categoryApi)
+        public ProductController(IProductApi productApi, IConfiguration config, ICategoryApi categoryApi, ISizeApi sizeApi)
         {
             _productApi = productApi;
             _config = config;
             _categoryApi = categoryApi;
+            _sizeApi = sizeApi;
         }
 
         public async Task<IActionResult> Index(int? categoryId)
@@ -126,6 +130,28 @@ namespace Web.AdminApp.Controllers
             return View();
         }
 
+        [HttpGet]
+        public async Task<IActionResult> AssignSize(int id)
+        {
+            var response = await GetSizeAssignRequets(id);
+            return View(response);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AssignSize(SizeAssignRequest request)
+        {
+            var session = HttpContext.Session.GetString("Token");
+            request.BearerToken = session;
+            var response = await _productApi.AssignSize(request.Id, request);
+            if (response.IsSuccess)
+            {
+                TempData["Message"] = "Gán size thành công";
+                return RedirectToAction("Index", "Product");
+            }
+            var sizes = await GetSizeAssignRequets(request.Id);
+            return View();
+        }
+
         private async Task<CategoryAssignRequest> GetCategoryAssignRequets(int productId)
         {
             var languageId = HttpContext.Session.GetString(SystemContants.AppSettings.DefaultLanguageId);
@@ -159,6 +185,38 @@ namespace Web.AdminApp.Controllers
                 });
             }
             return CategoryAssignRequest;
+        }
+
+        private async Task<SizeAssignRequest> GetSizeAssignRequets(int productId)
+        {
+            var languageId = HttpContext.Session.GetString(SystemContants.AppSettings.DefaultLanguageId);
+            var token = HttpContext.Session.GetString(SystemContants.AppSettings.Token);
+            var result = await _sizeApi.GetAll(token);
+
+            if (result.IsSuccess == false)
+            {
+                return null;
+            }
+
+            var sizes = new List<SizeViewModel>();
+            foreach (var item in result.ResultObj)
+            {
+                sizes.Add(item);
+            }
+            var data = await _productApi.GetProductById(productId, token, languageId);
+            var product = data.ResultObj;
+
+            var SizeAssignRequest = new SizeAssignRequest();
+            foreach (var size in sizes)
+            {
+                SizeAssignRequest.Sizes.Add(new SelectItems()
+                {
+                    Id = size.Id.ToString(),
+                    Name = size.Name,
+                    Selected = product.Sizes.Contains(size.Name)
+                });
+            }
+            return SizeAssignRequest;
         }
 
         [HttpGet]

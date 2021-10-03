@@ -16,6 +16,7 @@ using Web.Utilities.Exceptions;
 using Web.ViewModels.Catalog.Categories;
 using Web.ViewModels.Catalog.Common;
 using Web.ViewModels.Catalog.Products;
+using Web.ViewModels.Catalog.Sizes;
 
 namespace Web.Application.Catalog.Products
 {
@@ -324,6 +325,11 @@ namespace Web.Application.Catalog.Products
                                     join pc in _context.ProductInCategories on c.Id equals pc.CategoryId
                                     where pc.ProductId == productId && ct.LanguageId == languageId
                                     select ct.Name).ToListAsync();
+
+            var sizes = await (from s in _context.Sizes
+                               join ps in _context.PCSs on s.Id equals ps.SizeId
+                               where ps.ProductId == productId
+                               select s.Name).ToListAsync();
             var data = new ProductViewModel()
             {
                 Id = product.Id,
@@ -339,6 +345,7 @@ namespace Web.Application.Catalog.Products
                 SeoAlias = productTranslation.SeoAlias,
                 LanguageId = productTranslation.LanguageId,
                 Categories = categories,
+                Sizes = sizes,
                 IsFeatured = product.IsFeatured
             };
             return new ResultSuccessApi<ProductViewModel>(data);
@@ -651,6 +658,35 @@ namespace Web.Application.Catalog.Products
             _context.Products.Remove(product);
 
             return await _context.SaveChangesAsync();
+        }
+
+        public async Task<ResultApi<bool>> AssignSize(int productId, SizeAssignRequest request)
+        {
+            var product = await _context.Products.FindAsync(productId);
+            if (product == null)
+            {
+                return new ResultErrorApi<bool>($"Sản phẩm với id {productId} không tồn tại");
+            }
+            foreach (var size in request.Sizes)
+            {
+                var pcs = await _context.PCSs
+                    .FirstOrDefaultAsync(x => x.SizeId == int.Parse(size.Id)
+                    && x.ProductId == productId);
+                if (pcs != null && size.Selected == false)
+                {
+                    _context.PCSs.Remove(pcs);
+                }
+                else if (pcs == null && size.Selected)
+                {
+                    await _context.PCSs.AddAsync(new Product_Size()
+                    {
+                        SizeId = int.Parse(size.Id),
+                        ProductId = productId
+                    });
+                }
+            }
+            await _context.SaveChangesAsync();
+            return new ResultSuccessApi<bool>();
         }
     }
 }

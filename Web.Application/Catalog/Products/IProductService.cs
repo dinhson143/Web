@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Web.ViewModels.Catalog.Categories;
 using Web.ViewModels.Catalog.Common;
 using Web.ViewModels.Catalog.Products;
+using Web.ViewModels.Catalog.Sizes;
 
 namespace Web.Application.Catalog.Products
 {
@@ -46,6 +47,8 @@ namespace Web.Application.Catalog.Products
         Task<PageResult<ProductViewModel>> GetAllByCategoryId(GetPublicProductPagingRequest request);
 
         public Task<ResultApi<bool>> AssignCategory(int productId, CategoryAssignRequest request);
+
+        public Task<ResultApi<bool>> AssignSize(int productId, SizeAssignRequest request);
 
         public Task<List<ProductViewModel>> GetFeaturedProducts(string languageId, int soluong);
 

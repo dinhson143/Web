@@ -107,27 +107,32 @@ namespace Web.Data.SeedData
                 new Size()
                 {
                     Id = 1,
-                    Name = "50cm"
+                    Name = "50cm",
+                    Status = Status.Active
                 },
                 new Size()
                 {
                     Id = 2,
-                    Name = "60cm"
+                    Name = "60cm",
+                    Status = Status.Active
                 },
                 new Size()
                 {
                     Id = 3,
-                    Name = "80cm"
+                    Name = "80cm",
+                    Status = Status.Active
                 },
                 new Size()
                 {
                     Id = 4,
-                    Name = "1m1"
+                    Name = "1m1",
+                    Status = Status.Active
                 },
                 new Size()
                 {
                     Id = 5,
-                    Name = "1m4"
+                    Name = "1m4",
+                    Status = Status.Active
                 }
             );
             // color

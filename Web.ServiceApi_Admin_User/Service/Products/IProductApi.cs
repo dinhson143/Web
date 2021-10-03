@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Web.ViewModels.Catalog.Categories;
 using Web.ViewModels.Catalog.Common;
 using Web.ViewModels.Catalog.Products;
+using Web.ViewModels.Catalog.Sizes;
 
 namespace Web.ServiceApi_Admin_User.Service.Products
 {
@@ -15,6 +16,8 @@ namespace Web.ServiceApi_Admin_User.Service.Products
         public Task<ResultApi<string>> CreateProduct(ProductCreate request);
 
         public Task<ResultApi<string>> AssignCategory(int productId, CategoryAssignRequest request);
+
+        public Task<ResultApi<string>> AssignSize(int productId, SizeAssignRequest request);
 
         public Task<ResultApi<ProductViewModel>> GetProductById(int productId, string BearerToken, string languageId);
 

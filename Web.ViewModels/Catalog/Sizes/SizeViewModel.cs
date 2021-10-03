@@ -3,15 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Web.Data.Enums;
 
-namespace Web.Data.Entities
+namespace Web.ViewModels.Catalog.Sizes
 {
-    public class Size
+    public class SizeViewModel
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public Status Status { get; set; }
-        public List<Product_Size> PCS { get; set; }
     }
 }

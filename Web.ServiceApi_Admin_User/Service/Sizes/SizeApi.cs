@@ -22,6 +22,34 @@ namespace Web.ServiceApi_Admin_User.Service.Sizes
             _configuration = configuration;
         }
 
+        public async Task<ResultApi<string>> CreateSize(SizeViewModel request, string BearerToken)
+        {
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", BearerToken);
+
+            var json = JsonConvert.SerializeObject(request);
+            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await client.PostAsync("/api/Sizes", httpContent);
+            var result = await response.Content.ReadAsStringAsync();
+            if (!response.IsSuccessStatusCode)
+                return new ResultErrorApi<string>(result);
+
+            return new ResultSuccessApi<string>(result);
+        }
+
+        public async Task<bool> Delete(int sizeId, string BearerToken)
+        {
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", BearerToken);
+            var response = await client.DeleteAsync($"/api/Sizes/Delete/{sizeId}");
+            return response.IsSuccessStatusCode;
+        }
+
         public async Task<ResultApi<List<SizeViewModel>>> GetAll(string BearerToken)
         {
             var client = _httpClientFactory.CreateClient();
@@ -37,6 +65,11 @@ namespace Web.ServiceApi_Admin_User.Service.Sizes
                 return new ResultSuccessApi<List<SizeViewModel>>(list);
             }
             return new ResultErrorApi<List<SizeViewModel>>("Không thể lấy danh sách Sizes");
+        }
+
+        public Task<SizeViewModel> GetSizeById(int id, string BearerToken)
+        {
+            throw new NotImplementedException();
         }
     }
 }

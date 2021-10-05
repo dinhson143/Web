@@ -51,5 +51,6 @@ namespace Web.ViewModels.Catalog.Products
 
         public List<string> Categories { set; get; }
         public List<string> Sizes { set; get; }
+        public List<ProductImagesModel> Images { set; get; }
     }
 }

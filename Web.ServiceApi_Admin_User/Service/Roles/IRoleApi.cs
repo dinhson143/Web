@@ -10,5 +10,9 @@ namespace Web.ServiceApi_Admin_User.Service.Roles
     public interface IRoleApi
     {
         public Task<ResultApi<List<RoleViewModel>>> GetAll(string BearerToken);
+
+        public Task<ResultApi<string>> CreateRole(RoleViewModel request, string BearerToken);
+
+        public Task<bool> Delete(Guid roleId, string BearerToken);
     }
 }

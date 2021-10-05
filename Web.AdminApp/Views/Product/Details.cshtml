@@ -48,8 +48,8 @@
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Details)
         </dt>
-        <dd class="col-sm-10">           
-           @Html.Raw(@Model.Details)
+        <dd class="col-sm-10">
+            @Html.Raw(@Model.Details)
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.SeoDescription)
@@ -63,21 +63,18 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.SeoTitle)
         </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.SeoAlias)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.SeoAlias)
+        <dd class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Images)
         </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.LanguageId)
+        <dt class="col-sm-10" style="overflow-x:scroll">
+            @foreach (var item in Model.Images)
+            {
+                <img style="margin:0 2px;" src="@item.URL" />
+            }
         </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.LanguageId)
-        </dd>
     </dl>
 </div>
 <div>
-    @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
     <a asp-action="Index">Back to List</a>
 </div>

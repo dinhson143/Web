@@ -100,7 +100,9 @@ namespace Web.AdminApp.Controllers
             var token = HttpContext.Session.GetString(SystemContants.AppSettings.Token);
             var languageId = HttpContext.Session.GetString(SystemContants.AppSettings.DefaultLanguageId);
             var response = await _productApi.GetProductById(id, token, languageId);
+            var images = await _productApi.GetListImage(id);
 
+            response.ResultObj.Images = images.ResultObj;
             if (response.IsSuccess != false)
             {
                 return View(response.ResultObj);

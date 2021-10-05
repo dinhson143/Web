@@ -184,6 +184,7 @@ namespace Web.Data.SeedData
                 Name = "admin",
                 NormalizedName = "admin",
                 Description = "Adminstrator Role ",
+                Status = Status.Active
             });
 
             var hasher = new PasswordHasher<User>();
@@ -200,7 +201,8 @@ namespace Web.Data.SeedData
                 FirstName = "Dinh",
                 LastName = "Son",
                 Dob = new DateTime(1999, 03, 14),
-                Address = "Hcm city"
+                Address = "Hcm city",
+                Status = Status.Active
             }); ;
 
             modelBuilder.Entity<IdentityUserRole<Guid>>().HasData(new IdentityUserRole<Guid>

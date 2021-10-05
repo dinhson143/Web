@@ -9,7 +9,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="AssignSize" >
+        <form asp-action="AssignSize">
             <div style="display:flex;justify-content:space-around;margin:10px 0">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="form-group">
@@ -17,8 +17,6 @@
                 </div>
                 @for (var i = 0; i < Model.Sizes.Count; i++)
                 {
-                    @*<label class="control-label">@Model.Sizes[i].Name</label>
-            <input asp-for="Sizes[i].Selected" type="checkbox" />*@
 
                     <div class="pretty p-default">
                         <input asp-for="Sizes[i].Selected" type="checkbox" />
@@ -31,7 +29,7 @@
 
                 }
             </div>
-            
+
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>

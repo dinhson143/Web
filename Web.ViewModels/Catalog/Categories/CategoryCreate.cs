@@ -9,7 +9,6 @@ namespace Web.ViewModels.Catalog.Categories
 {
     public class CategoryCreate
     {
-        [Display(Name = "Tên")]
         public string Name { get; set; }
 
         public string SeoDescription { get; set; }

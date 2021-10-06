@@ -127,7 +127,7 @@ namespace Web.AdminApp.Controllers
             string message = "";
             if (result == true)
             {
-                message = "Xóathành công";
+                message = "Xóa thành công";
                 TempData["Message"] = message;
             }
             else

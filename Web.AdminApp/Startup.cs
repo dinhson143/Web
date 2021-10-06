@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
 using Web.ServiceApi_Admin_User.Service.Categories;
+using Web.ServiceApi_Admin_User.Service.Comments;
 using Web.ServiceApi_Admin_User.Service.Congtys;
 using Web.ServiceApi_Admin_User.Service.Contacts;
 using Web.ServiceApi_Admin_User.Service.Languages;
@@ -44,6 +45,7 @@ namespace Web.AdminApp
             services.AddTransient<IContactApi, ContactApi>();
             services.AddTransient<ICongtyApi, CongtyApi>();
             services.AddTransient<ILoaiPhieuApi, LoaiPhieuApi>();
+            services.AddTransient<ICommentApi, CommentApi>();
 
             //Session
             services.AddDistributedMemoryCache();

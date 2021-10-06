@@ -11,6 +11,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Collections.Generic;
 using Web.Application.Catalog.Categories;
+using Web.Application.Catalog.Congtys;
 using Web.Application.Catalog.Contacts;
 using Web.Application.Catalog.Languages;
 using Web.Application.Catalog.Orders;
@@ -58,6 +59,7 @@ namespace Web.Api
             services.AddTransient<IOrderService, OrderService>();
             services.AddTransient<ISizeService, SizeService>();
             services.AddTransient<IContactService, ContactService>();
+            services.AddTransient<ICongtyService, CongtyService>();
             // FluentValidator
             //services.AddTransient<IValidator<LoginRequest>, LoginRequestValidator>();
             // swagger

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Web.Data.EF;
 
 namespace Web.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211005122837_update-TableCongty")]
+    partial class updateTableCongty
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -432,9 +434,6 @@ namespace Web.Data.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.ToTable("Languages");
@@ -444,15 +443,13 @@ namespace Web.Data.Migrations
                         {
                             Id = "vi",
                             IsDefault = true,
-                            Name = "Tiếng Việt",
-                            Status = 1
+                            Name = "Tiếng Việt"
                         },
                         new
                         {
                             Id = "en",
                             IsDefault = false,
-                            Name = "English",
-                            Status = 1
+                            Name = "English"
                         });
                 });
 
@@ -640,7 +637,7 @@ namespace Web.Data.Migrations
                         new
                         {
                             Id = 1,
-                            DateCreated = new DateTime(2021, 10, 5, 21, 17, 12, 346, DateTimeKind.Local).AddTicks(1845),
+                            DateCreated = new DateTime(2021, 10, 5, 19, 28, 36, 614, DateTimeKind.Local).AddTicks(9759),
                             Status = 1,
                             ViewCount = 0
                         });
@@ -894,7 +891,7 @@ namespace Web.Data.Migrations
                         new
                         {
                             Id = new Guid("0d5b7850-46c1-4c80-99c4-d94fc38a3ea7"),
-                            ConcurrencyStamp = "8f2cc8fe-47e5-4227-94ac-5ad96afc639c",
+                            ConcurrencyStamp = "8f632df9-48b3-4800-97bb-2e4c0b4c9ce6",
                             Description = "Adminstrator Role ",
                             Name = "admin",
                             NormalizedName = "admin",
@@ -1003,7 +1000,7 @@ namespace Web.Data.Migrations
                         new
                         {
                             Id = 1,
-                            DateCreated = new DateTime(2021, 10, 5, 21, 17, 12, 366, DateTimeKind.Local).AddTicks(8165),
+                            DateCreated = new DateTime(2021, 10, 5, 19, 28, 36, 647, DateTimeKind.Local).AddTicks(2258),
                             Description = "Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.",
                             Image = "https://gaubongonline.vn/wp-content/uploads/2021/06/gaubongonline1.jpg",
                             Name = "slider 1",
@@ -1013,7 +1010,7 @@ namespace Web.Data.Migrations
                         new
                         {
                             Id = 2,
-                            DateCreated = new DateTime(2021, 10, 5, 21, 17, 12, 366, DateTimeKind.Local).AddTicks(9554),
+                            DateCreated = new DateTime(2021, 10, 5, 19, 28, 36, 647, DateTimeKind.Local).AddTicks(3993),
                             Description = "Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.",
                             Image = "https://gaubongonline.vn/wp-content/uploads/2021/06/gaubongonline.jpg",
                             Name = "slider 1",
@@ -1023,7 +1020,7 @@ namespace Web.Data.Migrations
                         new
                         {
                             Id = 3,
-                            DateCreated = new DateTime(2021, 10, 5, 21, 17, 12, 366, DateTimeKind.Local).AddTicks(9561),
+                            DateCreated = new DateTime(2021, 10, 5, 19, 28, 36, 647, DateTimeKind.Local).AddTicks(4003),
                             Description = "Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.",
                             Image = "https://gaubongonline.vn/wp-content/uploads/2021/05/web-gaubongonline.vn_.jpg",
                             Name = "slider 1",
@@ -1111,7 +1108,7 @@ namespace Web.Data.Migrations
                             Id = new Guid("b38060f2-8b1c-47ae-80aa-2cf1b518b812"),
                             AccessFailedCount = 0,
                             Address = "Hcm city",
-                            ConcurrencyStamp = "c671c0ea-db3d-49a3-9b19-ad425788c76c",
+                            ConcurrencyStamp = "a9e56f95-48cb-4333-942a-aed68efefe4d",
                             Dob = new DateTime(1999, 3, 14, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "dinhson14399@gmail.com",
                             EmailConfirmed = true,
@@ -1120,7 +1117,7 @@ namespace Web.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "dinhson14399@gmail.com",
                             NormalizedUserName = "dinhson",
-                            PasswordHash = "AQAAAAEAACcQAAAAEAlOh+FAfbKAgM+K/YbiiT1Lj0wATsSOr3kEFCMlpGY0MkZubtrfTi80d6KJcUg/Ag==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEEE2x6fVC6kzbNWmVEHCcnmQ/OXLV5Z3pSIN4XTi24hs1daP0ZfiRM/KtWgmLrUiEA==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
                             Status = 1,

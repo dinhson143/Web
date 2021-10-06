@@ -31,7 +31,7 @@ namespace Web.Api.Controllers
 
         [HttpGet("danh-sach")]
         [AllowAnonymous]
-        public async Task<List<ContactViewModel>> GetAll(string languageID)
+        public async Task<List<ContactViewModel>> GetAll()
         {
             var result = await _contactService.GetAll();
             return result;
@@ -54,7 +54,7 @@ namespace Web.Api.Controllers
 
         [HttpGet("contact_detail/{contactId}")]
         [AllowAnonymous]
-        public async Task<IActionResult> GetCategoryById(int contactId)
+        public async Task<IActionResult> GetContactById(int contactId)
         {
             var Category = await _contactService.GetContactById(contactId);
             return Ok(Category);

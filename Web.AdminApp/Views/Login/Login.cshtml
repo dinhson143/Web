@@ -61,6 +61,10 @@
                                                    placeholder="Password">
                                             <span asp-validation-for="Password" class="text-danger"></span>
                                         </div>
+                                        @if (TempData["Message"] != null)
+                                        {
+                                            <span class="text-danger">@TempData["Message"]</span>
+                                        }
                                         <div class="form-group">
                                             <div class="custom-control custom-checkbox small">
                                                 <input id="customCheck" type="checkbox" class="custom-control-input" asp-for="Rememberme">

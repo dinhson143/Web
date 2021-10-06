@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Web.Data.Enums;
 
-namespace Web.Data.Entities
+namespace Web.ViewModels.Catalog.Congtys
 {
-    public class CongTy
+    public class CongtyViewModel
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -15,7 +15,5 @@ namespace Web.Data.Entities
         public string Diachi { get; set; }
         public string Sdt { get; set; }
         public Status Status { get; set; }
-
-        public List<PhieuNhap_Xuat> PhieuNXs { get; set; }
     }
 }

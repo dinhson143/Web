@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
 using Web.ServiceApi_Admin_User.Service.Categories;
+using Web.ServiceApi_Admin_User.Service.Congtys;
 using Web.ServiceApi_Admin_User.Service.Contacts;
 using Web.ServiceApi_Admin_User.Service.Languages;
 using Web.ServiceApi_Admin_User.Service.Products;
@@ -40,6 +41,7 @@ namespace Web.AdminApp
             services.AddTransient<ISliderApi, SliderApi>();
             services.AddTransient<ISizeApi, SizeApi>();
             services.AddTransient<IContactApi, ContactApi>();
+            services.AddTransient<ICongtyApi, CongtyApi>();
 
             //Session
             services.AddDistributedMemoryCache();

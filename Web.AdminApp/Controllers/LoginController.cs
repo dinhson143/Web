@@ -51,6 +51,7 @@ namespace Web.AdminApp.Controllers
 
             if (string.IsNullOrEmpty(token))
             {
+                TempData["Message"] = "UserName or Password is incorrect";
                 return View();
             }
             var userPricipal = this.ValidateToken(token);

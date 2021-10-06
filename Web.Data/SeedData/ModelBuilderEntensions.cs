@@ -16,8 +16,8 @@ namespace Web.Data.SeedData
         {
             //Language
             modelBuilder.Entity<Language>().HasData(
-               new Language() { Id = "vi", Name = "Tiếng Việt", IsDefault = true },
-               new Language() { Id = "en", Name = "English", IsDefault = false }
+               new Language() { Id = "vi", Name = "Tiếng Việt", IsDefault = true, Status = Status.Active },
+               new Language() { Id = "en", Name = "English", IsDefault = false, Status = Status.Active }
            );
 
             // Category

@@ -10,6 +10,7 @@ using Web.ServiceApi_Admin_User.Service.Categories;
 using Web.ServiceApi_Admin_User.Service.Congtys;
 using Web.ServiceApi_Admin_User.Service.Contacts;
 using Web.ServiceApi_Admin_User.Service.Languages;
+using Web.ServiceApi_Admin_User.Service.LoaiPhieus;
 using Web.ServiceApi_Admin_User.Service.Products;
 using Web.ServiceApi_Admin_User.Service.Roles;
 using Web.ServiceApi_Admin_User.Service.Sizes;
@@ -42,6 +43,7 @@ namespace Web.AdminApp
             services.AddTransient<ISizeApi, SizeApi>();
             services.AddTransient<IContactApi, ContactApi>();
             services.AddTransient<ICongtyApi, CongtyApi>();
+            services.AddTransient<ILoaiPhieuApi, LoaiPhieuApi>();
 
             //Session
             services.AddDistributedMemoryCache();

@@ -17,6 +17,7 @@ using Web.Application.Catalog.Contacts;
 using Web.Application.Catalog.Languages;
 using Web.Application.Catalog.LoaiPhieus;
 using Web.Application.Catalog.Orders;
+using Web.Application.Catalog.PhieuNhap;
 using Web.Application.Catalog.Products;
 using Web.Application.Catalog.Roles;
 using Web.Application.Catalog.Sizes;
@@ -64,6 +65,7 @@ namespace Web.Api
             services.AddTransient<ICongtyService, CongtyService>();
             services.AddTransient<ILoaiPhieuService, LoaiPhieuService>();
             services.AddTransient<ICommentService, CommentService>();
+            services.AddTransient<IPhieuNhapService, PhieuNhapService>();
             // FluentValidator
             //services.AddTransient<IValidator<LoginRequest>, LoginRequestValidator>();
             // swagger

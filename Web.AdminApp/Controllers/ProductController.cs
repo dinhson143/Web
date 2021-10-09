@@ -11,6 +11,7 @@ using Web.ServiceApi_Admin_User.Service.Sizes;
 using Web.Utilities.Contants;
 using Web.ViewModels.Catalog.Categories;
 using Web.ViewModels.Catalog.Common;
+using Web.ViewModels.Catalog.PhieuNhaps;
 using Web.ViewModels.Catalog.Products;
 using Web.ViewModels.Catalog.Sizes;
 
@@ -291,6 +292,55 @@ namespace Web.AdminApp.Controllers
                 TempData["Message"] = "Xóa product thất bại";
                 return RedirectToAction("Index", "Product");
             }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> UpdatePrice()
+        {
+            var languageId = HttpContext.Session.GetString(SystemContants.AppSettings.DefaultLanguageId);
+            var token = HttpContext.Session.GetString(SystemContants.AppSettings.Token);
+            var data = new UpdatePriceViewModel();
+
+            var model = new GetManageProductPagingRequest()
+            {
+                LanguageId = languageId,
+                BearerToken = token
+            };
+            var pageResult = await _productApi.GetAll(model);
+
+            foreach (var product in pageResult.Items)
+            {
+                var result = await _productApi.GetProductSize(product.Id, token);
+                var ps = new SizeofProductViewModel()
+                {
+                    Id = product.Id,
+                    Name = product.Name,
+                    listPS = result.ResultObj
+                };
+                data.listProduct.Add(ps);
+            }
+            return View(data);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdatePrice(UpdatePriceViewModel request)
+        {
+            var data = new UpdatePriceRequest()
+            {
+                Price = request.Price,
+                ProductId = request.ProductId,
+                SizeId = request.SizeId,
+            };
+            var token = HttpContext.Session.GetString(SystemContants.AppSettings.Token);
+            var result = await _productApi.UpdatePrice(data, token);
+
+            if (result == false)
+            {
+                ModelState.AddModelError("", "Cập nhật giá thất bại");
+                return View(request);
+            }
+            TempData["Message"] = "Cập nhật giá thành công";
+            return RedirectToAction("Index", "Product");
         }
     }
 }

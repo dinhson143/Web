@@ -12,6 +12,7 @@ using Web.ServiceApi_Admin_User.Service.Congtys;
 using Web.ServiceApi_Admin_User.Service.Contacts;
 using Web.ServiceApi_Admin_User.Service.Languages;
 using Web.ServiceApi_Admin_User.Service.LoaiPhieus;
+using Web.ServiceApi_Admin_User.Service.PhieuNhaps;
 using Web.ServiceApi_Admin_User.Service.Products;
 using Web.ServiceApi_Admin_User.Service.Roles;
 using Web.ServiceApi_Admin_User.Service.Sizes;
@@ -46,6 +47,7 @@ namespace Web.AdminApp
             services.AddTransient<ICongtyApi, CongtyApi>();
             services.AddTransient<ILoaiPhieuApi, LoaiPhieuApi>();
             services.AddTransient<ICommentApi, CommentApi>();
+            services.AddTransient<IPhieuNhapApi, PhieuNhapApi>();
 
             //Session
             services.AddDistributedMemoryCache();

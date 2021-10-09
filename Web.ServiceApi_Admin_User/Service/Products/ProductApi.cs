@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Web.ViewModels.Catalog.Categories;
 using Web.ViewModels.Catalog.Common;
+using Web.ViewModels.Catalog.PhieuNhaps;
 using Web.ViewModels.Catalog.Products;
 using Web.ViewModels.Catalog.Sizes;
 
@@ -225,6 +226,36 @@ namespace Web.ServiceApi_Admin_User.Service.Products
                 return new ResultErrorApi<string>(result);
 
             return new ResultSuccessApi<string>("");
+        }
+
+        public async Task<ResultApi<List<ProductSizeViewModel>>> GetProductSize(int ProductId, string BearerToken)
+        {
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", BearerToken);
+
+            var response = await client.GetAsync($"/api/Products/danh-sach-product-size/{ProductId}");
+            if (response.IsSuccessStatusCode)
+            {
+                var body = await response.Content.ReadAsStringAsync();
+                var list = JsonConvert.DeserializeObject<List<ProductSizeViewModel>>(body);
+                return new ResultSuccessApi<List<ProductSizeViewModel>>(list);
+            }
+            return new ResultErrorApi<List<ProductSizeViewModel>>("Không thể lấy danh sách size của sản phẩm");
+        }
+
+        public async Task<bool> UpdatePrice(UpdatePriceRequest request, string BearerToken)
+        {
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", BearerToken);
+
+            var json = JsonConvert.SerializeObject(request);
+            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+            var response = await client.PutAsync("/api/Products/Update-price", httpContent);
+            return response.IsSuccessStatusCode;
         }
     }
 }

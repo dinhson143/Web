@@ -13,7 +13,6 @@ namespace Web.Data.Entities
         public decimal Price { get; set; }
         public decimal OriginalPrice { get; set; }
 
-        //public int ColorId { get; set; }
         public int Stock { get; set; }
 
         public Product Product { get; set; }

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Web.ViewModels.Catalog.Categories;
 using Web.ViewModels.Catalog.Common;
+using Web.ViewModels.Catalog.PhieuNhaps;
 using Web.ViewModels.Catalog.Products;
 using Web.ViewModels.Catalog.Sizes;
 
@@ -18,7 +19,7 @@ namespace Web.Application.Catalog.Products
 
         public Task<ResultApi<ProductViewModel>> GetProductById(int productId, string languageId);
 
-        public Task UpdatePrice();
+        public Task<ResultApi<string>> UpdatePrice(UpdatePriceRequest request);
 
         public Task UpdateStock();
 
@@ -26,7 +27,7 @@ namespace Web.Application.Catalog.Products
 
         public Task AddImage();
 
-        public Task AddSize_Color(int productId, Size_Color request);
+        public Task AddSize_Color(int productId, ProductSizeViewModel request);
 
         public Task RemoveImage();
 
@@ -42,7 +43,7 @@ namespace Web.Application.Catalog.Products
 
         public Task<PageResult<ProductViewModel>> GetAllPaging(GetManageProductPagingRequest request);
 
-        public Task<List<Size_Color>> GetSize_Color(int productId);
+        public List<ProductSizeViewModel> GetProductSize(int ProductId);
 
         Task<PageResult<ProductViewModel>> GetAllByCategoryId(GetPublicProductPagingRequest request);
 

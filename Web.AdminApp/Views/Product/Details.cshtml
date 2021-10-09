@@ -8,6 +8,7 @@
 <div>
     <h4>Chi tiết sản phẩm</h4>
     <hr />
+
     <dl class="row">
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Name)
@@ -16,16 +17,21 @@
             @Html.DisplayFor(model => model.Name)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Price)
+            Size
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Price)
+            <select id="sizeDropdown" onchange="return chonsize()" class="dropdownx-select" asp-items="@(new SelectList(Model.listPS,"SizeId","Size",Model.Name))">
+            </select>
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.OriginalPrice)
+            Giá bán
         </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.OriginalPrice)
+        <dd class="col-sm-10" id="giaban">
+        </dd>
+        <dt class="col-sm-2">
+            Giá nhập
+        </dt>
+        <dd class="col-sm-10" id="gianhap">
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.ViewCount)
@@ -78,3 +84,26 @@
     @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
     <a asp-action="Index">Back to List</a>
 </div>
+
+@section Scripts{
+    <script type="text/javascript">
+
+        var listSize = JSON.parse('@Newtonsoft.Json.JsonConvert.SerializeObject(Model.listPS)'.replace(/&quot;/g, "\""));
+
+        console.log(listSize);
+        // setSize sản phẩm đầu tiên
+        $('#gianhap').text(listSize[0].OriginalPrice);
+        $('#giaban').text(listSize[0].Price);
+
+        function chonsize() {
+            var valueSize = $('#sizeDropdown :selected').val();
+                for (let j = 0; j < listSize.length; j++) {
+                    if (valueSize == listSize[j].SizeId) {
+                        $('#gianhap').text(listSize[j].OriginalPrice);
+                        $('#giaban').text(listSize[j].Price);
+                        break;
+                    }
+                }
+        }
+    </script>
+}

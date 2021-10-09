@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using Web.Application.Catalog.Products;
 using Web.ViewModels.Catalog.Categories;
+using Web.ViewModels.Catalog.PhieuNhaps;
 using Web.ViewModels.Catalog.Products;
 using Web.ViewModels.Catalog.Sizes;
 
@@ -27,11 +28,10 @@ namespace Web.Api.Controllers
             return Ok(listProduct.ResultObj);
         }
 
-        [HttpGet("{productId}")]
-        [AllowAnonymous]
-        public async Task<IActionResult> GetSize_Color(int productId)
+        [HttpGet("danh-sach-product-size/{ProductId}")]
+        public IActionResult GetProductSize(int ProductId)
         {
-            var listProduct = await _manageservice.GetSize_Color(productId);
+            var listProduct = _manageservice.GetProductSize(ProductId);
             return Ok(listProduct);
         }
 
@@ -132,6 +132,13 @@ namespace Web.Api.Controllers
                 return null;
             }
             var result = await _manageservice.DeleteProduct(productId);
+            return Ok(result);
+        }
+
+        [HttpPut("Update-price")]
+        public async Task<IActionResult> UpdatePrice([FromBody] UpdatePriceRequest request)
+        {
+            var result = await _manageservice.UpdatePrice(request);
             return Ok(result);
         }
     }

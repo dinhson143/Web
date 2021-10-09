@@ -15,6 +15,7 @@ using Web.Data.Enums;
 using Web.Utilities.Exceptions;
 using Web.ViewModels.Catalog.Categories;
 using Web.ViewModels.Catalog.Common;
+using Web.ViewModels.Catalog.PhieuNhaps;
 using Web.ViewModels.Catalog.Products;
 using Web.ViewModels.Catalog.Sizes;
 
@@ -40,19 +41,19 @@ namespace Web.Application.Catalog.Products
             throw new NotImplementedException();
         }
 
-        public async Task AddSize_Color(int productId, Size_Color request)
+        public async Task AddSize_Color(int productId, ProductSizeViewModel request)
         {
             var product = await _context.Products.FindAsync(productId);
             if (product == null) throw new WebException($"Can not find a Product: {productId}");
 
-            product.PCS = new List<Product_Size>()
-            {
-                new Product_Size()
-                {
-                    Stock = 0,
-                    SizeId = request.SizeId
-                }
-            };
+            //product.PCS = new List<Product_Size>()
+            //{
+            //    new Product_Size()
+            //    {
+            //        Stock = 0,
+            //        SizeId = request.SizeId
+            //    }
+            //};
         }
 
         public Task AddViewCount()
@@ -208,6 +209,7 @@ namespace Web.Application.Catalog.Products
             {
                 query = query.Where(x => x.pic.CategoryId == request.CategoryId);
             }
+
             // 3 .Paging
             int totalRow = await query.CountAsync();
             var data = await query.Select(x => new ProductViewModel()
@@ -330,11 +332,27 @@ namespace Web.Application.Catalog.Products
                                join ps in _context.PCSs on s.Id equals ps.SizeId
                                where ps.ProductId == productId
                                select s.Name).ToListAsync();
+            //
+            List<ProductSizeViewModel> list = new List<ProductSizeViewModel>();
+            var query = from p in _context.PCSs
+                        join s in _context.Sizes on p.SizeId equals s.Id
+                        where p.ProductId == productId
+                        select new { p, s };
+            foreach (var pcs in query)
+            {
+                var x = new ProductSizeViewModel()
+                {
+                    Size = pcs.s.Name,
+                    SizeId = pcs.p.SizeId,
+                    OriginalPrice = pcs.p.OriginalPrice,
+                    Price = pcs.p.Price
+                };
+                list.Add(x);
+            }
+            //
             var data = new ProductViewModel()
             {
                 Id = product.Id,
-                //Price = product.Price,
-                //OriginalPrice = product.OriginalPrice,
                 ViewCount = product.ViewCount,
                 DateCreated = product.DateCreated,
                 Name = productTranslation.Name,
@@ -346,26 +364,28 @@ namespace Web.Application.Catalog.Products
                 LanguageId = productTranslation.LanguageId,
                 Categories = categories,
                 Sizes = sizes,
-                IsFeatured = product.IsFeatured
+                IsFeatured = product.IsFeatured,
+                listPS = list
             };
             return new ResultSuccessApi<ProductViewModel>(data);
         }
 
-        public async Task<List<Size_Color>> GetSize_Color(int productId)
+        public List<ProductSizeViewModel> GetProductSize(int ProductId)
         {
-            List<Size_Color> list = new List<Size_Color>();
+            List<ProductSizeViewModel> list = new List<ProductSizeViewModel>();
             var query = from p in _context.PCSs
                         join s in _context.Sizes on p.SizeId equals s.Id
-                        where p.ProductId == productId
+                        where p.ProductId == ProductId
                         select new { p, s };
 
             foreach (var pcs in query)
             {
-                var x = new Size_Color()
+                var x = new ProductSizeViewModel()
                 {
-                    SizeId = pcs.p.ProductId,
                     Size = pcs.s.Name,
-                    Stock = pcs.p.Stock
+                    SizeId = pcs.p.SizeId,
+                    OriginalPrice = pcs.p.OriginalPrice,
+                    Price = pcs.p.Price
                 };
                 list.Add(x);
             }
@@ -382,9 +402,18 @@ namespace Web.Application.Catalog.Products
             throw new NotImplementedException();
         }
 
-        public Task UpdatePrice()
+        public async Task<ResultApi<string>> UpdatePrice(UpdatePriceRequest request)
         {
-            throw new NotImplementedException();
+            var pcs = await _context.PCSs.FirstOrDefaultAsync(x => x.ProductId == request.ProductId
+           && x.SizeId == request.SizeId);
+
+            pcs.Price = request.Price;
+            var result = await _context.SaveChangesAsync();
+            if (result > 0)
+            {
+                return new ResultSuccessApi<string>("Cập nhật giá thành công");
+            }
+            return new ResultErrorApi<string>("Cập nhật giá thất bại");
         }
 
         public Task UpdateStock()
@@ -421,8 +450,6 @@ namespace Web.Application.Catalog.Products
                 .Select(x => new ProductViewModel()
                 {
                     Id = x.p.Id,
-                    Price = x.ps.Price,
-                    OriginalPrice = x.ps.OriginalPrice,
                     ViewCount = x.p.ViewCount,
                     DateCreated = x.p.DateCreated,
                     Name = x.pt.Name,

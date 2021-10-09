@@ -1,0 +1,100 @@
+﻿@model IEnumerable<Web.ViewModels.Catalog.PhieuNhaps.PhieuNhapViewModel>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">DANH MỤC</h1>
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3" style="display:flex">
+            <a asp-action="Create" asp-controller="PhieuNhap" class="btn btn-success btn-icon-split">
+                <span class="icon text-white-50">
+                    <i class="fas fa-plus-circle"></i>
+                </span>
+                <span class="text">Tạo mới Phiếu nhập</span>
+            </a>
+        </div>
+        @if (@TempData["Message"] != null)
+        {
+            <div class="alert alert-success" role="alert" style="text-align:center">
+                @TempData["Message"]
+            </div>
+        }
+
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Id)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.TenLoaiphieu)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.TenCongTy)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.NgayNhap)
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Id)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.TenLoaiphieu)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.TenCongTy)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.NgayNhap)
+                            </th>
+                            <th></th>
+                        </tr>
+                    </tfoot>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Id)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.TenLoaiphieu)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.TenCongTy)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.NgayNhap)
+                                </td>
+                                <td>
+                                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                                    @Html.ActionLink("Details", "Details", new { id = item.Id }) |
+                                    @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        setTimeout(function () {
+            $(".alert").fadeOut('slow');
+        }, 2000);
+    </script>
+}

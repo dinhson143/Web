@@ -1,0 +1,83 @@
+﻿@model Web.ViewModels.Catalog.PhieuNhaps.UpdatePriceViewModel
+
+@{
+    ViewData["Title"] = "UpdatePrice";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>CẬP NHẬT GIÁ</h1>
+<hr />
+<div class="row">
+    <form asp-action="UpdatePrice" method="post">
+        <label class="control-label">Sản phẩm</label>
+        <div class="col-md-6" style="display:flex">
+            <select id="sanphamDropdown" onchange="return chonsp()" class="dropdownx-select" asp-for="ProductId" asp-items="@(new SelectList(Model.listProduct,"Id","Name",Model.ProductId))">
+            </select>
+            <select id="size" onchange="return chonsize()" asp-for="SizeId">
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="control-label">Giá nhập</label>
+            <input readonly id="gianhap" class="form-control " />
+        </div>
+        <div class="form-group">
+            <label class="control-label">Giá bán</label>
+            <input asp-for="Price" id="giaban" class="form-control " />
+            <span asp-validation-for="Price" class="text-danger"></span>
+        </div>
+        <input type="submit" value="Cập nhật" class="btn btn-primary" />
+        <a class="btn btn-primary" asp-action="Index">Back to List</a>
+    </form>
+</div>
+
+@section Scripts{
+    <script type="text/javascript">
+
+        var listPro = JSON.parse('@Newtonsoft.Json.JsonConvert.SerializeObject(Model.listProduct)'.replace(/&quot;/g, "\""));
+
+        // setSize sản phẩm đầu tiên
+        var listSize = listPro[0].listPS;
+        for (let j = 0; j < listSize.length; j++) {
+            $('#size').append(`<option asp-for="SizeId" value="${listSize[j].SizeId}">
+                                ${listSize[j].Size}
+                            </option>`);
+        }
+        $('#gianhap').val(listSize[0].OriginalPrice);
+        $('#giaban').val(listSize[0].Price);
+        //
+        function chonsize() {
+            var valueSize = $('#size :selected').val();
+            var valueProduct = $('#sanphamDropdown :selected').val();
+            for (let i = 0; i < listPro.length; i++) {
+                if (valueProduct == listPro[i].Id) {
+                    var listSize = listPro[i].listPS;
+                    for (let j = 0; j < listSize.length; j++) {
+                        if (valueSize == listSize[j].SizeId) {
+                            $('#gianhap').val(listSize[j].OriginalPrice);
+                            $('#giaban').val(listSize[j].Price);
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+        function chonsp() {           
+            $('#size').empty();
+            var value = $('#sanphamDropdown :selected').val();
+
+            for (let i = 0; i < listPro.length; i++) {
+                if (value == listPro[i].Id) {
+                    var listSize = listPro[i].listPS;
+                    for (let j = 0; j < listSize.length; j++) {
+                        $('#size').append(`<option  value="${listSize[j].SizeId}">
+                                       ${listSize[j].Size}
+                                  </option>`);
+                    }
+                    break;
+                }
+            }
+            chonsize();
+
+        }
+    </script>
+}

@@ -29,6 +29,13 @@
                     </select>
                 </div>
             </form>
+
+            <a asp-action="UpdatePrice" asp-controller="Product" class="btn btn-success btn-icon-split">
+                <span class="icon text-white-50">
+                    <i class="fas fa-dollar-sign"></i>
+                </span>
+                <span class="text">Cập nhật Giá</span>
+            </a>
         </div>
         @if (@TempData["Message"] != null)
         {
@@ -46,10 +53,10 @@
                                 @Html.DisplayNameFor(model => model.Name)
                             </th>
                             <th>
-                                @Html.DisplayNameFor(model => model.Price)
+                                @Html.DisplayNameFor(model => model.DateCreated)
                             </th>
                             <th>
-                                @Html.DisplayNameFor(model => model.OriginalPrice)
+                                @Html.DisplayNameFor(model => model.SeoDescription)
                             </th>
                             <th></th>
                         </tr>
@@ -60,10 +67,10 @@
                                 @Html.DisplayNameFor(model => model.Name)
                             </th>
                             <th>
-                                @Html.DisplayNameFor(model => model.Price)
+                                @Html.DisplayNameFor(model => model.DateCreated)
                             </th>
                             <th>
-                                @Html.DisplayNameFor(model => model.OriginalPrice)
+                                @Html.DisplayNameFor(model => model.SeoDescription)
                             </th>
                             <th></th>
                         </tr>
@@ -73,16 +80,13 @@
                         {
                             <tr>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.Id)
-                                </td>
-                                <td>
                                     @Html.DisplayFor(modelItem => item.Name)
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.Price)
+                                    @Html.DisplayFor(modelItem => item.DateCreated)
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.OriginalPrice)
+                                    @Html.DisplayFor(modelItem => item.SeoDescription)
                                 </td>
                                 <td>
                                     @Html.ActionLink("Sửa", "Edit", new { id = item.Id }) |

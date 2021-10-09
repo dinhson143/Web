@@ -14,14 +14,10 @@ namespace Web.ViewModels.Catalog.Products
         [Display(Name = "Mã SP")]
         public int Id { get; set; }
 
-        [Display(Name = "Giá bán")]
-        public decimal Price { get; set; }
-
-        [Display(Name = "Giá nhập")]
-        public decimal OriginalPrice { get; set; }
-
         [Display(Name = "Lượt xem")]
         public int ViewCount { get; set; }
+
+        public decimal Price { get; set; }
 
         [Display(Name = "Ngày nhập")]
         public DateTime DateCreated { get; set; }
@@ -52,5 +48,6 @@ namespace Web.ViewModels.Catalog.Products
         public List<string> Categories { set; get; }
         public List<string> Sizes { set; get; }
         public List<ProductImagesModel> Images { set; get; }
+        public List<ProductSizeViewModel> listPS { get; set; }
     }
 }

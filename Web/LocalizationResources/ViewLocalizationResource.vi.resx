@@ -141,6 +141,10 @@
     <value>Sản phẩm nổi bật</value>
     <comment>/Home/Index</comment>
   </data>
+  <data name="items in stock" xml:space="preserve">
+    <value>sản phẩm trong kho</value>
+    <comment>Product Detail</comment>
+  </data>
   <data name="Items in your cart" xml:space="preserve">
     <value>Sản phẩm trong giỏ hàng</value>
     <comment>Home/Slidebar</comment>

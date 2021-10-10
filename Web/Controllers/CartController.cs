@@ -55,7 +55,8 @@ namespace Web.Controllers
                 {
                     ProductId = item.ProductId,
                     Quantity = item.Quantity,
-                    Price = item.Price
+                    Price = item.Price,
+                    SizeId = item.SizeId
                 });
             }
             var checkoutRequest = new CheckoutRequest()
@@ -92,7 +93,7 @@ namespace Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddToCart(int id)
+        public async Task<IActionResult> AddToCart(int id, int qty, int size, string namesize)
         {
             var culture = CultureInfo.CurrentCulture.Name;
             var product = await _productApi.GetProductById(id, "", culture);
@@ -104,10 +105,10 @@ namespace Web.Controllers
             {
                 currentCart = JsonConvert.DeserializeObject<List<CartItemViewModel>>(session);
             }
-            int quantity = 1;
+            int quantity = qty;
             if (currentCart.Any(x => x.ProductId == id))
             {
-                quantity = currentCart.First(x => x.ProductId == id).Quantity + 1;
+                quantity = currentCart.First(x => x.ProductId == id).Quantity + qty;
             }
             var dem = 0;
             foreach (var cart in currentCart)
@@ -119,6 +120,15 @@ namespace Web.Controllers
                     break;
                 }
             }
+            // get giá
+            decimal gia = 0;
+            foreach (var item in product.ResultObj.listPS)
+            {
+                if (item.SizeId == size)
+                {
+                    gia = item.Price;
+                }
+            }
             if (dem == 0)
             {
                 var cartItem = new CartItemViewModel()
@@ -127,8 +137,10 @@ namespace Web.Controllers
                     Description = product.ResultObj.Description,
                     Name = product.ResultObj.Name,
                     Quantity = quantity,
-                    Price = product.ResultObj.Price,
-                    Image = images[0].URL
+                    Price = gia,
+                    Image = images[0].URL,
+                    SizeId = size,
+                    NameSize = namesize
                 };
 
                 currentCart.Add(cartItem);

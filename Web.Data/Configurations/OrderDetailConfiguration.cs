@@ -14,7 +14,7 @@ namespace Web.Data.Configurations
         public void Configure(EntityTypeBuilder<OrderDetail> builder)
         {
             builder.ToTable("OrderDetails");
-            builder.HasKey(x => new { x.OrderId, x.ProductId });
+            builder.HasKey(x => new { x.OrderId, x.ProductId, x.SizeId });
 
             // 1 Order có nhiều orderdetail
 

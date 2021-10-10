@@ -10,8 +10,75 @@
 @section Scripts{
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
     <link href="~/css/Comment.css" rel="stylesheet" />
+
+    <script type="text/javascript">
+        function formatCash(str) {
+            return str.split('').reverse().reduce((prev, next, index) => {
+                return ((index % 3) ? next : (next + ',')) + prev
+            })
+        }
+        var listSize = JSON.parse('@Newtonsoft.Json.JsonConvert.SerializeObject(Model.ProductInfo.listPS)'.replace(/&quot;/g, "\""));
+
+        // setSize sản phẩm đầu tiên
+        $('#giaSP').text(formatCash(listSize[0].Price.toString())+" VND");
+        $('#soluongSP').text(listSize[0].Stock+" ");
+        var value = $('#sizeDropdown :selected').val();
+        var nameSize = $('#sizeDropdown :selected').text();
+
+        var button = document.getElementById('btnAddToCart');
+        button.setAttribute('data-sizeId', value);
+        button.setAttribute('data-nameSize', nameSize);
+        function chonsize() {
+            var value = $('#sizeDropdown :selected').val();
+            var nameSize = $('#sizeDropdown :selected').text();
+
+            var button = document.getElementById('btnAddToCart');
+            button.setAttribute('data-sizeId', value);
+            button.setAttribute('data-nameSize', nameSize);
+            for (let j = 0; j < listSize.length; j++) {
+                if (listSize[j].SizeId == value) {
+                    $('#giaSP').text(formatCash(listSize[j].Price.toString()) + " VND");
+                    $('#soluongSP').text(listSize[j].Stock+" ");
+                }
+            }
+        }
+
+        //
+        $("#soluongQty").change(function () {
+            var button = document.getElementById('btnAddToCart');
+            var value = $('#soluongQty').val();
+            button.setAttribute('data-qty', value);
+        });
+
+        $("#btnAddToCart").click(function () {
+            var soluong = $('#soluongQty').val();
+            var total = $('#soluongSP').text();
+            if (parseInt(soluong) > parseInt(total) || soluong == "") {
+                $('.error').show();
+                setTimeout(function () {
+                    $(".error").fadeOut('slow');
+                }, 3000);
+                return false;
+            }
+            $('.success').show();
+            setTimeout(function () {
+                $(".success").fadeOut('slow');
+            }, 3000);
+        });
+
+        $('.error').hide();
+        $('.success').hide();
+
+    </script>
 }
+
 <div class="span9">
+    <div class="alert alert-error error">
+        <span>Vui lòng kiểm tra lại số lượng</span>
+    </div>
+    <div class="alert alert-success success">
+        <span>Đã thêm sản phẩm vào giỏ hàng</span>
+    </div>
     <ul class="breadcrumb">
         <li><a href="/@culture/Home/Index">Home</a> <span class="divider">/</span></li>
         <li class="active">Product Details</li>
@@ -42,10 +109,6 @@
                         }
                     </div>
                 </div>
-                <!--
-                <a class="left carousel-control" href="#myCarousel" data-slide="prev">‹</a>
-                <a class="right carousel-control" href="#myCarousel" data-slide="next">›</a>
-                -->
             </div>
 
             <div class="btn-toolbar">
@@ -65,25 +128,21 @@
             <hr class="soft" />
             <form class="form-horizontal qtyFrm">
                 <div class="control-group">
-                    <label class="control-label"><span>@Model.ProductInfo.Price</span></label>
+                    <label class="control-label"><span id="giaSP"></span></label>
                     <div class="controls">
-                        <input type="number" class="span1" placeholder="Qty." />
-                        <button type="submit" data-id="@Model.ProductInfo.Id" class="btn btn-large btn-add-card btn-primary pull-right"><localize>Add to cart</localize><i class=" icon-shopping-cart"></i></button>
+                        <input id="soluongQty" type="number" class="span1" placeholder="Qty" />
+                        <button id="btnAddToCart" data-id="@Model.ProductInfo.Id" class="btn btn-large btn-add-card btn-primary pull-right"><localize>Add to cart</localize><i class=" icon-shopping-cart"></i></button>
                     </div>
                 </div>
             </form>
 
             <hr class="soft" />
-            <h4>100 items in stock</h4>
+            <h4><span id="soluongSP"></span><localize>items in stock</localize></h4>
             <form class="form-horizontal qtyFrm pull-right">
                 <div class="control-group">
-                    <label class="control-label"><span>Color</span></label>
+                    <label class="control-label"><span>Size</span></label>
                     <div class="controls">
-                        <select class="span2">
-                            <option>Black</option>
-                            <option>Red</option>
-                            <option>Blue</option>
-                            <option>Brown</option>
+                        <select id="sizeDropdown" onchange="return chonsize()" class="span2" asp-items="@(new SelectList(Model.ProductInfo.listPS,"SizeId","Size",Model.ProductInfo.Name))">
                         </select>
                     </div>
                 </div>

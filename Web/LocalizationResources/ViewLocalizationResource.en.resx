@@ -141,6 +141,10 @@
     <value>Featured Products</value>
     <comment>/Home/Index</comment>
   </data>
+  <data name="items in stock" xml:space="preserve">
+    <value>items in stock</value>
+    <comment>Product Detail</comment>
+  </data>
   <data name="Items in your cart" xml:space="preserve">
     <value>Items in your cart</value>
     <comment>Home/Slidebar</comment>

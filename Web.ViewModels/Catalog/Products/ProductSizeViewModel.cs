@@ -12,5 +12,6 @@ namespace Web.ViewModels.Catalog.Products
         public int SizeId { get; set; }
         public decimal OriginalPrice { get; set; }
         public decimal Price { get; set; }
+        public int Stock { get; set; }
     }
 }

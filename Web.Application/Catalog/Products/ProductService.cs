@@ -345,7 +345,8 @@ namespace Web.Application.Catalog.Products
                     Size = pcs.s.Name,
                     SizeId = pcs.p.SizeId,
                     OriginalPrice = pcs.p.OriginalPrice,
-                    Price = pcs.p.Price
+                    Price = pcs.p.Price,
+                    Stock = pcs.p.Stock
                 };
                 list.Add(x);
             }
@@ -461,6 +462,37 @@ namespace Web.Application.Catalog.Products
                     LanguageId = x.pt.LanguageId,
                     Image = x.pi.ImagePath
                 }).ToListAsync();
+            for (var i = 0; i < data.Count; i++)
+            {
+                for (var j = i + 1; j < data.Count; j++)
+                {
+                    if (data[i].Id == data[j].Id)
+                    {
+                        data.Remove(data[j]);
+                    }
+                }
+            }
+            foreach (var product in data)
+            {
+                var list = new List<ProductSizeViewModel>();
+                var result = from p in _context.PCSs
+                             join s in _context.Sizes on p.SizeId equals s.Id
+                             where p.ProductId == product.Id
+                             select new { p, s };
+                foreach (var pcs in result)
+                {
+                    var x = new ProductSizeViewModel()
+                    {
+                        Size = pcs.s.Name,
+                        SizeId = pcs.p.SizeId,
+                        OriginalPrice = pcs.p.OriginalPrice,
+                        Price = pcs.p.Price,
+                        Stock = pcs.p.Stock
+                    };
+                    list.Add(x);
+                }
+                product.listPS = list;
+            }
             // 4 Select Page Result
             var pageResult = new PageResult<ProductViewModel>()
             {
@@ -515,14 +547,13 @@ namespace Web.Application.Catalog.Products
                         from c in picc.DefaultIfEmpty()
                         where pt.LanguageId == languageId && p.Status == Status.Active && p.IsFeatured == true && (pi.IsDefault == true || pi == null)
                         select new { p, pt, pic, pi };
+            //
 
             // 3 .Paging
             int totalRow = await query.CountAsync();
             var data = await query.OrderByDescending(x => x.p.DateCreated).Take(soluong).Select(x => new ProductViewModel()
             {
                 Id = x.p.Id,
-                //Price = x.p.Price,
-                //OriginalPrice = x.p.OriginalPrice,
                 ViewCount = x.p.ViewCount,
                 DateCreated = x.p.DateCreated,
                 Name = x.pt.Name,
@@ -545,6 +576,29 @@ namespace Web.Application.Catalog.Products
                     }
                 }
             }
+
+            foreach (var product in data)
+            {
+                var list = new List<ProductSizeViewModel>();
+                var result = from p in _context.PCSs
+                             join s in _context.Sizes on p.SizeId equals s.Id
+                             where p.ProductId == product.Id
+                             select new { p, s };
+                foreach (var pcs in result)
+                {
+                    var x = new ProductSizeViewModel()
+                    {
+                        Size = pcs.s.Name,
+                        SizeId = pcs.p.SizeId,
+                        OriginalPrice = pcs.p.OriginalPrice,
+                        Price = pcs.p.Price,
+                        Stock = pcs.p.Stock
+                    };
+                    list.Add(x);
+                }
+                product.listPS = list;
+            }
+
             return new List<ProductViewModel>(data);
         }
 
@@ -567,8 +621,6 @@ namespace Web.Application.Catalog.Products
             var data = await query.OrderByDescending(x => x.p.DateCreated).Take(soluong).Select(x => new ProductViewModel()
             {
                 Id = x.p.Id,
-                //Price = x.p.Price,
-                //OriginalPrice = x.p.OriginalPrice,
                 ViewCount = x.p.ViewCount,
                 DateCreated = x.p.DateCreated,
                 Name = x.pt.Name,
@@ -591,6 +643,29 @@ namespace Web.Application.Catalog.Products
                     }
                 }
             }
+
+            foreach (var product in data)
+            {
+                var list = new List<ProductSizeViewModel>();
+                var result = from p in _context.PCSs
+                             join s in _context.Sizes on p.SizeId equals s.Id
+                             where p.ProductId == product.Id
+                             select new { p, s };
+                foreach (var pcs in result)
+                {
+                    var x = new ProductSizeViewModel()
+                    {
+                        Size = pcs.s.Name,
+                        SizeId = pcs.p.SizeId,
+                        OriginalPrice = pcs.p.OriginalPrice,
+                        Price = pcs.p.Price,
+                        Stock = pcs.p.Stock
+                    };
+                    list.Add(x);
+                }
+                product.listPS = list;
+            }
+
             return new List<ProductViewModel>(data);
         }
 

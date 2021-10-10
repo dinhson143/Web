@@ -38,7 +38,8 @@ namespace Web.Application.Catalog.Orders
                 {
                     ProductId = item.ProductId,
                     Quantity = item.Quantity,
-                    Price = item.Price
+                    Price = item.Price,
+                    SizeId = item.SizeId
                 });
             }
             var order = new Order()

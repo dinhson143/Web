@@ -39,7 +39,7 @@ namespace Web.Controllers
                 CategoryId = id,
                 LanguageId = culture,
                 pageIndex = PageIndex,
-                pageSize = 2
+                pageSize = 6
             };
             var category = await _categoryApi.GetCategoryById(id, culture);
 

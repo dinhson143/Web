@@ -22,6 +22,24 @@ namespace Web.ServiceApi_Admin_User.Service.Comments
             _configuration = configuration;
         }
 
+        public async Task<ResultApi<string>> CreateComment(CommentCreate request, string BearerToken)
+        {
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", BearerToken);
+
+            var json = JsonConvert.SerializeObject(request);
+            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await client.PostAsync("/api/Comments", httpContent);
+            var result = await response.Content.ReadAsStringAsync();
+            if (!response.IsSuccessStatusCode)
+                return new ResultErrorApi<string>(result);
+
+            return new ResultSuccessApi<string>(result);
+        }
+
         public async Task<bool> Delete(int commentId, string BearerToken)
         {
             var client = _httpClientFactory.CreateClient();

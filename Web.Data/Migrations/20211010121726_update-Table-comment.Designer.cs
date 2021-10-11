@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Web.Data.EF;
 
 namespace Web.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211010121726_update-Table-comment")]
+    partial class updateTablecomment
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -652,37 +654,10 @@ namespace Web.Data.Migrations
                         new
                         {
                             Id = 1,
-                            DateCreated = new DateTime(2021, 10, 11, 9, 22, 28, 234, DateTimeKind.Local).AddTicks(8370),
+                            DateCreated = new DateTime(2021, 10, 10, 19, 17, 25, 611, DateTimeKind.Local).AddTicks(6737),
                             Status = 1,
                             ViewCount = 0
                         });
-                });
-
-            modelBuilder.Entity("Web.Data.Entities.ProductFavorite", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:IdentityIncrement", 1)
-                        .HasAnnotation("SqlServer:IdentitySeed", 1)
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("ProductFavorites");
                 });
 
             modelBuilder.Entity("Web.Data.Entities.ProductImage", b =>
@@ -933,7 +908,7 @@ namespace Web.Data.Migrations
                         new
                         {
                             Id = new Guid("0d5b7850-46c1-4c80-99c4-d94fc38a3ea7"),
-                            ConcurrencyStamp = "fbac77d1-0597-4a04-ab77-d0065f0ad79d",
+                            ConcurrencyStamp = "16cda5de-cbcf-4c50-b4db-b31cfe51c82b",
                             Description = "Adminstrator Role ",
                             Name = "admin",
                             NormalizedName = "admin",
@@ -1042,7 +1017,7 @@ namespace Web.Data.Migrations
                         new
                         {
                             Id = 1,
-                            DateCreated = new DateTime(2021, 10, 11, 9, 22, 28, 255, DateTimeKind.Local).AddTicks(3701),
+                            DateCreated = new DateTime(2021, 10, 10, 19, 17, 25, 634, DateTimeKind.Local).AddTicks(333),
                             Description = "Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.",
                             Image = "https://gaubongonline.vn/wp-content/uploads/2021/06/gaubongonline1.jpg",
                             Name = "slider 1",
@@ -1052,7 +1027,7 @@ namespace Web.Data.Migrations
                         new
                         {
                             Id = 2,
-                            DateCreated = new DateTime(2021, 10, 11, 9, 22, 28, 255, DateTimeKind.Local).AddTicks(5076),
+                            DateCreated = new DateTime(2021, 10, 10, 19, 17, 25, 634, DateTimeKind.Local).AddTicks(2121),
                             Description = "Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.",
                             Image = "https://gaubongonline.vn/wp-content/uploads/2021/06/gaubongonline.jpg",
                             Name = "slider 1",
@@ -1062,7 +1037,7 @@ namespace Web.Data.Migrations
                         new
                         {
                             Id = 3,
-                            DateCreated = new DateTime(2021, 10, 11, 9, 22, 28, 255, DateTimeKind.Local).AddTicks(5082),
+                            DateCreated = new DateTime(2021, 10, 10, 19, 17, 25, 634, DateTimeKind.Local).AddTicks(2128),
                             Description = "Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.",
                             Image = "https://gaubongonline.vn/wp-content/uploads/2021/05/web-gaubongonline.vn_.jpg",
                             Name = "slider 1",
@@ -1150,7 +1125,7 @@ namespace Web.Data.Migrations
                             Id = new Guid("b38060f2-8b1c-47ae-80aa-2cf1b518b812"),
                             AccessFailedCount = 0,
                             Address = "Hcm city",
-                            ConcurrencyStamp = "175e5372-b073-4f34-87ac-4235ca85e4a3",
+                            ConcurrencyStamp = "e090b832-b7e6-462f-a2f5-adccd9f561d6",
                             Dob = new DateTime(1999, 3, 14, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "dinhson14399@gmail.com",
                             EmailConfirmed = true,
@@ -1159,7 +1134,7 @@ namespace Web.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "dinhson14399@gmail.com",
                             NormalizedUserName = "dinhson",
-                            PasswordHash = "AQAAAAEAACcQAAAAEIX6DxDU53ypU/wwv2C/Itg51TgPzSwTGHykIaAW2y2dg5ms9yOLehEpOioExQQdIA==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEJ0ADvCvMYT/PxwAXtd1veLpnDnHHOzJVcqsl6hVvo5MaWJheNwK7cbbGIMReFWwcQ==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
                             Status = 1,
@@ -1293,25 +1268,6 @@ namespace Web.Data.Migrations
                     b.Navigation("Product_Size");
                 });
 
-            modelBuilder.Entity("Web.Data.Entities.ProductFavorite", b =>
-                {
-                    b.HasOne("Web.Data.Entities.Product", "Product")
-                        .WithMany("ProductFavorites")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Web.Data.Entities.User", "User")
-                        .WithMany("ProductFavorites")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Product");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("Web.Data.Entities.ProductImage", b =>
                 {
                     b.HasOne("Web.Data.Entities.Product", "Product")
@@ -1424,8 +1380,6 @@ namespace Web.Data.Migrations
 
                     b.Navigation("PCS");
 
-                    b.Navigation("ProductFavorites");
-
                     b.Navigation("ProductImages");
 
                     b.Navigation("ProductInCategories");
@@ -1450,8 +1404,6 @@ namespace Web.Data.Migrations
                     b.Navigation("Comments");
 
                     b.Navigation("Orders");
-
-                    b.Navigation("ProductFavorites");
                 });
 #pragma warning restore 612, 618
         }

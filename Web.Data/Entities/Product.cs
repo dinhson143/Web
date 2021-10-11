@@ -22,6 +22,7 @@ namespace Web.Data.Entities
         public List<Cart> Carts { get; set; }
         public List<Comment> Comments { get; set; }
         public List<OrderDetail> OrderDetails { get; set; }
+        public List<ProductFavorite> ProductFavorites { get; set; }
 
         //public List<PhieuNhap_Xuatchitiet> PhieuNXchitiets { get; set; }
         public List<ProductImage> ProductImages { get; set; }

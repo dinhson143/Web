@@ -1,6 +1,7 @@
 ﻿using Firebase.Auth;
 using Firebase.Storage;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -25,15 +26,17 @@ namespace Web.Application.Catalog.Products
     {
         private readonly AppDbContext _context;
         private readonly IHostingEnvironment _env;
+        private readonly UserManager<Data.Entities.User> _userManager;
         private static string ApiKey = "AIzaSyDsIhxUtoEuX-GsYhTCd3T6tSUr2VA2MiA";
         private static string Bucket = "bds-asp-mvc.appspot.com";
         private static string AuthEmail = "dinhson14399@gmail.com";
         private static string AuthPassword = "tranthingocyen";
 
-        public ProductService(AppDbContext context, IHostingEnvironment env)
+        public ProductService(AppDbContext context, IHostingEnvironment env, UserManager<Data.Entities.User> userManager)
         {
             _context = context;
             _env = env;
+            _userManager = userManager;
         }
 
         public Task AddImage()
@@ -789,6 +792,41 @@ namespace Web.Application.Catalog.Products
             }
             await _context.SaveChangesAsync();
             return new ResultSuccessApi<bool>();
+        }
+
+        public async Task<ResultApi<string>> CreateProductFavorite(ProductFVCreate request)
+        {
+            var user = await _userManager.FindByEmailAsync(request.Email);
+            if (user == null)
+            {
+                return null;
+            }
+            var kiemtra = await _context.ProductFavorites.FirstOrDefaultAsync(x => x.ProductId == request.ProductId && x.UserId == user.Id);
+            if (kiemtra != null && kiemtra.Status == Status.Active)
+            {
+                kiemtra.Status = Status.InActive;
+            }
+            else if (kiemtra != null && kiemtra.Status == Status.InActive)
+            {
+                kiemtra.Status = Status.Active;
+            }
+            else if (kiemtra == null)
+            {
+                var x = new ProductFavorite()
+                {
+                    ProductId = request.ProductId,
+                    UserId = user.Id,
+                    Status = Status.Active
+                };
+
+                await _context.ProductFavorites.AddAsync(x);
+            }
+            var result = await _context.SaveChangesAsync();
+            if (result > 0)
+            {
+                return new ResultSuccessApi<string>("Cập nhật danh sách yêu thích thành công");
+            }
+            return new ResultErrorApi<string>("Cập nhật danh sách yêu thích thất bại");
         }
     }
 }

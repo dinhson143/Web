@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Web.ViewModels.Catalog.Comments;
 using Web.ViewModels.Catalog.Products;
 
 namespace Web.Models
@@ -10,7 +11,8 @@ namespace Web.Models
     {
         public ProductViewModel ProductInfo { get; set; }
         public List<ProductImagesModel> Images { get; set; }
+        public List<CommentViewModel> Comments { get; set; }
 
-        //size  color soluong
+        public int ProductId { get; set; }
     }
 }

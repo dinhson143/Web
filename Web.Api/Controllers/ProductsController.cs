@@ -52,6 +52,13 @@ namespace Web.Api.Controllers
             return Ok(result);
         }
 
+        [HttpPost("product-favorite")]
+        public async Task<IActionResult> CreateProductFV([FromBody] ProductFVCreate request)
+        {
+            var result = await _manageservice.CreateProductFavorite(request);
+            return Ok(result);
+        }
+
         [HttpPut("{productId}/categories")]
         public async Task<IActionResult> CategoryAssign(int productId, [FromBody] CategoryAssignRequest request)
         {

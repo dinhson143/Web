@@ -31,6 +31,7 @@ namespace Web.Data.EF
             modelBuilder.ApplyConfiguration(new PhieuNhap_XuatchitietConfiguration());
             modelBuilder.ApplyConfiguration(new PhieuNhap_XuatConfiguration());
             modelBuilder.ApplyConfiguration(new Product_SizeConfiguration());
+            modelBuilder.ApplyConfiguration(new ProductFavoriteConfiguration());
             modelBuilder.ApplyConfiguration(new ProductConfiguration());
             modelBuilder.ApplyConfiguration(new ProductImageConfiguration());
             modelBuilder.ApplyConfiguration(new ProductInCategoryConfiguration());
@@ -72,6 +73,7 @@ namespace Web.Data.EF
         public DbSet<PhieuNhap_Xuatchitiet> PhieuNXchitiets { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<Product_Size> PCSs { get; set; }
+        public DbSet<ProductFavorite> ProductFavorites { get; set; }
         public DbSet<ProductImage> ProductImages { get; set; }
 
         public DbSet<ProductInCategory> ProductInCategories { get; set; }

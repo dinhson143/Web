@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Web.ViewModels.Catalog.Comments;
+using Web.ViewModels.Catalog.Common;
 
 namespace Web.Application.Catalog.Comments
 {
@@ -14,5 +15,7 @@ namespace Web.Application.Catalog.Comments
         public Task<List<CommentViewModel>> GetAllweb(string languageId);
 
         public Task<int> Delete(int id);
+
+        public Task<ResultApi<string>> CreateComment(CommentCreate request);
     }
 }

@@ -22,6 +22,13 @@ namespace Web.Api.Controllers
             _commentService = commentService;
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] CommentCreate request)
+        {
+            var result = await _commentService.CreateComment(request);
+            return Ok(result);
+        }
+
         [HttpGet("danh-sach-admin")]
         public async Task<List<CommentViewModel>> GetAllAdmin(string languageID)
         {

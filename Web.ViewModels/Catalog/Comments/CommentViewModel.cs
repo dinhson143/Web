@@ -14,9 +14,10 @@ namespace Web.ViewModels.Catalog.Comments
         public int? ParentId { get; set; }
         public string Content { get; set; }
         public DateTime DateCreated { get; set; }
+        public int Star { get; set; }
 
-        //public int ProductId { get; set; }
-        //public Guid UserId { get; set; }
+        public int ProductId { get; set; }
+        public Guid UserId { get; set; }
         public string TenUser { get; set; }
 
         public string TenSP { get; set; }

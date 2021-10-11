@@ -21,5 +21,7 @@ namespace Web.Data.Entities
 
         //public List<Transaction> Transactions { get; set; }
         public List<Comment> Comments { get; set; }
+
+        public List<ProductFavorite> ProductFavorites { get; set; }
     }
 }

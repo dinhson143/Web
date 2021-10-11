@@ -7,9 +7,11 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Web.Models;
+using Web.ServiceApi_Admin_User.Service.Comments;
 using Web.ServiceApi_Admin_User.Service.Orders;
 using Web.ServiceApi_Admin_User.Service.Products;
 using Web.Utilities.Contants;
+using Web.ViewModels.Catalog.Comments;
 using Web.ViewModels.Catalog.Sales;
 
 namespace Web.Controllers
@@ -18,11 +20,13 @@ namespace Web.Controllers
     {
         private readonly IProductApi _productApi;
         private readonly IOrderApi _orderApi;
+        private readonly ICommentApi _commentApi;
 
-        public CartController(IProductApi productApi, IOrderApi orderApi)
+        public CartController(IProductApi productApi, IOrderApi orderApi, ICommentApi commentApi)
         {
             _productApi = productApi;
             _orderApi = orderApi;
+            _commentApi = commentApi;
         }
 
         public IActionResult Index()
@@ -212,6 +216,41 @@ namespace Web.Controllers
                 }
             };
             return checkoutVM;
+        }
+
+        [HttpPost]
+        public async Task<string> RatingProduct(int productID, int star, string comment)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            bool check = false;
+            var identity = (ClaimsIdentity)User.Identity;
+            var claimsPrincipal = new ClaimsPrincipal(identity);
+
+            // Get the claims values
+            var email = identity.Claims.Where(c => c.Type == ClaimTypes.Email)
+                               .Select(c => c.Value).SingleOrDefault();
+
+            if (email == null)
+            {
+                data.Add("mgs", check);
+                return JsonConvert.SerializeObject(data);
+            }
+            if (comment == null)
+            {
+                comment = "Đã đánh giá";
+            }
+            var request = new CommentCreate()
+            {
+                Content = comment,
+                ProductId = productID,
+                Star = star,
+                Email = email
+            };
+            var token = HttpContext.Session.GetString(SystemContants.AppSettings.Token);
+            var result = await _commentApi.CreateComment(request, token);
+            check = true;
+            data.Add("mgs", check);
+            return JsonConvert.SerializeObject(data);
         }
     }
 }

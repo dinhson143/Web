@@ -10,8 +10,16 @@
 @section Scripts{
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
     <link href="~/css/Comment.css" rel="stylesheet" />
-
+    <link href="~/css/rating.css" rel="stylesheet" />
     <script type="text/javascript">
+        // thông báo
+        $('.error').hide();
+        $('.success').hide();
+        $('.success-rating').hide();
+        setTimeout(function () {
+            $(".alert").fadeOut('slow');
+        }, 2000);
+        //
         function formatCash(str) {
             return str.split('').reverse().reduce((prev, next, index) => {
                 return ((index % 3) ? next : (next + ',')) + prev
@@ -65,19 +73,80 @@
                 $(".success").fadeOut('slow');
             }, 3000);
         });
+    </script>
+    <script>
+        $('#ratingSP').hide();
+        $("#btnRating").click(function () {
+            $('#ratingSP').show();
+        });
+        $(".btnCancel").click(function () {
+            $('#ratingSP').hide();
+            $('.titleRating').text("ĐÁNH GIÁ SẢN PHẨM")
+        });
+        $(".btnSubmit").click(function () {
+            var productId = $('.productId').val();
+            var star = $(".starSP:checked").val()
 
-        $('.error').hide();
-        $('.success').hide();
-
+            var comment = $('#commentSP').val();
+            if (star == null) {
+                $('.titleRating').text("HÃY ĐÁNH GIÁ SẢN PHẨM")
+                return false;
+            }
+            const culture = $('#hidCulture').val();
+            var languageID = "";
+            if (culture == "vi") {
+                languageID = "san-pham";
+            } else {
+                languageID = "products";
+            }
+            $.ajax({
+                type: 'POST',
+                url: "/" + culture + '/Cart/RatingProduct',
+                data: { productId: productId, star: star, comment: comment },
+                dataType: 'json',
+                success: function (data) {
+                    if (data['mgs'] == true) {
+                        $('#ratingSP').hide();
+                        $('.titleRating').text("ĐÁNH GIÁ SẢN PHẨM")
+                        $(".success-rating").show();
+                        setTimeout(function () {
+                            $(".success-rating").fadeOut('slow');
+                            window.location = "/" + culture + '/' + languageID + '/' + productId;
+                        }, 3000);
+                    }
+                    else {
+                        window.location = "/" + culture + '/Account/Login';
+                    }
+                },
+                error: function (err) {
+                    console.log("error");
+                }
+            })
+        });
     </script>
 }
 
 <div class="span9">
-    <div class="alert alert-error error">
+    @if (@TempData["msg"] != null)
+    {
+        <div class="alert alert-success" role="alert" style="text-align:center">
+            @TempData["msg"]
+        </div>
+    }
+    else if(@TempData["error"] != null)
+    {
+        <div class="alert alert-error" role="alert" style="text-align:center">
+            @TempData["error"]
+        </div>
+    }
+    <div class="alert alert-error error" style="text-align:center">
         <span>Vui lòng kiểm tra lại số lượng</span>
     </div>
-    <div class="alert alert-success success">
+    <div class="alert alert-success success" style="text-align:center">
         <span>Đã thêm sản phẩm vào giỏ hàng</span>
+    </div>
+    <div class="alert alert-success success-rating" style="text-align:center">
+        <span>Hoàn thành đánh giá</span>
     </div>
     <ul class="breadcrumb">
         <li><a href="/@culture/Home/Index">Home</a> <span class="divider">/</span></li>
@@ -110,15 +179,18 @@
                     </div>
                 </div>
             </div>
-
+            @{
+                var url = $"/{culture}/Product/ProductFavorite";
+            }
             <div class="btn-toolbar">
                 <div class="btn-group">
-                    <span class="btn"><i class="icon-envelope"></i></span>
-                    <span class="btn"><i class="icon-print"></i></span>
-                    <span class="btn"><i class="icon-zoom-in"></i></span>
-                    <span class="btn"><i class="icon-star"></i></span>
-                    <span class="btn"><i class=" icon-thumbs-up"></i></span>
-                    <span class="btn"><i class="icon-thumbs-down"></i></span>
+                    <span id="btnRating" class="btn" style="width:100%">Đánh Giá Sản Phẩm</span>
+                    <form style="padding:0" asp-action="ProductFavorite" asp-controller="Product" method="post" class="btn">
+                        <input type="hidden" asp-for="ProductId" value="@Model.ProductInfo.Id" />
+                        <button class="btn" type="submit">
+                            <i style="color:red" class="icon-heart"></i>
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -175,30 +247,209 @@
                                 </div>
                             </div>
                             <div class="panel">
-                                <div class="panel-body">
-                                    <!-- Newsfeed Content -->
-                                    <!--===================================================-->
-                                    <div class="media-block">
-                                        <a class="media-left" href="#"><img class="img-circle img-sm" alt="Profile Picture" src="https://bootdey.com/img/Content/avatar/avatar1.png"></a>
-                                        <div class="media-body">
-                                            <div class="mar-btm">
-                                                <a href="#" class="btn-link text-semibold media-heading box-inline">Lisa D.</a>
-                                                <p class="text-muted text-sm"><i class="fa fa-mobile fa-lg"></i> - From Mobile - 11 min ago</p>
-                                            </div>
-                                            <p>consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.</p>
-                                            <div class="pad-ver">
-                                                <div class="btn-group">
-                                                    <a class="btn btn-sm btn-default btn-hover-success" href="#"><i class="fa fa-thumbs-up"></i></a>
-                                                    <a class="btn btn-sm btn-default btn-hover-danger" href="#"><i class="fa fa-thumbs-down"></i></a>
+                                @foreach (var item in Model.Comments)
+                                {
+                                    <div class="panel-body">
+                                        <!-- Newsfeed Content -->
+                                        <!--===================================================-->
+                                        <div class="media-block">
+                                            <a class="media-left" href="#"><img class="img-circle img-sm" alt="Profile Picture" src="/themes/avatarUser.png"></a>
+                                            <div class="media-body" style="margin-left:60px">
+                                                <div class="mar-btm">
+                                                    <a href="#" class="btn-link text-semibold media-heading box-inline">@item.TenUser</a>
+                                                    <div style="display:flex;">
+                                                        <p class="text-muted text-sm">
+                                                            @if (item.Star == 0)
+                                                            {
+                                                                <fieldset class="rate">
+                                                                    <input class="cmRating" value="10" /><label class="lbRating" title="5 stars"></label>
+                                                                    <input class="cmRating" value="9" /><label class="half lbRating" title="4 1/2 stars"></label>
+                                                                    <input class="cmRating" value="8" /><label class="lbRating" title="4 stars"></label>
+                                                                    <input class="cmRating" value="7" /><label class="half lbRating" title="3 1/2 stars"></label>
+                                                                    <input class="cmRating" value="6" /><label class="lbRating" title="3 stars"></label>
+                                                                    <input class="cmRating" value="5" /><label class="half lbRating" title="2 1/2 stars"></label>
+                                                                    <input class="cmRating" value="4" /><label class="lbRating" title="2 stars"></label>
+                                                                    <input class="cmRating" value="3" /><label class="half lbRating" title="1 1/2 stars"></label>
+                                                                    <input class="cmRating" value="2" /><label class="lbRating" title="1 star"></label>
+                                                                    <input class="cmRating" value="1" /><label class="half lbRating" title="1/2 star"></label>
+                                                                    <input class="cmRating" type="radio" checked value="0" /><label class="lbRating" title="No star"></label>
+                                                                </fieldset>
+                                                            }
+                                                            @if (item.Star == 1)
+                                                            {
+                                                                <fieldset class="rate">
+                                                                    <input class="cmRating" value="10" /><label class="lbRating" title="5 stars"></label>
+                                                                    <input class="cmRating" value="9" /><label class="half lbRating" title="4 1/2 stars"></label>
+                                                                    <input class="cmRating" value="8" /><label class="lbRating" title="4 stars"></label>
+                                                                    <input class="cmRating" value="7" /><label class="half lbRating" title="3 1/2 stars"></label>
+                                                                    <input class="cmRating" value="6" /><label class="lbRating" title="3 stars"></label>
+                                                                    <input class="cmRating" value="5" /><label class="half lbRating" title="2 1/2 stars"></label>
+                                                                    <input class="cmRating" value="4" /><label class="lbRating" title="2 stars"></label>
+                                                                    <input class="cmRating" value="3" /><label class="half lbRating" title="1 1/2 stars"></label>
+                                                                    <input class="cmRating" value="2" /><label class="lbRating" title="1 star"></label>
+                                                                    <input class="cmRating" type="radio" checked value="1" /><label class="half lbRating" title="1/2 star"></label>
+                                                                    <input class="cmRating" value="0" /><label class="lbRating" title="No star"></label>
+                                                                </fieldset>
+                                                            }
+                                                            @if (item.Star == 2)
+                                                            {
+                                                                <fieldset class="rate">
+                                                                    <input class="cmRating" value="10" /><label class="lbRating" title="5 stars"></label>
+                                                                    <input class="cmRating" value="9" /><label class="half lbRating" title="4 1/2 stars"></label>
+                                                                    <input class="cmRating" value="8" /><label class="lbRating" title="4 stars"></label>
+                                                                    <input class="cmRating" value="7" /><label class="half lbRating" title="3 1/2 stars"></label>
+                                                                    <input class="cmRating" value="6" /><label class="lbRating" title="3 stars"></label>
+                                                                    <input class="cmRating" value="5" /><label class="half lbRating" title="2 1/2 stars"></label>
+                                                                    <input class="cmRating" value="4" /><label class="lbRating" title="2 stars"></label>
+                                                                    <input class="cmRating" value="3" /><label class="half lbRating" title="1 1/2 stars"></label>
+                                                                    <input class="cmRating" type="radio" checked value="2" /><label class="lbRating" title="1 star"></label>
+                                                                    <input class="cmRating" value="1" /><label class="half lbRating" title="1/2 star"></label>
+                                                                    <input class="cmRating" value="0" /><label class="lbRating" title="No star"></label>
+                                                                </fieldset>
+                                                            }
+                                                            @if (item.Star == 3)
+                                                            {
+                                                                <fieldset class="rate">
+                                                                    <input class="cmRating" value="10" /><label class="lbRating" title="5 stars"></label>
+                                                                    <input class="cmRating" value="9" /><label class="half lbRating" title="4 1/2 stars"></label>
+                                                                    <input class="cmRating" value="8" /><label class="lbRating" title="4 stars"></label>
+                                                                    <input class="cmRating" value="7" /><label class="half lbRating" title="3 1/2 stars"></label>
+                                                                    <input class="cmRating" value="6" /><label class="lbRating" title="3 stars"></label>
+                                                                    <input class="cmRating" value="5" /><label class="half lbRating" title="2 1/2 stars"></label>
+                                                                    <input class="cmRating" value="4" /><label class="lbRating" title="2 stars"></label>
+                                                                    <input class="cmRating" type="radio" checked value="3" /><label class="half lbRating" title="1 1/2 stars"></label>
+                                                                    <input class="cmRating" value="2" /><label class="lbRating" title="1 star"></label>
+                                                                    <input class="cmRating" value="1" /><label class="half lbRating" title="1/2 star"></label>
+                                                                    <input class="cmRating" value="0" /><label class="lbRating" title="No star"></label>
+                                                                </fieldset>
+                                                            }
+                                                            @if (item.Star == 4)
+                                                            {
+                                                                <fieldset class="rate">
+                                                                    <input class="cmRating" value="10" /><label class="lbRating" title="5 stars"></label>
+                                                                    <input class="cmRating" value="9" /><label class="half lbRating" title="4 1/2 stars"></label>
+                                                                    <input class="cmRating" value="8" /><label class="lbRating" title="4 stars"></label>
+                                                                    <input class="cmRating" value="7" /><label class="half lbRating" title="3 1/2 stars"></label>
+                                                                    <input class="cmRating" value="6" /><label class="lbRating" title="3 stars"></label>
+                                                                    <input class="cmRating" value="5" /><label class="half lbRating" title="2 1/2 stars"></label>
+                                                                    <input class="cmRating" type="radio" checked value="4" /><label class="lbRating" title="2 stars"></label>
+                                                                    <input class="cmRating" value="3" /><label class="half lbRating" title="1 1/2 stars"></label>
+                                                                    <input class="cmRating" value="2" /><label class="lbRating" title="1 star"></label>
+                                                                    <input class="cmRating" value="1" /><label class="half lbRating" title="1/2 star"></label>
+                                                                    <input class="cmRating" value="0" /><label class="lbRating" title="No star"></label>
+                                                                </fieldset>
+                                                            }
+                                                            @if (item.Star == 5)
+                                                            {
+                                                                <fieldset class="rate">
+                                                                    <input class="cmRating" value="10" /><label class="lbRating" title="5 stars"></label>
+                                                                    <input class="cmRating" value="9" /><label class="half lbRating" title="4 1/2 stars"></label>
+                                                                    <input class="cmRating" value="8" /><label class="lbRating" title="4 stars"></label>
+                                                                    <input class="cmRating" value="7" /><label class="half lbRating" title="3 1/2 stars"></label>
+                                                                    <input class="cmRating" value="6" /><label class="lbRating" title="3 stars"></label>
+                                                                    <input class="cmRating" type="radio" checked value="5" /><label class="half lbRating" title="2 1/2 stars"></label>
+                                                                    <input class="cmRating" value="4" /><label class="lbRating" title="2 stars"></label>
+                                                                    <input class="cmRating" value="3" /><label class="half lbRating" title="1 1/2 stars"></label>
+                                                                    <input class="cmRating" value="2" /><label class="lbRating" title="1 star"></label>
+                                                                    <input class="cmRating" value="1" /><label class="half lbRating" title="1/2 star"></label>
+                                                                    <input class="cmRating" value="0" /><label class="lbRating" title="No star"></label>
+                                                                </fieldset>
+                                                            }
+                                                            @if (item.Star == 6)
+                                                            {
+                                                                <fieldset class="rate">
+                                                                    <input class="cmRating" value="10" /><label class="lbRating" title="5 stars"></label>
+                                                                    <input class="cmRating" value="9" /><label class="half lbRating" title="4 1/2 stars"></label>
+                                                                    <input class="cmRating" value="8" /><label class="lbRating" title="4 stars"></label>
+                                                                    <input class="cmRating" value="7" /><label class="half lbRating" title="3 1/2 stars"></label>
+                                                                    <input class="cmRating" type="radio" checked value="6" /><label class="lbRating" title="3 stars"></label>
+                                                                    <input class="cmRating" value="5" /><label class="half lbRating" title="2 1/2 stars"></label>
+                                                                    <input class="cmRating" value="4" /><label class="lbRating" title="2 stars"></label>
+                                                                    <input class="cmRating" value="3" /><label class="half lbRating" title="1 1/2 stars"></label>
+                                                                    <input class="cmRating" value="2" /><label class="lbRating" title="1 star"></label>
+                                                                    <input class="cmRating" value="1" /><label class="half lbRating" title="1/2 star"></label>
+                                                                    <input class="cmRating" value="0" /><label class="lbRating" title="No star"></label>
+                                                                </fieldset>
+                                                            }
+                                                            @if (item.Star == 7)
+                                                            {
+                                                                <fieldset class="rate">
+                                                                    <input class="cmRating" value="10" /><label class="lbRating" title="5 stars"></label>
+                                                                    <input class="cmRating" value="9" /><label class="half lbRating" title="4 1/2 stars"></label>
+                                                                    <input class="cmRating" value="8" /><label class="lbRating" title="4 stars"></label>
+                                                                    <input class="cmRating" type="radio" checked value="7" /><label class="half lbRating" title="3 1/2 stars"></label>
+                                                                    <input class="cmRating" value="6" /><label class="lbRating" title="3 stars"></label>
+                                                                    <input class="cmRating" value="5" /><label class="half lbRating" title="2 1/2 stars"></label>
+                                                                    <input class="cmRating" value="4" /><label class="lbRating" title="2 stars"></label>
+                                                                    <input class="cmRating" value="3" /><label class="half lbRating" title="1 1/2 stars"></label>
+                                                                    <input class="cmRating" value="2" /><label class="lbRating" title="1 star"></label>
+                                                                    <input class="cmRating" value="1" /><label class="half lbRating" title="1/2 star"></label>
+                                                                    <input class="cmRating" value="0" /><label class="lbRating" title="No star"></label>
+                                                                </fieldset>
+                                                            }
+                                                            @if (item.Star == 8)
+                                                            {
+                                                                <fieldset class="rate">
+                                                                    <input class="cmRating" value="10" /><label class="lbRating" title="5 stars"></label>
+                                                                    <input class="cmRating" value="9" /><label class="half lbRating" title="4 1/2 stars"></label>
+                                                                    <input class="cmRating" type="radio" checked value="8" /><label class="lbRating" title="4 stars"></label>
+                                                                    <input class="cmRating" value="7" /><label class="half lbRating" title="3 1/2 stars"></label>
+                                                                    <input class="cmRating" value="6" /><label class="lbRating" title="3 stars"></label>
+                                                                    <input class="cmRating" value="5" /><label class="half lbRating" title="2 1/2 stars"></label>
+                                                                    <input class="cmRating" value="4" /><label class="lbRating" title="2 stars"></label>
+                                                                    <input class="cmRating" value="3" /><label class="half lbRating" title="1 1/2 stars"></label>
+                                                                    <input class="cmRating" value="2" /><label class="lbRating" title="1 star"></label>
+                                                                    <input class="cmRating" value="1" /><label class="half lbRating" title="1/2 star"></label>
+                                                                    <input class="cmRating" value="0" /><label class="lbRating" title="No star"></label>
+                                                                </fieldset>
+                                                            }
+                                                            @if (item.Star == 9)
+                                                            {
+                                                                <fieldset class="rate">
+                                                                    <input class="cmRating" value="10" /><label class="lbRating" title="5 stars"></label>
+                                                                    <input class="cmRating" type="radio" checked value="9" /><label class="half lbRating" title="4 1/2 stars"></label>
+                                                                    <input class="cmRating" value="8" /><label class="lbRating" title="4 stars"></label>
+                                                                    <input class="cmRating" value="7" /><label class="half lbRating" title="3 1/2 stars"></label>
+                                                                    <input class="cmRating" value="6" /><label class="lbRating" title="3 stars"></label>
+                                                                    <input class="cmRating" value="5" /><label class="half lbRating" title="2 1/2 stars"></label>
+                                                                    <input class="cmRating" value="4" /><label class="lbRating" title="2 stars"></label>
+                                                                    <input class="cmRating" value="3" /><label class="half lbRating" title="1 1/2 stars"></label>
+                                                                    <input class="cmRating" value="2" /><label class="lbRating" title="1 star"></label>
+                                                                    <input class="cmRating" value="1" /><label class="half lbRating" title="1/2 star"></label>
+                                                                    <input class="cmRating" value="0" /><label class="lbRating" title="No star"></label>
+                                                                </fieldset>
+                                                            }
+                                                            @if (item.Star == 10)
+                                                            {
+                                                                <fieldset class="rate">
+                                                                    <input class="cmRating" type="radio" checked value="10" /><label class="lbRating" title="5 stars"></label>
+                                                                    <input class="cmRating" value="9" /><label class="half lbRating" title="4 1/2 stars"></label>
+                                                                    <input class="cmRating" value="8" /><label class="lbRating" title="4 stars"></label>
+                                                                    <input class="cmRating" value="7" /><label class="half lbRating" title="3 1/2 stars"></label>
+                                                                    <input class="cmRating" value="6" /><label class="lbRating" title="3 stars"></label>
+                                                                    <input class="cmRating" value="5" /><label class="half lbRating" for="rating5" title="2 1/2 stars"></label>
+                                                                    <input class="cmRating" value="4" /><label class="lbRating" title="2 stars"></label>
+                                                                    <input class="cmRating" value="3" /><label class="half lbRating" title="1 1/2 stars"></label>
+                                                                    <input class="cmRating" value="2" /><label class="lbRating" title="1 star"></label>
+                                                                    <input class="cmRating" value="1" /><label class="half lbRating" title="1/2 star"></label>
+                                                                    <input class="cmRating" value="0" /><label class="lbRating" title="No star"></label>
+                                                                </fieldset>
+                                                            }
+                                                        </p>
+                                                        <p style="margin:auto 0; margin-left:auto"> @item.DateCreated</p>
+                                                    </div>
                                                 </div>
-                                                <a class="btn btn-sm btn-default btn-hover-primary" href="#">Comment</a>
-                                            </div>
-                                            <hr>
+                                                <p>@item.Content.</p>
+                                                <div class="pad-ver">
+                                                    <a class="btn btn-sm btn-default btn-hover-primary" href="#">Comment</a>
+                                                </div>
+                                                <hr>
 
-                                            <!-- Comments -->
+                                                <!-- Comments -->
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                }
                             </div>
                         </div>
                     </div>
@@ -292,6 +543,37 @@
                     <br class="clr">
                 </div>
             </div>
+        </div>
+    </div>
+</div>
+<div id="ratingSP" class="rating">
+    <div class="ratingSP_block--overlay">
+    </div>
+    <div class="ratingSP_block">
+        <h1 class="titleRating">ĐÁNH GIÁ SẢN PHẨM</h1>
+        <input type="hidden" id="hidCulture" value="@culture" />
+        <input class="productId" type="hidden" value="@Model.ProductInfo.Id" />
+        <fieldset class="rate">
+            <input class="starSP" type="radio" id="rating10" name="rating" value="10" /><label class="starSP-label" for="rating10" title="5 stars"></label>
+            <input class="starSP" type="radio" id="rating9" name="rating" value="9" /><label class="half starSP-label" for="rating9" title="4 1/2 stars"></label>
+            <input class="starSP" type="radio" id="rating8" name="rating" value="8" /><label class="starSP-label" for="rating8" title="4 stars"></label>
+            <input class="starSP" type="radio" id="rating7" name="rating" value="7" /><label class="half starSP-label" for="rating7" title="3 1/2 stars"></label>
+            <input class="starSP" type="radio" id="rating6" name="rating" value="6" /><label class="starSP-label" for="rating6" title="3 stars"></label>
+            <input class="starSP" type="radio" id="rating5" name="rating" value="5" /><label class="half starSP-label" for="rating5" title="2 1/2 stars"></label>
+            <input class="starSP" type="radio" id="rating4" name="rating" value="4" /><label class="starSP-label" for="rating4" title="2 stars"></label>
+            <input class="starSP" type="radio" id="rating3" name="rating" value="3" /><label class="half starSP-label" for="rating3" title="1 1/2 stars"></label>
+            <input class="starSP" type="radio" id="rating2" name="rating" value="2" /><label class="starSP-label" for="rating2" title="1 star"></label>
+            <input class="starSP" type="radio" id="rating1" name="rating" value="1" /><label class="half starSP-label" for="rating1" title="1/2 star"></label>
+            <input class="starSP" type="radio" id="rating0" name="rating" value="0" /><label class="starSP-label" for="rating0" title="No star"></label>
+        </fieldset>
+        <div class="panel">
+            <div class="panel-body">
+                <textarea id="commentSP" style="width:100%" class="form-control" rows="5" placeholder="What are you thinking?"></textarea>
+            </div>
+        </div>
+        <div style="display:flex">
+            <button class="btnSubmit btn btn-info">Submit</button>
+            <button class="btnCancel btn btn-danger">Cancel</button>
         </div>
     </div>
 </div>

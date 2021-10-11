@@ -15,6 +15,8 @@ namespace Web.Application.Catalog.Products
     {
         public Task<ResultApi<string>> CreateProduct(ProductCreate request);
 
+        public Task<ResultApi<string>> CreateProductFavorite(ProductFVCreate request);
+
         public Task<int> DeleteProduct(int productId);
 
         public Task<ResultApi<ProductViewModel>> GetProductById(int productId, string languageId);

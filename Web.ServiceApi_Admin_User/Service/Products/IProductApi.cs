@@ -16,6 +16,8 @@ namespace Web.ServiceApi_Admin_User.Service.Products
 
         public Task<ResultApi<string>> CreateProduct(ProductCreate request);
 
+        public Task<ResultApi<string>> CreateProductFV(ProductFVCreate request, string BearerToken);
+
         public Task<ResultApi<string>> AssignCategory(int productId, CategoryAssignRequest request);
 
         public Task<ResultApi<string>> AssignSize(int productId, SizeAssignRequest request);

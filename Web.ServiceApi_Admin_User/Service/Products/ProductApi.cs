@@ -68,6 +68,24 @@ namespace Web.ServiceApi_Admin_User.Service.Products
             return new ResultSuccessApi<string>(result);
         }
 
+        public async Task<ResultApi<string>> CreateProductFV(ProductFVCreate request, string BearerToken)
+        {
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", BearerToken);
+
+            var json = JsonConvert.SerializeObject(request);
+            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await client.PostAsync("/api/Products/product-favorite", httpContent);
+            var result = await response.Content.ReadAsStringAsync();
+            if (!response.IsSuccessStatusCode)
+                return new ResultErrorApi<string>(result);
+
+            return new ResultSuccessApi<string>(result);
+        }
+
         public async Task<PageResult<ProductViewModel>> GetAll(GetManageProductPagingRequest request)
         {
             var client = _httpClientFactory.CreateClient();

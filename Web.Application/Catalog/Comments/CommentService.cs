@@ -3,13 +3,13 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Web.Data.EF;
 using Web.Data.Entities;
 using Web.Data.Enums;
 using Web.Utilities.Exceptions;
 using Web.ViewModels.Catalog.Comments;
+using Web.ViewModels.Catalog.Common;
 
 namespace Web.Application.Catalog.Comments
 {
@@ -22,6 +22,44 @@ namespace Web.Application.Catalog.Comments
         {
             _context = context;
             _userManager = userManager;
+        }
+
+        public async Task<ResultApi<string>> CreateComment(CommentCreate request)
+        {
+            var user = await _userManager.FindByEmailAsync(request.Email);
+            if (user == null)
+            {
+                return null;
+            }
+            var kiemtraCM = await _context.Comments.FirstOrDefaultAsync(x => x.ProductId == request.ProductId && x.UserId == user.Id);
+            if (kiemtraCM != null)
+            {
+                kiemtraCM.Content = request.Content;
+                kiemtraCM.Star = request.Star;
+                kiemtraCM.DateCreated = DateTime.Now;
+            }
+            else
+            {
+                var comment = new Comment()
+                {
+                    Content = request.Content,
+                    DateCreated = DateTime.Now,
+                    ProductId = request.ProductId,
+                    Star = request.Star,
+                    UserId = user.Id,
+                    Status = Status.Active,
+                    ParentId = request.ParentId
+                };
+
+                await _context.Comments.AddAsync(comment);
+            }
+
+            var result = await _context.SaveChangesAsync();
+            if (result > 0)
+            {
+                return new ResultSuccessApi<string>("Thêm bình luận thành công");
+            }
+            return new ResultErrorApi<string>("Thêm bình luận thất bại");
         }
 
         public async Task<int> Delete(int id)
@@ -41,22 +79,26 @@ namespace Web.Application.Catalog.Comments
             var listData = new List<CommentViewModel>();
             foreach (var item in list)
             {
-                var product = await _context.Products.FindAsync(item.c.ProductId);
-                var productTranslation = await _context.ProductTranslations.FirstOrDefaultAsync(x => x.ProductId == item.c.ProductId && x.LanguageId == languageId);
-                var user = await _userManager.FindByIdAsync(item.c.UserId.ToString());
                 var data = new CommentViewModel()
                 {
                     Content = item.c.Content,
                     DateCreated = item.c.DateCreated,
                     Status = item.c.Status,
                     ParentId = item.c.ParentId,
-                    TenSP = productTranslation.Name,
-                    TenUser = user.UserName
+                    ProductId = item.c.ProductId,
+                    UserId = item.c.UserId,
+                    Star = item.c.Star
                 };
 
                 listData.Add(data);
             }
-
+            foreach (var item in listData)
+            {
+                var user = await _userManager.FindByIdAsync(item.UserId.ToString());
+                var productTranslation = await _context.ProductTranslations.FirstOrDefaultAsync(x => x.ProductId == item.ProductId && x.LanguageId == languageId);
+                item.TenSP = productTranslation.Name;
+                item.TenUser = user.UserName;
+            }
             return (listData);
         }
 
@@ -65,24 +107,28 @@ namespace Web.Application.Catalog.Comments
             var list = from c in _context.Comments
                        where c.Status == Status.Active
                        select new { c };
-
             var listData = new List<CommentViewModel>();
             foreach (var item in list)
             {
-                var product = await _context.Products.FindAsync(item.c.ProductId);
-                var productTranslation = await _context.ProductTranslations.FirstOrDefaultAsync(x => x.ProductId == item.c.ProductId && x.LanguageId == languageId);
-                var user = await _userManager.FindByIdAsync(item.c.UserId.ToString());
                 var data = new CommentViewModel()
                 {
                     Content = item.c.Content,
                     DateCreated = item.c.DateCreated,
                     Status = item.c.Status,
                     ParentId = item.c.ParentId,
-                    TenSP = productTranslation.Name,
-                    TenUser = user.UserName
+                    ProductId = item.c.ProductId,
+                    UserId = item.c.UserId,
+                    Star = item.c.Star
                 };
 
                 listData.Add(data);
+            }
+            foreach (var item in listData)
+            {
+                var user = await _userManager.FindByIdAsync(item.UserId.ToString());
+                var productTranslation = await _context.ProductTranslations.FirstOrDefaultAsync(x => x.ProductId == item.ProductId && x.LanguageId == languageId);
+                item.TenSP = productTranslation.Name;
+                item.TenUser = user.UserName;
             }
 
             return (listData);

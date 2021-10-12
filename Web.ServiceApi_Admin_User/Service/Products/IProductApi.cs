@@ -24,11 +24,15 @@ namespace Web.ServiceApi_Admin_User.Service.Products
 
         public Task<ResultApi<string>> AssignSize(int productId, SizeAssignRequest request);
 
+        public Task<ResultApi<string>> AddViewCount(int productId);
+
         public Task<ResultApi<ProductViewModel>> GetProductById(int productId, string BearerToken, string languageId);
 
         public Task<List<ProductViewModel>> GetFeaturedProducts(string languageId, int soluong);
 
         public Task<List<ProductViewModel>> GetLatestProducts(string languageId, int soluong);
+
+        public Task<List<ProductViewModel>> GetProductsOrderMax(string languageId, int soluong);
 
         public Task<ResultApi<List<ProductSizeViewModel>>> GetProductSize(int productId, string BearerToken);
 

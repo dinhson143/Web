@@ -105,6 +105,14 @@ namespace Web.Api.Controllers
             return Ok(result);
         }
 
+        [HttpGet("order-products/{languagedID}/{soluong}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetProductsOrderMax(string languagedID, int soluong)
+        {
+            var result = await _manageservice.GetProductsOrderMax(languagedID, soluong);
+            return Ok(result);
+        }
+
         [HttpGet("favorite-products/{languagedID}/{email}")]
         public async Task<IActionResult> GetProductsFavorite(string languagedID, string email)
         {
@@ -156,6 +164,18 @@ namespace Web.Api.Controllers
         public async Task<IActionResult> UpdatePrice([FromBody] UpdatePriceRequest request)
         {
             var result = await _manageservice.UpdatePrice(request);
+            return Ok(result);
+        }
+
+        [HttpGet("add-view/{productId}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> AddViewCount(int productId)
+        {
+            if (!ModelState.IsValid)
+            {
+                return null;
+            }
+            var result = await _manageservice.AddViewCount(productId);
             return Ok(result);
         }
     }

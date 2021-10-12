@@ -1,7 +1,8 @@
-﻿@model List<Web.ViewModels.Catalog.Categories.CategoryViewModel>
+﻿@model SideBarViewModel
 @inject LazZiya.ExpressLocalization.ISharedCultureLocalizer _loc;
 @{
     var culture = CultureInfo.CurrentCulture.Name;
+    CultureInfo cul;
 }
 <div id="sidebar" class="span3">
     <div class="well well-small">
@@ -14,14 +15,14 @@
     </div>
     <ul id="sideManu" class="nav nav-tabs nav-stacked">
         @{
-            var parents = Model.Where(x => x.ParentId == null);
+            var parents = Model.listCate.Where(x => x.ParentId == null);
         }
         @foreach (var parent in parents)
         {
             <li class="subMenu open">
                 <a>@parent.Name</a>
                 @{
-                    var childrens = Model.Where(x => x.ParentId == parent.Id);
+                    var childrens = Model.listCate.Where(x => x.ParentId == parent.Id);
 
                 }
                 @if (childrens.Any())
@@ -45,18 +46,33 @@
     <br />
 
     @*sản phẩm mua nhiều nhất*@
-    <div class="thumbnail">
-        <img src="/themes/images/products/panasonic.jpg" alt="Bootshop panasonoc New camera" />
-        <div class="caption">
-            <h5>Panasonic</h5>
-            <h4 style="text-align:center"><a class="btn" href="product_details.html"> <i class="icon-zoom-in"></i></a> <a class="btn" href="#">Add to <i class="icon-shopping-cart"></i></a> <a class="btn btn-primary" href="#">$222.00</a></h4>
-        </div>
-    </div><br />
-    <div class="thumbnail">
-        <img src="/themes/images/products/kindle.png" title="Bootshop New Kindel" alt="Bootshop Kindel">
-        <div class="caption">
-            <h5>Kindle</h5>
-            <h4 style="text-align:center"><a class="btn" href="product_details.html"> <i class="icon-zoom-in"></i></a> <a class="btn" href="#">Add to <i class="icon-shopping-cart"></i></a> <a class="btn btn-primary" href="#">$222.00</a></h4>
-        </div>
-    </div><br />
+    @if (Model.listpro != null)
+    {
+        @foreach (var item in Model.listpro)
+        {
+            var url = $"/{culture}/{_loc["productURL"]}/{item.Id}";
+            <div class="thumbnail">
+                <img src="@item.Image" alt="@item.Name" />
+                <div class="caption">
+                    <h5>@item.Name</h5>
+                    <h4 style="text-align:center">
+                        <a class="btn" href="@url">
+                            <i class="icon-zoom-in"></i>
+                        </a>
+                        <a class="btn" href="#"> <localize>Add to </localize><i class="icon-shopping-cart"></i></a>
+                        @if (String.Compare(culture.ToString(), "vi") == 0)
+                        {
+                            cul = CultureInfo.GetCultureInfo("vi-VN");
+                            <a class="btn btn-primary" href="#">@item.listPS[0].Price.ToString("C", cul.NumberFormat) - @item.listPS[item.listPS.Count - 1].Price.ToString("C", cul.NumberFormat)</a>
+                        }
+                        else
+                        {
+                            cul = CultureInfo.GetCultureInfo("en-US");
+                            <a class="btn btn-primary" href="#">@item.listPS[0].Price.ToString("C", cul.NumberFormat) - @item.listPS[item.listPS.Count - 1].Price.ToString("C", cul.NumberFormat)</a>
+                        }
+                    </h4>
+                </div>
+            </div><br />
+        }
+    }
 </div>

@@ -25,7 +25,7 @@ namespace Web.Application.Catalog.Products
 
         public Task UpdateStock();
 
-        public Task AddViewCount();
+        public Task<int> AddViewCount(int productId);
 
         public Task AddImage();
 
@@ -58,5 +58,7 @@ namespace Web.Application.Catalog.Products
         public Task<List<ProductViewModel>> GetFeaturedProducts(string languageId, int soluong);
 
         public Task<List<ProductViewModel>> GetLatestProducts(string languageId, int soluong);
+
+        public Task<List<ProductViewModel>> GetProductsOrderMax(string languageId, int soluong);
     }
 }

@@ -59,9 +59,11 @@ namespace Web.Application.Catalog.Products
             //};
         }
 
-        public Task AddViewCount()
+        public async Task<int> AddViewCount(int productId)
         {
-            throw new NotImplementedException();
+            var product = await _context.Products.FindAsync(productId);
+            product.ViewCount += 1;
+            return await _context.SaveChangesAsync();
         }
 
         public async Task<ResultApi<string>> CreateProduct(ProductCreate request)
@@ -646,6 +648,77 @@ namespace Web.Application.Catalog.Products
                     }
                 }
             }
+
+            foreach (var product in data)
+            {
+                var list = new List<ProductSizeViewModel>();
+                var result = from p in _context.PCSs
+                             join s in _context.Sizes on p.SizeId equals s.Id
+                             where p.ProductId == product.Id
+                             select new { p, s };
+                foreach (var pcs in result)
+                {
+                    var x = new ProductSizeViewModel()
+                    {
+                        Size = pcs.s.Name,
+                        SizeId = pcs.p.SizeId,
+                        OriginalPrice = pcs.p.OriginalPrice,
+                        Price = pcs.p.Price,
+                        Stock = pcs.p.Stock
+                    };
+                    list.Add(x);
+                }
+                product.listPS = list;
+            }
+
+            return new List<ProductViewModel>(data);
+        }
+
+        public async Task<List<ProductViewModel>> GetProductsOrderMax(string languageId, int soluong)
+        {
+            // 1.Select join
+            var query = from p in _context.Products
+                        join pt in _context.ProductTranslations on p.Id equals pt.ProductId
+                        join pic in _context.ProductInCategories on p.Id equals pic.ProductId into ppic
+                        from pic in ppic.DefaultIfEmpty()
+                        join pi in _context.ProductImages on p.Id equals pi.ProductId into ppi
+                        from pi in ppi.DefaultIfEmpty()
+                        join po in _context.OrderDetails on p.Id equals po.ProductId
+                        where pt.LanguageId == languageId && p.Status == Status.Active && (pi.IsDefault == true || pi == null)
+                        select new { p, pt, pic, pi, po };
+            //
+
+            // 3 .Paging
+            int totalRow = await query.CountAsync();
+            var data = await query.OrderByDescending(x => x.po.Quantity).Select(x => new ProductViewModel()
+            {
+                Id = x.p.Id,
+                ViewCount = x.p.ViewCount,
+                DateCreated = x.p.DateCreated,
+                Name = x.pt.Name,
+                Description = x.pt.Description,
+                Details = x.pt.Details,
+                SeoDescription = x.pt.SeoDescription,
+                SeoTitle = x.pt.SeoTitle,
+                SeoAlias = x.pt.SeoAlias,
+                LanguageId = x.pt.LanguageId,
+                Image = x.pi.ImagePath,
+                SluongDaban = x.po.Quantity
+            }).ToListAsync();
+
+            for (var i = 0; i < data.Count; i++)
+            {
+                for (var j = i + 1; j < data.Count; j++)
+                {
+                    if (data[i].Id == data[j].Id)
+                    {
+                        data[i].SluongDaban += data[j].SluongDaban;
+                        data.Remove(data[j]);
+                    }
+                }
+            }
+
+            data = data.OrderBy(o => o.SluongDaban).Take(2).ToList();
 
             foreach (var product in data)
             {

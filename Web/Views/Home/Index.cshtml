@@ -70,12 +70,12 @@
                                                 @if (String.Compare(culture.ToString(), "vi") == 0)
                                                 {
                                                     cul = CultureInfo.GetCultureInfo("vi-VN");
-                                                    <span style="font-size:12px" class="pull-right">@data.listPS[0].Price.ToString("C", cul.NumberFormat) - @data.listPS[data.listPS.Count - 1].Price.ToString("C", cul.NumberFormat)</span>
+                                                    <span style="font-size:11px" class="pull-right">@data.listPS[0].Price.ToString("C", cul.NumberFormat) - @data.listPS[data.listPS.Count - 1].Price.ToString("C", cul.NumberFormat)</span>
                                                 }
                                                 else
                                                 {
                                                     cul = CultureInfo.GetCultureInfo("en-US");
-                                                    <span style="font-size:12px" class="pull-right">@data.listPS[0].Price.ToString("C", cul.NumberFormat) - @data.listPS[data.listPS.Count - 1].Price.ToString("C", cul.NumberFormat)</span>
+                                                    <span style="font-size:11px" class="pull-right">@data.listPS[0].Price.ToString("C", cul.NumberFormat) - @data.listPS[data.listPS.Count - 1].Price.ToString("C", cul.NumberFormat)</span>
                                                 }
                                             </h4>
                                         </div>

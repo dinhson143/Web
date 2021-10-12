@@ -60,6 +60,11 @@ namespace Web.Controllers
 
         public async Task<IActionResult> ProductDetail(int id)
         {
+            var av = await _productApi.AddViewCount(id);
+            if (av.IsSuccess == false)
+            {
+                return RedirectToAction("Index", "Home");
+            }
             var culture = CultureInfo.CurrentCulture.Name;
             var result = await _productApi.GetProductById(id, "", culture);
             var images = await _productApi.GetListImage(id);

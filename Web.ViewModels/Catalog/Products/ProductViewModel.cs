@@ -49,5 +49,6 @@ namespace Web.ViewModels.Catalog.Products
         public List<string> Sizes { set; get; }
         public List<ProductImagesModel> Images { set; get; }
         public List<ProductSizeViewModel> listPS { get; set; }
+        public int SluongDaban { get; set; }
     }
 }

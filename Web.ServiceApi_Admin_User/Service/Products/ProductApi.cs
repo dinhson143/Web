@@ -290,5 +290,26 @@ namespace Web.ServiceApi_Admin_User.Service.Products
             var data = JsonConvert.DeserializeObject<List<ProductFavoriteViewModel>>(body);
             return data;
         }
+
+        public async Task<List<ProductViewModel>> GetProductsOrderMax(string languageId, int soluong)
+        {
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+            var response = await client.GetAsync($"/api/Products/order-products/{languageId}/{soluong}");
+            var result = await response.Content.ReadAsStringAsync();
+
+            return JsonConvert.DeserializeObject<List<ProductViewModel>>(result);
+        }
+
+        public async Task<ResultApi<string>> AddViewCount(int productId)
+        {
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+            var response = await client.GetAsync("/api/Products/add-view/" + productId);
+            if (!response.IsSuccessStatusCode)
+                return new ResultErrorApi<string>("Error");
+
+            return new ResultSuccessApi<string>("Success");
+        }
     }
 }

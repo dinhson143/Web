@@ -14,6 +14,8 @@ namespace Web.ServiceApi_Admin_User.Service.Products
     {
         public Task<PageResult<ProductViewModel>> GetAll(GetManageProductPagingRequest request);
 
+        public Task<List<ProductFavoriteViewModel>> GetProductsFavorite(ProductFVrequest request, string BearerToken);
+
         public Task<ResultApi<string>> CreateProduct(ProductCreate request);
 
         public Task<ResultApi<string>> CreateProductFV(ProductFVCreate request, string BearerToken);

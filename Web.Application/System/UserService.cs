@@ -120,8 +120,11 @@ namespace Web.Application.System
             var roles = await _userManager.GetRolesAsync(user);
             var claims = new[]
             {
+                new Claim(ClaimTypes.NameIdentifier,user.Id.ToString()),
                 new Claim(ClaimTypes.Email,user.Email),
                 new Claim(ClaimTypes.GivenName,user.FirstName),
+                new Claim(ClaimTypes.Surname,user.LastName),
+                new Claim(ClaimTypes.DateOfBirth,user.Dob.ToString("MM/dd/yyyy")),
                 new Claim(ClaimTypes.Name,user.UserName),
                 new Claim(ClaimTypes.MobilePhone,user.PhoneNumber),
                 new Claim(ClaimTypes.StreetAddress,user.Address),
@@ -208,12 +211,13 @@ namespace Web.Application.System
             {
                 return new ResultErrorApi<string>("Email đã tồn tại");
             }
-            user.Address = request.Address;
-            user.Email = request.Email;
-            user.FirstName = request.FirstName;
-            user.LastName = request.LastName;
+            if (request.Address != null) user.Address = request.Address;
+
+            if (request.Email != null) user.Email = request.Email;
+            if (request.FirstName != null) user.FirstName = request.FirstName;
+            if (request.LastName != null) user.LastName = request.LastName;
             user.Dob = request.Dob;
-            user.PhoneNumber = request.Phonenumber;
+            if (request.Phonenumber != null) user.PhoneNumber = request.Phonenumber;
 
             var result = await _userManager.UpdateAsync(user);
             if (result.Succeeded)

@@ -1,0 +1,164 @@
+﻿@model Web.Models.PersonalViewmodel
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var culture = CultureInfo.CurrentCulture.Name;
+}
+<style>
+    .controls input {
+        width: 80%;
+    }
+</style>
+@section Scripts{
+    <link href="~/css/personal.css" rel="stylesheet" />
+    <script src="/vendor/datatables/jquery.dataTables.min.js"></script>
+    <script src="/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+
+    <!-- Page level custom scripts -->
+    <script src="/js/demo/datatables-demo.js"></script>
+    <script type="text/javascript">
+        $('.productFV').hide();
+        $('.profile').hide();
+        $(".btnLove").click(function () {
+            $('.productFV').toggle();
+            $('.profile').hide();
+        });
+        $(".btnProfile").click(function () {
+            $('.productFV').hide();
+            $('.profile').toggle();
+
+        });
+    </script>
+    <script>
+        var culture = '@culture';
+            setTimeout(function () {
+                $(".alert").fadeOut('slow');
+            }, 2000);
+    </script>
+}
+
+<div class="btn-group">
+    <button style="margin:0 5px" class="btn btn-info btnLove">Danh Sách Yêu Thích</button>
+    <button style="margin:0 5px" class="btn btn-info btnProfile">Thông Tin Cá Nhân</button>
+</div>
+@if (@TempData["Message"] != null)
+{
+    <div class="alert alert-danger" role="alert" style="text-align:center; margin:10px 0">
+        @TempData["Message"]
+    </div>
+}
+<div class="profile well" style="margin:30px 0 0 0 ">
+    <form class="form-horizontal" asp-action="Update" asp-controller="Personal" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <h4 class="h3 mb-2 text-gray-800" style="padding: 10px 0; text-align: center; margin: 30px auto 30px auto; width: 80%; background-color: green; color: #fff; border-radius: 15px">Thông Tin Cá Nhân</h4>
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="control-group">
+            <label asp-for="FirstName" class="control-label"></label>
+            <input asp-for="FirstName" value="@Model.FirstName" class="form-control" />
+            <span asp-validation-for="FirstName" class="text-danger"></span>
+        </div>
+        <div class="control-group">
+            <label asp-for="LastName" class="control-label"></label>
+            <input asp-for="LastName" value="@Model.LastName" class="form-control" />
+            <span asp-validation-for="LastName" class="text-danger"></span>
+        </div>
+        <div class="control-group">
+            <label asp-for="Address" class="control-label"></label>
+            <input asp-for="Address" value="@Model.Address" class="form-control" />
+            <span asp-validation-for="Address" class="text-danger"></span>
+        </div>
+        <div class="control-group">
+            @{
+                var date = Model.Dob.ToString("yyyy-MM-dd");
+            }
+            <label asp-for="Dob" class="control-label"></label>
+            <input type="date" asp-for="Dob" value="@date" class="form-control" />
+            <span asp-validation-for="Dob" class="text-danger"></span>
+        </div>
+        <div class="control-group">
+            <label asp-for="Email" class="control-label"></label>
+            <input asp-for="Email" value="@Model.Email" class="form-control" />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+        <div class="control-group">
+            <label asp-for="Phone" class="control-label"></label>
+            <input asp-for="Phone" value="@Model.Phone" class="form-control" />
+            <span asp-validation-for="Phone" class="text-danger"></span>
+        </div>
+        <input type="hidden" asp-for="Id" value="@Model.Id" class="form-control" />
+        <div class="btn-group" style="margin:auto;display:block">
+            <button style="display:block;margin:auto" class="btn btn-info">Cập nhật</button>
+        </div>
+    </form>
+</div>
+
+<div class="container-fluid productFV">
+
+    <!-- Page Heading -->
+    <h4 class="h3 mb-2 text-gray-800" style="padding:10px 0;text-align:center;margin:30px auto 30px auto;width:80%;background-color:green;color:#fff;border-radius:15px">Danh Sách Bất Động Sản Yêu Thích</h4>
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        @if (@TempData["Message"] != null)
+        {
+            <div class="alert alert-success" role="alert" style="text-align:center">
+                @TempData["Message"]
+            </div>
+        }
+
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>
+                                Hình ảnh
+                            </th>
+                            <th>
+                                Tên Sản Phẩm
+                            </th>
+                            <th>
+                                Mô tả
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th>
+                                Hình ảnh
+                            </th>
+                            <th>
+                                Tên Sản Phẩm
+                            </th>
+                            <th>
+                                Mô tả
+                            </th>
+                            <th></th>
+                        </tr>
+                    </tfoot>
+                    <tbody>
+                        @foreach (var item in Model.ListLove)
+                        {
+                            <tr>
+                                <td>
+                                    <img style="width:100%;height:100px" src="@item.URL" />
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.TenProduct)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Description)
+                                </td>
+                                <td>
+                                    <button class="btn btn-danger">
+                                        @Html.ActionLink("Delete", "Delete", new { id = item.ProductId })
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

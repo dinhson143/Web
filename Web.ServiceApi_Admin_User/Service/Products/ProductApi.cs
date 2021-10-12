@@ -275,5 +275,20 @@ namespace Web.ServiceApi_Admin_User.Service.Products
             var response = await client.PutAsync("/api/Products/Update-price", httpContent);
             return response.IsSuccessStatusCode;
         }
+
+        public async Task<List<ProductFavoriteViewModel>> GetProductsFavorite(ProductFVrequest request, string BearerToken)
+        {
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", BearerToken);
+
+            var json = JsonConvert.SerializeObject(request);
+            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+            var response = await client.GetAsync($"/api/Products/favorite-products/{request.LanguageID}/{request.Email}");
+            var body = await response.Content.ReadAsStringAsync();
+            var data = JsonConvert.DeserializeObject<List<ProductFavoriteViewModel>>(body);
+            return data;
+        }
     }
 }

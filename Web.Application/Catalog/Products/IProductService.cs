@@ -47,6 +47,8 @@ namespace Web.Application.Catalog.Products
 
         public List<ProductSizeViewModel> GetProductSize(int ProductId);
 
+        public Task<List<ProductFavoriteViewModel>> GetProductFavorite(ProductFVrequest request);
+
         Task<PageResult<ProductViewModel>> GetAllByCategoryId(GetPublicProductPagingRequest request);
 
         public Task<ResultApi<bool>> AssignCategory(int productId, CategoryAssignRequest request);

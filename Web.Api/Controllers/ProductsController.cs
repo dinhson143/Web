@@ -105,6 +105,16 @@ namespace Web.Api.Controllers
             return Ok(result);
         }
 
+        [HttpGet("favorite-products/{languagedID}/{email}")]
+        public async Task<IActionResult> GetProductsFavorite(string languagedID, string email)
+        {
+            var request = new ProductFVrequest();
+            request.Email = email;
+            request.LanguageID = languagedID;
+            var result = await _manageservice.GetProductFavorite(request);
+            return Ok(result);
+        }
+
         [HttpGet("products-category")]
         [AllowAnonymous]
         public async Task<IActionResult> GetProductsByCategoryId([FromQuery] GetPublicProductPagingRequest request)

@@ -828,5 +828,27 @@ namespace Web.Application.Catalog.Products
             }
             return new ResultErrorApi<string>("Cập nhật danh sách yêu thích thất bại");
         }
+
+        public async Task<List<ProductFavoriteViewModel>> GetProductFavorite(ProductFVrequest request)
+        {
+            var user = await _userManager.FindByEmailAsync(request.Email);
+            if (user == null)
+            {
+                return null;
+            }
+            var listFv = from c in _context.ProductFavorites
+                         join ct in _context.ProductTranslations on c.ProductId equals ct.ProductId
+                         join ci in _context.ProductImages on c.ProductId equals ci.ProductId
+                         where c.UserId == user.Id && ct.LanguageId == request.LanguageID && c.Status == Status.Active
+                         select new { c, ct, ci };
+
+            return await listFv.Select(x => new ProductFavoriteViewModel()
+            {
+                TenProduct = x.ct.Name,
+                Description = x.ct.Description,
+                URL = x.ci.ImagePath,
+                ProductId = x.c.ProductId
+            }).ToListAsync();
+        }
     }
 }

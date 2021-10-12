@@ -24,6 +24,10 @@
     <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/themes/images/ico/apple-touch-icon-72-precomposed.png">
     <link rel="apple-touch-icon-precomposed" href="/themes/images/ico/apple-touch-icon-57-precomposed.png">
 
+    @*//*@
+    
+    <link href="/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+
     <style type="text/css" id="enject">
         .dropdown {
             margin: 0 10px;
@@ -82,7 +86,7 @@
                     <ul id="topMenu" class="nav pull-right">
                         <li class=""><a asp-route-culture="@culture" localize-content>Specials Offer</a></li>
                         <li class=""><a asp-route-culture="@culture" localize-content>Orders</a></li>
-                        <li class=""><a asp-route-culture="@culture" localize-content>Personal</a></li>
+                        <li class=""><a  href="/@culture/Personal/Index" localize-content>Personal</a></li>
                         <li class="">
                             @if (User.Identity.IsAuthenticated)
                             {
@@ -152,8 +156,7 @@
                     <a href="#"><img width="60" height="60" src="/themes/images/twitter.png" title="twitter" alt="twitter" /></a>
                     <a href="#"><img width="60" height="60" src="/themes/images/youtube.png" title="youtube" alt="youtube" /></a>
                 </div>
-            </div>
-            <p class="pull-right">&copy; Bootshop</p>
+            </div>           
         </div><!-- Container End -->
     </div>
     <!-- Placed at the end of the document so the pages load faster ============================================= -->

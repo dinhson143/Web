@@ -1,0 +1,25 @@
+﻿.pagination{
+    display:flex;
+}
+#dataTable_info, div.dataTables_wrapper div.dataTables_length label {
+    display: none;
+}
+table.table-bordered.dataTable th, table.table-bordered.dataTable td {
+    text-align: center;
+}
+#dataTable_wrapper .row{
+    
+}
+div.dataTables_wrapper div.dataTables_filter label {
+    margin-left: auto;
+    text-align: unset;
+}
+.pagination li {
+    list-style: none;
+    margin: 0 5px;
+}
+    .pagination .active{
+        background-color:cornflowerblue;
+        padding:0 10px;
+        border-radius:5px;
+    }

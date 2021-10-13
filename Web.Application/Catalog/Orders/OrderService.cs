@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,7 @@ using Web.Data.EF;
 using Web.Data.Entities;
 using Web.Data.Enums;
 using Web.ViewModels.Catalog.Common;
+using Web.ViewModels.Catalog.Orders;
 using Web.ViewModels.Catalog.Sales;
 
 namespace Web.Application.Catalog.Orders
@@ -60,6 +62,49 @@ namespace Web.Application.Catalog.Orders
                 return new ResultSuccessApi<string>("Tạo đơn hàng thành công");
             }
             return new ResultErrorApi<string>("Tạo đơn hàng thất bại");
+        }
+
+        public async Task<List<OrderViewModel>> GetOrderUser(Guid userId, string languageID)
+        {
+            var query = from o in _context.Orders
+                        where o.Status != OrderStatus.Success && o.Status != OrderStatus.Canceled && o.UserId == userId
+                        select new { o };
+            var data = await query.Select(x => new OrderViewModel()
+            {
+                Id = x.o.Id,
+                OrderDate = x.o.OrderDate,
+                ShipAddress = x.o.ShipAddress,
+                ShipEmail = x.o.ShipEmail,
+                ShipName = x.o.ShipName,
+                ShipPhone = x.o.ShipPhoneNumber,
+                Status = x.o.Status
+            }).ToListAsync();
+
+            foreach (var order in data)
+            {
+                var list = new List<OrderDetailViewModel>();
+                var result = from od in _context.OrderDetails
+                             join pt in _context.ProductTranslations on od.ProductId equals pt.ProductId
+                             join pi in _context.ProductImages on od.ProductId equals pi.ProductId
+                             join ods in _context.Sizes on od.SizeId equals ods.Id
+                             where od.OrderId == order.Id && pt.LanguageId == languageID && pi.IsDefault == true
+                             select new { od, pt, ods, pi };
+                foreach (var item in result)
+                {
+                    var x = new OrderDetailViewModel()
+                    {
+                        Price = item.od.Price,
+                        ProductName = item.pt.Name,
+                        Quantity = item.od.Quantity,
+                        SizeName = item.ods.Name,
+                        Image = item.pi.ImagePath,
+                        OrderID = order.Id
+                    };
+                    list.Add(x);
+                }
+                order.ListOrDetail = list;
+            }
+            return new List<OrderViewModel>(data);
         }
     }
 }

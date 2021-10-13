@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Web.ViewModels.Catalog.Common;
+using Web.ViewModels.Catalog.Orders;
 using Web.ViewModels.Catalog.Sales;
 
 namespace Web.ServiceApi_Admin_User.Service.Orders
@@ -38,6 +39,23 @@ namespace Web.ServiceApi_Admin_User.Service.Orders
                 return new ResultErrorApi<string>(result);
 
             return new ResultSuccessApi<string>(result);
+        }
+
+        public async Task<ResultApi<List<OrderViewModel>>> GetOrderUser(Guid userId, string languageID, string BearerToken)
+        {
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", BearerToken);
+
+            var response = await client.GetAsync($"/api/Orders/danh-sach-order/{languageID}/{userId}");
+            if (response.IsSuccessStatusCode)
+            {
+                var body = await response.Content.ReadAsStringAsync();
+                var list = JsonConvert.DeserializeObject<List<OrderViewModel>>(body);
+                return new ResultSuccessApi<List<OrderViewModel>>(list);
+            }
+            return new ResultErrorApi<List<OrderViewModel>>("Không thể lấy danh sách Orders");
         }
     }
 }

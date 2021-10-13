@@ -1,0 +1,143 @@
+﻿@model Web.Models.OrderViewModelWeb
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var culture = CultureInfo.CurrentCulture.Name;
+}
+@section Scripts{
+    <link href="~/css/personal.css" rel="stylesheet" />
+    <script src="/vendor/datatables/jquery.dataTables.min.js"></script>
+    <script src="/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+
+    <!-- Page level custom scripts -->
+    <script src="/js/demo/datatables-demo.js"></script>
+    <script type="text/javascript">
+        /*$('.btnListHistory').hide();*/
+        $('.dsDonhang').hide();
+        $(".btnListOrder").click(function () {
+            $('.dsDonhang').toggle();
+            /*$('.btnListHistory').hide();*/
+            });
+        $(".btnListHistory").click(function () {
+            $('.dsDonhang').hide();
+            /*$('.btnListHistory').toggle();*/
+            });
+        </script>
+        <script>
+            var culture = '@culture';
+                setTimeout(function () {
+                    $(".alert").fadeOut('slow');
+                }, 2000);
+        </script>
+}
+<div class="btn-group">
+    <button style="margin:0 5px" class="btn btn-info btnListOrder">Danh Sách Đơn Hàng</button>
+    <button style="margin:0 5px" class="btn btn-info btnListHistory">Lịch Sử Mua Hàng</button>
+</div>
+
+<div class="container-fluid dsDonhang">
+
+    <!-- Page Heading -->
+    <h4 class="h3 mb-2 text-gray-800" style="padding:10px 0;text-align:center;margin:30px auto 30px auto;width:80%;background-color:green;color:#fff;border-radius:15px">Danh Sách Đơn Hàng</h4>
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        @if (@TempData["msg"] != null)
+        {
+            <div class="alert alert-danger" role="alert" style="text-align:center">
+                @TempData["msg"]
+            </div>
+        }
+
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>
+                                Mã
+                            </th>
+                            <th>
+                                Tên
+                            </th>
+                            <th>
+                                Địa chỉ
+                            </th>
+                            <th>
+                                Email
+                            </th>
+                            <th>
+                                Phone
+                            </th>
+                            <th>
+                                Ngày đặt
+                            </th>
+                            <th>
+                                Trạng thái
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th>
+                                Mã
+                            </th>
+                            <th>
+                                Tên
+                            </th>
+                            <th>
+                                Địa chỉ
+                            </th>
+                            <th>
+                                Email
+                            </th>
+                            <th>
+                                Phone
+                            </th>
+                            <th>
+                                Ngày đặt
+                            </th>
+                            <th>
+                                Trạng thái
+                            </th>
+                            <th></th>
+                        </tr>
+                    </tfoot>
+                    <tbody>
+                        @foreach (var item in Model.listOrder)
+                        {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Id)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ShipName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ShipAddress)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ShipEmail)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ShipPhone)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.OrderDate)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Status)
+                            </td>
+                            <td>
+                                <button class="btn btn-danger">
+                                    @Html.ActionLink("Chi tiết", "Details", new { id = item.Id })
+                                </button>
+                            </td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

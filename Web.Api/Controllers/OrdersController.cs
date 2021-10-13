@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ namespace Web.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class OrdersController : ControllerBase
     {
         private readonly IOrderService _manageservice;
@@ -24,6 +26,13 @@ namespace Web.Api.Controllers
         public async Task<IActionResult> Create([FromBody] CheckoutRequest request)
         {
             var result = await _manageservice.CreateOrder(request);
+            return Ok(result);
+        }
+
+        [HttpGet("danh-sach-order/{languageID}/{userId}")]
+        public async Task<IActionResult> GetOrderUser(Guid userId, string languageID)
+        {
+            var result = await _manageservice.GetOrderUser(userId, languageID);
             return Ok(result);
         }
     }

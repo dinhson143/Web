@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Web.Data.EF;
 
 namespace Web.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211013025842_update-nvarchar-table-order")]
+    partial class updatenvarchartableorder
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -652,7 +654,7 @@ namespace Web.Data.Migrations
                         new
                         {
                             Id = 1,
-                            DateCreated = new DateTime(2021, 10, 13, 19, 45, 16, 487, DateTimeKind.Local).AddTicks(9822),
+                            DateCreated = new DateTime(2021, 10, 13, 9, 58, 41, 188, DateTimeKind.Local).AddTicks(6209),
                             Status = 1,
                             ViewCount = 0
                         });
@@ -933,7 +935,7 @@ namespace Web.Data.Migrations
                         new
                         {
                             Id = new Guid("0d5b7850-46c1-4c80-99c4-d94fc38a3ea7"),
-                            ConcurrencyStamp = "ff454ebd-2b4e-4fb9-918c-0850adf8377f",
+                            ConcurrencyStamp = "c0d20f94-c6ff-4c45-a5d7-8a0ddf98373a",
                             Description = "Adminstrator Role ",
                             Name = "admin",
                             NormalizedName = "admin",
@@ -1042,7 +1044,7 @@ namespace Web.Data.Migrations
                         new
                         {
                             Id = 1,
-                            DateCreated = new DateTime(2021, 10, 13, 19, 45, 16, 520, DateTimeKind.Local).AddTicks(498),
+                            DateCreated = new DateTime(2021, 10, 13, 9, 58, 41, 214, DateTimeKind.Local).AddTicks(8712),
                             Description = "Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.",
                             Image = "https://gaubongonline.vn/wp-content/uploads/2021/06/gaubongonline1.jpg",
                             Name = "slider 1",
@@ -1052,7 +1054,7 @@ namespace Web.Data.Migrations
                         new
                         {
                             Id = 2,
-                            DateCreated = new DateTime(2021, 10, 13, 19, 45, 16, 520, DateTimeKind.Local).AddTicks(2419),
+                            DateCreated = new DateTime(2021, 10, 13, 9, 58, 41, 215, DateTimeKind.Local).AddTicks(1441),
                             Description = "Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.",
                             Image = "https://gaubongonline.vn/wp-content/uploads/2021/06/gaubongonline.jpg",
                             Name = "slider 1",
@@ -1062,7 +1064,7 @@ namespace Web.Data.Migrations
                         new
                         {
                             Id = 3,
-                            DateCreated = new DateTime(2021, 10, 13, 19, 45, 16, 520, DateTimeKind.Local).AddTicks(2430),
+                            DateCreated = new DateTime(2021, 10, 13, 9, 58, 41, 215, DateTimeKind.Local).AddTicks(1456),
                             Description = "Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.",
                             Image = "https://gaubongonline.vn/wp-content/uploads/2021/05/web-gaubongonline.vn_.jpg",
                             Name = "slider 1",
@@ -1087,9 +1089,6 @@ namespace Web.Data.Migrations
 
                     b.Property<string>("ConcurrencyStamp")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Diem")
-                        .HasColumnType("int");
 
                     b.Property<DateTime>("Dob")
                         .HasColumnType("datetime2");
@@ -1153,8 +1152,7 @@ namespace Web.Data.Migrations
                             Id = new Guid("b38060f2-8b1c-47ae-80aa-2cf1b518b812"),
                             AccessFailedCount = 0,
                             Address = "Hcm city",
-                            ConcurrencyStamp = "5a0e520b-2a11-483f-b8b2-895ab1496ffd",
-                            Diem = 0,
+                            ConcurrencyStamp = "0ffdb18f-8414-4951-aecd-dd99efe114bd",
                             Dob = new DateTime(1999, 3, 14, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "dinhson14399@gmail.com",
                             EmailConfirmed = true,
@@ -1163,7 +1161,7 @@ namespace Web.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "dinhson14399@gmail.com",
                             NormalizedUserName = "dinhson",
-                            PasswordHash = "AQAAAAEAACcQAAAAEEeAli6C+11pIc1dn52uA7RC+D3VcynSgvX7xpltWLvB+/J5HtSYZbB5/ipPq5B5eA==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEAyVwMf3j2U9Eo9+B0Kfn74B0P8tKLNR9d6xfWLy324nLBfOKuZpVysqQhnP+Fpw0w==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
                             Status = 1,

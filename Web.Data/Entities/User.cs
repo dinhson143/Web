@@ -16,6 +16,7 @@ namespace Web.Data.Entities
         public DateTime Dob { get; set; }
         public Status Status { get; set; }
 
+        public int Diem { get; set; }
         public List<Cart> Carts { get; set; }
         public List<Order> Orders { get; set; }
 

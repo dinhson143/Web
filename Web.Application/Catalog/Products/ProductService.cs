@@ -923,5 +923,15 @@ namespace Web.Application.Catalog.Products
                 ProductId = x.c.ProductId
             }).ToListAsync();
         }
+
+        public async Task<int> DeleteProductFV(Guid userId, int productId)
+        {
+            var productFv = await _context.ProductFavorites.FirstOrDefaultAsync(x => x.ProductId == productId && x.UserId == userId);
+            if (productFv == null) throw new WebException($"Cannot find: {productId}");
+
+            _context.ProductFavorites.Remove(productFv);
+
+            return await _context.SaveChangesAsync();
+        }
     }
 }

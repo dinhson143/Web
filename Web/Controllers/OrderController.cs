@@ -83,5 +83,33 @@ namespace Web.Controllers
             }
             return RedirectToAction("Error", "Home");
         }
+
+        [HttpGet]
+        public async Task<IActionResult> CancelOrder(int id)
+        {
+            var identity = (ClaimsIdentity)User.Identity;
+            var claimsPrincipal = new ClaimsPrincipal(identity);
+
+            // Get the claims values
+            var userId = identity.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier)
+                               .Select(c => c.Value).SingleOrDefault();
+
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+            var token = HttpContext.Session.GetString(SystemContants.AppSettings.Token);
+
+            var result = await _orderApi.CancelOrder(new Guid(userId), id, token);
+            if (!result)
+            {
+                TempData["msg"] = "Lỗi khi hủy đơn đặt hàng";
+            }
+            else
+            {
+                TempData["msgSC"] = "Hủy đơn đặt hàng thành công";
+            }
+            return RedirectToAction("Index");
+        }
     }
 }

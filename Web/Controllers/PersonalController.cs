@@ -30,50 +30,41 @@ namespace Web.Controllers
 
         public async Task<IActionResult> Index()
         {
+            string token = HttpContext.Session.GetString(SystemContants.AppSettings.Token);
+            var culture = CultureInfo.CurrentCulture.Name;
             var identity = (ClaimsIdentity)User.Identity;
             var claimsPrincipal = new ClaimsPrincipal(identity);
 
             // Get the claims values
-            var username = identity.Claims.Where(c => c.Type == ClaimTypes.Name)
-                              .Select(c => c.Value).SingleOrDefault();
-            var firstname = identity.Claims.Where(c => c.Type == ClaimTypes.GivenName)
-                              .Select(c => c.Value).SingleOrDefault();
-            var lastname = identity.Claims.Where(c => c.Type == ClaimTypes.Surname)
-                              .Select(c => c.Value).SingleOrDefault();
-            var dob = identity.Claims.Where(c => c.Type == ClaimTypes.DateOfBirth)
-                              .Select(c => c.Value).SingleOrDefault();
-            var email = identity.Claims.Where(c => c.Type == ClaimTypes.Email)
-                               .Select(c => c.Value).SingleOrDefault();
-            var address = identity.Claims.Where(c => c.Type == ClaimTypes.StreetAddress)
-                               .Select(c => c.Value).SingleOrDefault();
-            var phone = identity.Claims.Where(c => c.Type == ClaimTypes.MobilePhone)
-                               .Select(c => c.Value).SingleOrDefault();
             var id = identity.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier)
                                .Select(c => c.Value).SingleOrDefault();
+            var dob = identity.Claims.Where(c => c.Type == ClaimTypes.DateOfBirth)
+                               .Select(c => c.Value).SingleOrDefault();
 
-            if (username == null && email == null && address == null && phone == null)
+            if (id == null)
             {
                 return RedirectToAction("Login", "Account");
             }
+            var user = await _userApi.GetUserById(new Guid(id), token);
             string[] dobs = dob.Split(' ');
-            var culture = CultureInfo.CurrentCulture.Name;
-            string token = HttpContext.Session.GetString(SystemContants.AppSettings.Token);
+
             var data = new ProductFVrequest()
             {
-                Email = email,
+                Email = user.Email,
                 LanguageID = culture
             };
             var list = await _productApi.GetProductsFavorite(data, token);
 
             var viewModel = new PersonalViewmodel()
             {
-                Address = address,
-                Email = email,
-                FirstName = firstname,
-                LastName = lastname,
+                Address = user.Address,
+                Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
                 Dob = DateTime.ParseExact(dobs[0], "MM/dd/yyyy", CultureInfo.InvariantCulture),
-                Phone = phone,
+                Phone = user.PhoneNumber,
                 Id = new Guid(id),
+                Diem = user.Diem,
                 ListLove = list
             };
 
@@ -111,6 +102,21 @@ namespace Web.Controllers
             {
                 TempData["Message"] = "Cập nhật thông tin cá nhân thất bại";
             }
+            return RedirectToAction("Index", "Personal");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var identity = (ClaimsIdentity)User.Identity;
+            var claimsPrincipal = new ClaimsPrincipal(identity);
+
+            // Get the claims values
+            var userId = identity.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier)
+                               .Select(c => c.Value).SingleOrDefault();
+            string token = HttpContext.Session.GetString(SystemContants.AppSettings.Token);
+
+            await _productApi.DeleteProductFV(new Guid(userId), id, token);
             return RedirectToAction("Index", "Personal");
         }
     }

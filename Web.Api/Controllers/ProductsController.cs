@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Threading.Tasks;
 using Web.Application.Catalog.Products;
 using Web.ViewModels.Catalog.Categories;
@@ -176,6 +177,17 @@ namespace Web.Api.Controllers
                 return null;
             }
             var result = await _manageservice.AddViewCount(productId);
+            return Ok(result);
+        }
+
+        [HttpDelete("Delete/{userId}/{productId}")]
+        public async Task<IActionResult> DeleteProductFV(Guid userId, int productId)
+        {
+            if (!ModelState.IsValid)
+            {
+                return null;
+            }
+            var result = await _manageservice.DeleteProductFV(userId, productId);
             return Ok(result);
         }
     }

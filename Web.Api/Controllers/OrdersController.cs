@@ -35,5 +35,26 @@ namespace Web.Api.Controllers
             var result = await _manageservice.GetOrderUser(userId, languageID);
             return Ok(result);
         }
+
+        [HttpGet("get-all-order/{languageID}")]
+        public async Task<IActionResult> GetallOrder(string languageID)
+        {
+            var result = await _manageservice.GetallOrder(languageID);
+            return Ok(result);
+        }
+
+        [HttpGet("cancel-order/{userId}/{orderId}")]
+        public async Task<IActionResult> CancelOrder(Guid userId, int orderId)
+        {
+            var result = await _manageservice.CancelOrder(userId, orderId);
+            return Ok(result);
+        }
+
+        [HttpGet("confirm-order/{orderId}")]
+        public async Task<IActionResult> ConfirmOrder(Guid userId, int orderId)
+        {
+            var result = await _manageservice.ConfirmOrder(orderId);
+            return Ok(result);
+        }
     }
 }

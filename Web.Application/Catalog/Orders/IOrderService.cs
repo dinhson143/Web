@@ -14,5 +14,11 @@ namespace Web.Application.Catalog.Orders
         public Task<ResultApi<string>> CreateOrder(CheckoutRequest request);
 
         public Task<List<OrderViewModel>> GetOrderUser(Guid userId, string languageID);
+
+        public Task<List<OrderViewModel>> GetallOrder(string languageID);
+
+        public Task<int> CancelOrder(Guid userId, int orderId);
+
+        public Task<int> ConfirmOrder(int orderId);
     }
 }

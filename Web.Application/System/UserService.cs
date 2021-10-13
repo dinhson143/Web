@@ -99,7 +99,8 @@ namespace Web.Application.System
                 LastName = user.LastName,
                 PhoneNumber = user.PhoneNumber,
                 Username = user.UserName,
-                Roles = roles
+                Roles = roles,
+                Diem = user.Diem
             };
             return new ResultSuccessApi<UserViewModel>(userViewmodel);
         }

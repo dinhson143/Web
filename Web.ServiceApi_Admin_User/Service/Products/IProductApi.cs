@@ -44,6 +44,8 @@ namespace Web.ServiceApi_Admin_User.Service.Products
 
         public Task<bool> DeleteProduct(int productId, string BearerToken);
 
+        public Task<bool> DeleteProductFV(Guid userId, int productId, string BearerToken);
+
         public Task<bool> UpdatePrice(UpdatePriceRequest request, string BearerToken);
     }
 }

@@ -17,19 +17,32 @@
         $(".btnListOrder").click(function () {
             $('.dsDonhang').toggle();
             /*$('.btnListHistory').hide();*/
-            });
+        });
         $(".btnListHistory").click(function () {
             $('.dsDonhang').hide();
             /*$('.btnListHistory').toggle();*/
-            });
-        </script>
-        <script>
-            var culture = '@culture';
+        });
+    </script>
+    <script>
                 setTimeout(function () {
                     $(".alert").fadeOut('slow');
                 }, 2000);
-        </script>
+    </script>
 }
+<style>
+    .btnGroup {
+        display: flex;
+    }
+
+    .btnCustom {
+        width: 70px;
+        margin: 0 5px;
+    }
+
+    .tableHead th {
+        font-size: 11px;
+    }
+</style>
 <div class="btn-group">
     <button style="margin:0 5px" class="btn btn-info btnListOrder">Danh Sách Đơn Hàng</button>
     <button style="margin:0 5px" class="btn btn-info btnListHistory">Lịch Sử Mua Hàng</button>
@@ -47,12 +60,18 @@
                 @TempData["msg"]
             </div>
         }
+        @if (@TempData["msgSC"] != null)
+        {
+            <div class="alert alert-success" role="alert" style="text-align:center">
+                @TempData["msgSC"]
+            </div>
+        }
 
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
-                        <tr>
+                        <tr class="tableHead">
                             <th>
                                 Mã
                             </th>
@@ -106,34 +125,37 @@
                     <tbody>
                         @foreach (var item in Model.listOrder)
                         {
-                        <tr>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Id)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.ShipName)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.ShipAddress)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.ShipEmail)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.ShipPhone)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.OrderDate)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Status)
-                            </td>
-                            <td>
-                                <button class="btn btn-danger">
-                                    @Html.ActionLink("Chi tiết", "Details", new { id = item.Id })
-                                </button>
-                            </td>
-                        </tr>
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Id)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.ShipName)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.ShipAddress)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.ShipEmail)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.ShipPhone)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.OrderDate)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Status)
+                                </td>
+                                <td class="btnGroup">
+                                    <button class="btn btn-info btnCustom">
+                                        @Html.ActionLink("Chi tiết", "Details", new { id = item.Id })
+                                    </button>
+                                    <button class="btn btn-danger btnCustom">
+                                        @Html.ActionLink("Hủy", "CancelOrder", new { id = item.Id })
+                                    </button>
+                                </td>
+                            </tr>
                         }
                     </tbody>
                 </table>

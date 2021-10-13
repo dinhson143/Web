@@ -30,6 +30,9 @@ namespace Web.Models
         [Display(Name = "Số điện thoại")]
         public string Phone { get; set; }
 
+        [Display(Name = "Điểm Thưởng")]
+        public int Diem { get; set; }
+
         public List<ProductFavoriteViewModel> ListLove { get; set; }
     }
 }

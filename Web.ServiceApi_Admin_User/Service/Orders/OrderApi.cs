@@ -57,5 +57,44 @@ namespace Web.ServiceApi_Admin_User.Service.Orders
             }
             return new ResultErrorApi<List<OrderViewModel>>("Không thể lấy danh sách Orders");
         }
+
+        public async Task<ResultApi<List<OrderViewModel>>> GetAllOrder(string languageID, string BearerToken)
+        {
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", BearerToken);
+
+            var response = await client.GetAsync($"/api/Orders/get-all-order/{languageID}");
+            if (response.IsSuccessStatusCode)
+            {
+                var body = await response.Content.ReadAsStringAsync();
+                var list = JsonConvert.DeserializeObject<List<OrderViewModel>>(body);
+                return new ResultSuccessApi<List<OrderViewModel>>(list);
+            }
+            return new ResultErrorApi<List<OrderViewModel>>("Không thể lấy danh sách Orders");
+        }
+
+        public async Task<bool> CancelOrder(Guid userId, int orderId, string BearerToken)
+        {
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", BearerToken);
+
+            var response = await client.GetAsync($"/api/Orders/cancel-order/{userId}/{orderId}");
+
+            return response.IsSuccessStatusCode;
+        }
+
+        public async Task<bool> ConfirmOrder(int orderId, string BearerToken)
+        {
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", BearerToken);
+
+            var response = await client.GetAsync($"/api/Orders/confirm-order/{orderId}");
+
+            return response.IsSuccessStatusCode;
+        }
     }
 }

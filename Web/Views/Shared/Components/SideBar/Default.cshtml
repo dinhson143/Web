@@ -59,16 +59,16 @@
                         <a class="btn" href="@url">
                             <i class="icon-zoom-in"></i>
                         </a>
-                        <a class="btn" href="#"> <localize>Add to </localize><i class="icon-shopping-cart"></i></a>
+                        <a class="btn" href="@url"> <localize>Add to </localize><i class="icon-shopping-cart"></i></a>
                         @if (String.Compare(culture.ToString(), "vi") == 0)
                         {
                             cul = CultureInfo.GetCultureInfo("vi-VN");
-                            <a class="btn btn-primary" href="#">@item.listPS[0].Price.ToString("C", cul.NumberFormat) - @item.listPS[item.listPS.Count - 1].Price.ToString("C", cul.NumberFormat)</a>
+                            <a class="btn btn-primary" href="@url">@item.listPS[0].Price.ToString("C", cul.NumberFormat) - @item.listPS[item.listPS.Count - 1].Price.ToString("C", cul.NumberFormat)</a>
                         }
                         else
                         {
                             cul = CultureInfo.GetCultureInfo("en-US");
-                            <a class="btn btn-primary" href="#">@item.listPS[0].Price.ToString("C", cul.NumberFormat) - @item.listPS[item.listPS.Count - 1].Price.ToString("C", cul.NumberFormat)</a>
+                            <a class="btn btn-primary" href="@url">@item.listPS[0].Price.ToString("C", cul.NumberFormat) - @item.listPS[item.listPS.Count - 1].Price.ToString("C", cul.NumberFormat)</a>
                         }
                     </h4>
                 </div>

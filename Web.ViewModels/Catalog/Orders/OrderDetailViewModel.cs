@@ -10,6 +10,8 @@ namespace Web.ViewModels.Catalog.Orders
     public class OrderDetailViewModel
     {
         public int OrderID { get; set; }
+        public int SizeID { get; set; }
+        public int ProductID { get; set; }
         public string Image { get; set; }
         public string ProductName { get; set; }
         public string SizeName { get; set; }

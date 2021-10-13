@@ -311,5 +311,16 @@ namespace Web.ServiceApi_Admin_User.Service.Products
 
             return new ResultSuccessApi<string>("Success");
         }
+
+        public async Task<bool> DeleteProductFV(Guid userId, int productId, string BearerToken)
+        {
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", BearerToken);
+
+            var response = await client.DeleteAsync($"/api/Products/Delete/{userId}/{productId}");
+
+            return response.IsSuccessStatusCode;
+        }
     }
 }

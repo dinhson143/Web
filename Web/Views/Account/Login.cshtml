@@ -7,7 +7,7 @@
 
 <div class="span9">
     <ul class="breadcrumb">
-        <li><a href="index.html">Home</a> <span class="divider">/</span></li>
+        <li><a href="/@culture/Home/Index">Home</a> <span class="divider">/</span></li>
         <li class="active">Login</li>
     </ul>
     <h3> Login</h3>
@@ -43,10 +43,14 @@
                             <span asp-validation-for="Password" class="text-error"></span>
                         </div>
                     </div>
+                    @if (TempData["err"] != null)
+                    {
+                        <span class="text-error" style="margin:5px 0;display:block">@TempData["err"]</span>
+                    }
                     <div class="control-group">
                         <div class="controls">
                             <button type="submit" class="btn">Sign in</button>
-                            <a href="forgetpass.html">Forget password?</a>
+                            <a href="/@culture/Account/CheckMail">Forget password?</a>
                         </div>
                     </div>
                 </form>

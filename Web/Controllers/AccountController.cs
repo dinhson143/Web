@@ -49,6 +49,7 @@ namespace Web.Controllers
             if (string.IsNullOrEmpty(token))
             {
                 ModelState.AddModelError("", "Login failure");
+                TempData["err"] = "Username or Password is incorrect";
                 return View();
             }
             var userPricipal = this.ValidateToken(token);
@@ -141,6 +142,77 @@ namespace Web.Controllers
             ClaimsPrincipal principal = new JwtSecurityTokenHandler().ValidateToken(jwtToken, validationParameters, out validatedToken);
 
             return principal;
+        }
+
+        [HttpGet]
+        public IActionResult CheckMail()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CheckMail(string Email)
+        {
+            var result = await _userApi.CheckMail(Email);
+            if (result.IsSuccess == false)
+            {
+                TempData["err"] = result.Message;
+            }
+            int check = result.ResultObj;
+            HttpContext.Session.SetString("ktMail", check.ToString());
+            HttpContext.Session.SetString("Mail", Email);
+            return RedirectToAction("MaCheckMail");
+        }
+
+        [HttpGet]
+        public IActionResult MaCheckMail()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult MaCheckMail(int maKT)
+        {
+            int ma = int.Parse(HttpContext.Session.GetString("ktMail"));
+            if (maKT == ma)
+            {
+                return RedirectToAction("ForgetPassword");
+            }
+            TempData["err"] = "Mã xác nhận không đúng";
+            HttpContext.Session.Remove("ktMail");
+            HttpContext.Session.Remove("Mail");
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult ForgetPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ForgetPassword(ForgetPassViewModel request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(request);
+            }
+            string email = HttpContext.Session.GetString("Mail");
+            request.Email = email;
+            var result = await _userApi.ForgetPassword(request);
+            if (!result.IsSuccess)
+            {
+                HttpContext.Session.Remove("ktMail");
+                HttpContext.Session.Remove("Mail");
+                TempData["err"] = "Cập nhật mật khẩu mới thành công";
+            }
+            else
+            {
+                TempData["success"] = "Cập nhật mật khẩu mới thành công";
+                HttpContext.Session.Remove("ktMail");
+                HttpContext.Session.Remove("Mail");
+            }
+            return View();
         }
     }
 }

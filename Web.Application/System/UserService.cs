@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using MailKit.Net.Smtp;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using MimeKit;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
@@ -45,6 +47,60 @@ namespace Web.Application.System
                 return new ResultSuccessApi<string>("Xóa thành công");
             }
             return new ResultErrorApi<string>("Xóa thất bại");
+        }
+
+        public async Task<ResultApi<int>> CheckMail(string Email)
+        {
+            var user = await _userManager.FindByEmailAsync(Email);
+            if (user == null)
+            {
+                return new ResultErrorApi<int>()
+                {
+                    Message = "Email chưa được đăng kí",
+                };
+            }
+            Random generator = new Random();
+            int r = generator.Next(100000, 1000000);
+            var message = new MimeMessage();
+            message.From.Add(new MailboxAddress("Shop", "dinhson14399@gmail.com"));
+            message.To.Add(new MailboxAddress("", Email));
+            message.Subject = "Xác nhận reset mật khẩu !!!";
+            message.Body = new TextPart("plain")
+            {
+                Text = "Mã xác nhận: " + r.ToString()
+            };
+            using (var client = new SmtpClient())
+            {
+                client.Connect("smtp.gmail.com", 587, false);
+                client.Authenticate("dinhson14399@gmail.com", "tranthingocyen");
+                client.Send(message);
+
+                client.Disconnect(true);
+            }
+
+            return new ResultSuccessApi<int>()
+            {
+                Message = "Vui lòng kiểm tra mail !!!",
+                ResultObj = r
+            };
+        }
+
+        public async Task<ResultApi<string>> ForgetPassword(ForgetPassViewModel request)
+        {
+            var user = await _userManager.FindByEmailAsync(request.Email);
+            if (user == null)
+            {
+                return new ResultErrorApi<string>("Email chưa được đăng kí");
+            }
+            //
+            var token = _userManager.GeneratePasswordResetTokenAsync(user).Result;
+            //
+            var result = await _userManager.ResetPasswordAsync(user, token, request.Password);
+            if (result.Succeeded)
+            {
+                return new ResultSuccessApi<string>("Cập nhật mật khẩu thành công");
+            }
+            return new ResultErrorApi<string>("Cập nhật mật khẩu thất bại");
         }
 
         public async Task<ResultApi<PageResult<UserViewModel>>> GetAllPaging(GetUserPagingRequest request)

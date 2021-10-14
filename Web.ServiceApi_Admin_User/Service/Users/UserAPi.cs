@@ -23,6 +23,17 @@ namespace Web.ServiceApi_Admin_User.Service.Users
             _configuration = configuration;
         }
 
+        public async Task<ResultApi<int>> CheckMail(string email)
+        {
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+            var response = await client.GetAsync($"/api/Login/check-mail/{email}");
+
+            var result = await response.Content.ReadAsStringAsync();
+
+            return JsonConvert.DeserializeObject<ResultErrorApi<int>>(result);
+        }
+
         public async Task<ResultApi<string>> DeleteUser(Guid IdUser, string BearerToken)
         {
             var client = _httpClientFactory.CreateClient();
@@ -34,6 +45,22 @@ namespace Web.ServiceApi_Admin_User.Service.Users
             var result = await response.Content.ReadAsStringAsync();
             if (response.IsSuccessStatusCode)
                 return JsonConvert.DeserializeObject<ResultSuccessApi<string>>(result);
+            return JsonConvert.DeserializeObject<ResultErrorApi<string>>(result);
+        }
+
+        public async Task<ResultApi<string>> ForgetPassword(ForgetPassViewModel request)
+        {
+            var json = JsonConvert.SerializeObject(request);
+            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+            var response = await client.PostAsync("/api/Login/Forget-Password", httpContent);
+
+            var result = await response.Content.ReadAsStringAsync();
+            if (response.IsSuccessStatusCode)
+                return JsonConvert.DeserializeObject<ResultSuccessApi<string>>(result);
+
             return JsonConvert.DeserializeObject<ResultErrorApi<string>>(result);
         }
 

@@ -15,6 +15,10 @@ namespace Web.Application.System
 
         public Task<ResultApi<string>> Register(RegisterRequest request);
 
+        public Task<ResultApi<int>> CheckMail(string Email);
+
+        public Task<ResultApi<string>> ForgetPassword(ForgetPassViewModel request);
+
         public Task<ResultApi<string>> Update(Guid IdUser, UpdateUserRequest request);
 
         public Task<ResultApi<UserViewModel>> GetUserById(Guid IdUser);

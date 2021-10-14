@@ -48,5 +48,29 @@ namespace Web.Api.Controllers
             var result = await _userService.Register(request);
             return Ok(result);
         }
+
+        [HttpPost("Forget-Password")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ForgetPassword([FromBody] ForgetPassViewModel request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var result = await _userService.ForgetPassword(request);
+            return Ok(result);
+        }
+
+        [HttpGet("check-mail/{email}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> CheckMail(string email)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var result = await _userService.CheckMail(email);
+            return Ok(result);
+        }
     }
 }

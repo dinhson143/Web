@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace Web.ViewModels.Catalog.Common
 {
-    public class PageResult<T>
+    public class PageResult<T> : PagedResultBase
     {
         public List<T> Items { get; set; }
-        public int TotalRecord { set; get; }
     }
 }

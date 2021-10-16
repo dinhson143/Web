@@ -20,7 +20,7 @@ namespace Web.Data.EF
             modelBuilder.ApplyConfiguration(new CartConfiguration());
             modelBuilder.ApplyConfiguration(new CategoryConfiguration());
             modelBuilder.ApplyConfiguration(new CategoryTranlationConfiguration());
-            modelBuilder.ApplyConfiguration(new ColorConfiguration());
+            //modelBuilder.ApplyConfiguration(new ColorConfiguration());
             modelBuilder.ApplyConfiguration(new CommentConfiguration());
             modelBuilder.ApplyConfiguration(new CongtyConfiguration());
             modelBuilder.ApplyConfiguration(new ContactConfiguration());
@@ -30,15 +30,17 @@ namespace Web.Data.EF
             modelBuilder.ApplyConfiguration(new OrderDetailConfiguration());
             modelBuilder.ApplyConfiguration(new PhieuNhap_XuatchitietConfiguration());
             modelBuilder.ApplyConfiguration(new PhieuNhap_XuatConfiguration());
-            modelBuilder.ApplyConfiguration(new Product_Color_SizeConfiguration());
+            modelBuilder.ApplyConfiguration(new Product_SizeConfiguration());
+            modelBuilder.ApplyConfiguration(new ProductFavoriteConfiguration());
             modelBuilder.ApplyConfiguration(new ProductConfiguration());
             modelBuilder.ApplyConfiguration(new ProductImageConfiguration());
             modelBuilder.ApplyConfiguration(new ProductInCategoryConfiguration());
             modelBuilder.ApplyConfiguration(new ProductTranlationConfiguration());
             modelBuilder.ApplyConfiguration(new PromotionConfiguration());
             modelBuilder.ApplyConfiguration(new SizeConfiguration());
-            modelBuilder.ApplyConfiguration(new TransactionConfiguration());
-            modelBuilder.ApplyConfiguration(new Product_Color_SizeConfiguration());
+            modelBuilder.ApplyConfiguration(new SliderConfiguration());
+            //modelBuilder.ApplyConfiguration(new TransactionConfiguration());
+            modelBuilder.ApplyConfiguration(new Product_SizeConfiguration());
 
             modelBuilder.ApplyConfiguration(new RoleConfiguration());
             modelBuilder.ApplyConfiguration(new UserConfiguration());
@@ -57,8 +59,10 @@ namespace Web.Data.EF
         public DbSet<Cart> Carts { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<CategoryTranslation> CategoryTranslations { get; set; }
-        public DbSet<Color> Colors { get; set; }
+
+        //public DbSet<Color> Colors { get; set; }
         public DbSet<Comment> Comments { get; set; }
+
         public DbSet<CongTy> CongTys { get; set; }
         public DbSet<Contact> Contacts { get; set; }
         public DbSet<Language> Languages { get; set; }
@@ -68,7 +72,8 @@ namespace Web.Data.EF
         public DbSet<PhieuNhap_Xuat> PhieuNXs { get; set; }
         public DbSet<PhieuNhap_Xuatchitiet> PhieuNXchitiets { get; set; }
         public DbSet<Product> Products { get; set; }
-        public DbSet<Product_Color_Size> PCSs { get; set; }
+        public DbSet<Product_Size> PCSs { get; set; }
+        public DbSet<ProductFavorite> ProductFavorites { get; set; }
         public DbSet<ProductImage> ProductImages { get; set; }
 
         public DbSet<ProductInCategory> ProductInCategories { get; set; }
@@ -76,7 +81,8 @@ namespace Web.Data.EF
 
         public DbSet<Promotion> Promotions { get; set; }
         public DbSet<Size> Sizes { get; set; }
+        public DbSet<Slider> Sliders { get; set; }
 
-        public DbSet<Transaction> Transactions { get; set; }
+        //public DbSet<Transaction> Transactions { get; set; }
     }
 }

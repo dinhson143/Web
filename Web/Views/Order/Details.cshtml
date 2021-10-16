@@ -1,0 +1,100 @@
+﻿@model List<Web.ViewModels.Catalog.Orders.OrderDetailViewModel>
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var culture = CultureInfo.CurrentCulture.Name;
+}
+@section Scripts{
+    <link href="~/css/personal.css" rel="stylesheet" />
+    <script src="/vendor/datatables/jquery.dataTables.min.js"></script>
+    <script src="/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+
+    <!-- Page level custom scripts -->
+    <script src="/js/demo/datatables-demo.js"></script>
+}
+<div class="btn-group">
+    <a href="/@culture/Order/Index" style="margin:0 5px" class="btn btn-info btnListOrder">
+        Trở về
+    </a>
+</div>
+<div class="container-fluid dsDonHang">
+
+    <!-- Page Heading -->
+    <h4 class="h3 mb-2 text-gray-800" style="padding:10px 0;text-align:center;margin:30px auto 30px auto;width:80%;background-color:green;color:#fff;border-radius:15px">Chi Tiết Đơn Hàng Số @Model[0].OrderID</h4>
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        @if (@TempData["msg"] != null)
+        {
+            <div class="alert alert-danger" role="alert" style="text-align:center">
+                @TempData["msg"]
+            </div>
+        }
+
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>
+                                Hình ảnh
+                            </th>
+                            <th>
+                                Tên Sản Phẩm
+                            </th>
+                            <th>
+                                Size
+                            </th>
+                            <th>
+                                Quantity
+                            </th>
+                            <th>
+                                Giá
+                            </th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th>
+                                Hình ảnh
+                            </th>
+                            <th>
+                                Tên Sản Phẩm
+                            </th>
+                            <th>
+                                Size
+                            </th>
+                            <th>
+                                Quantity
+                            </th>
+                            <th>
+                                Giá
+                            </th>
+                        </tr>
+                    </tfoot>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <img style="width:100%;height:100px" src="@item.Image" />
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.ProductName)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.SizeName)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Quantity)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Price)
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

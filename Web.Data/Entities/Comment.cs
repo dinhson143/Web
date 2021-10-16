@@ -13,6 +13,7 @@ namespace Web.Data.Entities
         public Status Status { get; set; }
         public int? ParentId { get; set; }
         public string Content { get; set; }
+        public int Star { get; set; }
         public DateTime DateCreated { get; set; }
         public int ProductId { get; set; }
         public Guid UserId { get; set; }

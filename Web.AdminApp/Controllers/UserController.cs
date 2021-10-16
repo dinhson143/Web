@@ -1,89 +1,142 @@
-﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Logging;
-using Microsoft.IdentityModel.Tokens;
 using System;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
-using Web.AdminApp.Service;
+using Web.ServiceApi_Admin_User.Service.Roles;
+using Web.ServiceApi_Admin_User.Service.Users;
+using Web.ViewModels.Catalog.Common;
+using Web.ViewModels.Catalog.Users;
 using Web.ViewModels.System.User;
 
 namespace Web.AdminApp.Controllers
 {
-    public class UserController : Controller
+    public class UserController : CheckTokenController
     {
         private readonly IUserApi _userApi;
         private readonly IConfiguration _config;
+        private readonly IRoleApi _roleApi;
 
-        public UserController(IUserApi userApi, IConfiguration config)
+        public UserController(IUserApi userApi, IRoleApi roleApi, IConfiguration config)
         {
             _userApi = userApi;
             _config = config;
+            _roleApi = roleApi;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index(string keyword, int pageIndex = 1, int pageSize = 10)
         {
-            return View();
+            var session = HttpContext.Session.GetString("Token");
+            var newRequest = new GetUserPagingRequest()
+            {
+                BearerToken = session,
+                Keyword = keyword,
+                pageIndex = pageIndex,
+                pageSize = pageSize
+            };
+            var response = await _userApi.GetAllPaging(newRequest);
+            return View(response);
         }
 
         [HttpGet]
-        public async Task<IActionResult> Login()
+        public async Task<IActionResult> Details(Guid IdUser)
         {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return View();
-        }
+            var session = HttpContext.Session.GetString("Token");
+            var response = await _userApi.GetUserById(IdUser, session);
 
-        [HttpPost]
-        public async Task<IActionResult> Login(LoginRequest request)
-        {
-            if (!ModelState.IsValid)
+            if (response.Email != null)
             {
-                return View(ModelState);
+                return View(response);
             }
-            var token = await _userApi.Login(request);
+            return RedirectToAction("Error", "Home");
+        }
 
-            var userPricipal = this.ValidateToken(token);
-            var authProperties = new AuthenticationProperties
+        [HttpGet]
+        public async Task<IActionResult> Update(Guid IdUser)
+        {
+            var session = HttpContext.Session.GetString("Token");
+            var response = await _userApi.GetUserById(IdUser, session);
+
+            if (response.Email != null)
             {
-                ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10),
-                IsPersistent = true   // tắt đi mở lại vẫn còn cookie login trước đó
-            };
-
-            await HttpContext.SignInAsync(
-                CookieAuthenticationDefaults.AuthenticationScheme,
-                userPricipal,
-                authProperties);
-
-            return RedirectToAction("Index", "Home");
+                var us = new UpdateUserRequest()
+                {
+                    Dob = response.Dob,
+                    Email = response.Email,
+                    FirstName = response.FirstName,
+                    LastName = response.LastName,
+                    Phonenumber = response.PhoneNumber,
+                    Id = IdUser,
+                    Address = response.Address
+                };
+                return View(us);
+            }
+            return RedirectToAction("Error", "Home");
         }
 
         [HttpPost]
-        public async Task<IActionResult> Logout()
+        public async Task<IActionResult> Update(UpdateUserRequest request)
         {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("Login", "User");
+            var session = HttpContext.Session.GetString("Token");
+            request.BearerToken = session;
+            var response = await _userApi.Update(request.Id, request);
+            TempData["Message"] = response.ResultObj;
+            return RedirectToAction("Index", "User");
         }
 
-        private ClaimsPrincipal ValidateToken(string jwtToken)
+        [HttpGet]
+        public async Task<IActionResult> Delete(Guid IdUser)
         {
-            IdentityModelEventSource.ShowPII = true;
+            var session = HttpContext.Session.GetString("Token");
+            var response = await _userApi.DeleteUser(IdUser, session);
+            TempData["Message"] = response.ResultObj;
+            return RedirectToAction("Index", "User");
+        }
 
-            SecurityToken validatedToken;
-            TokenValidationParameters validationParameters = new TokenValidationParameters();
+        [HttpGet]
+        public async Task<IActionResult> RoleAssign(Guid IdUser)
+        {
+            var response = await GetRoleAssignRequets(IdUser);
+            response.Id = IdUser;
+            return View(response);
+        }
 
-            validationParameters.ValidateLifetime = true;
+        [HttpPost]
+        public async Task<IActionResult> RoleAssign(RoleAssignRequest request)
+        {
+            var session = HttpContext.Session.GetString("Token");
+            request.BearerToken = session;
+            var response = await _userApi.RoleAssign(request.Id, request);
+            if (response.IsSuccess)
+            {
+                TempData["Message"] = "Cấp quyền thành công";
+                return RedirectToAction("Index", "User");
+            }
+            var roles = await GetRoleAssignRequets(request.Id);
+            return View(roles);
+        }
 
-            validationParameters.ValidAudience = _config["Tokens:Issuer"];
-            validationParameters.ValidIssuer = _config["Tokens:Issuer"];
-            validationParameters.IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Tokens:Key"]));
+        private async Task<RoleAssignRequest> GetRoleAssignRequets(Guid IdUser)
+        {
+            var session = HttpContext.Session.GetString("Token");
+            var response = await _roleApi.GetAll(session);
+            if (response.IsSuccess == false)
+            {
+                return null;
+            }
+            var user = await _userApi.GetUserById(IdUser, session);
 
-            ClaimsPrincipal principal = new JwtSecurityTokenHandler().ValidateToken(jwtToken, validationParameters, out validatedToken);
-
-            return principal;
+            var roleAssignRequest = new RoleAssignRequest();
+            foreach (var role in response.ResultObj)
+            {
+                roleAssignRequest.Roles.Add(new SelectItems()
+                {
+                    Id = role.Id.ToString(),
+                    Name = role.Name,
+                    Selected = user.Roles.Contains(role.Name)
+                });
+            }
+            return roleAssignRequest;
         }
     }
 }

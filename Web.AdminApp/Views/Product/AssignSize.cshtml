@@ -1,0 +1,39 @@
+﻿@model Web.ViewModels.Catalog.Sizes.SizeAssignRequest
+
+@{
+    ViewData["Title"] = "AssignSize";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Assign Size</h1>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="AssignSize">
+            <div style="display:flex;justify-content:space-around;margin:10px 0">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <input asp-for="Id" type="hidden" class="form-control" />
+                </div>
+                @for (var i = 0; i < Model.Sizes.Count; i++)
+                {
+
+                    <div class="pretty p-default">
+                        <input asp-for="Sizes[i].Selected" type="checkbox" />
+                        <div class="state p-warning">
+                            <label>@Model.Sizes[i].Name</label>
+                        </div>
+                    </div>
+                    <input type="hidden" asp-for="Sizes[i].Id" class="form-control" />
+                    <input type="hidden" asp-for="Sizes[i].Name" class="form-control" />
+
+                }
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+                <a class="btn btn-primary" asp-action="Index">Back to List</a>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,5 +1,5 @@
 {
   "ConnectionStrings": {
-    "DefaultConnectionString": "Data Source=DESKTOP-VC4KFV7;Initial Catalog=WebBanGauBong;Persist Security Info=True;User ID=sa;Password=123;Pooling=False"
+    "DefaultConnectionString": "Data Source=DESKTOP-VC4KFV7;Initial Catalog=WebDATN;User ID=sa;Password=123;Pooling=False"
   }
 }

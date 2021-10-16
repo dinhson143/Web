@@ -1,0 +1,49 @@
+﻿@model Web.ViewModels.System.User.ForgetPassViewModel
+@{
+    ViewData["Title"] = "MaCheckMail";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var culture = CultureInfo.CurrentCulture.Name;
+}
+
+@if (@TempData["err"] != null)
+{
+    <div class="alert alert-error" role="alert" style="text-align:center">
+        @TempData["err"]
+    </div>
+}
+<div class="span9">
+    <ul class="breadcrumb">
+        <li><a href="/@culture/Account/CheckMail">Forget Password</a> <span class="divider">/</span></li>
+        <li class="active">Code check email ?</li>
+    </ul>
+    <h3> FORGET YOUR PASSWORD?</h3>
+    <hr class="soft" />
+
+    <div class="row">
+        <div class="span9" style="min-height:900px">
+            <div class="well">
+                <h5>Code check email</h5><br />
+                Please enter the code we send your email. A verification code will be sent to you. Once you have received the verification code, you will be able to choose a new password for your account.<br /><br /><br />
+                <form asp-action="MaCheckMail" method="post">
+                    <div class="control-group">
+                        <label asp-for="maKT" class="control-label" for="inputEmail1">Mã kiểm tra</label>
+                        <div class="controls">
+                            <input asp-for="maKT" class="span3" type="number" id="inputEmail1" placeholder="Email">
+                        </div>
+                        <span asp-validation-for="maKT" class="text-error"></span>
+                    </div>
+                    <div class="controls">
+                        <button type="submit" class="btn block">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        setTimeout(function () {
+            $(".alert").fadeOut('slow');
+        }, 2000);
+    </script>
+}

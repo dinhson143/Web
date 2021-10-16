@@ -2,15 +2,23 @@ using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Web.AdminApp.Service;
+using Web.ServiceApi_Admin_User.Service.Categories;
+using Web.ServiceApi_Admin_User.Service.Comments;
+using Web.ServiceApi_Admin_User.Service.Congtys;
+using Web.ServiceApi_Admin_User.Service.Contacts;
+using Web.ServiceApi_Admin_User.Service.Languages;
+using Web.ServiceApi_Admin_User.Service.LoaiPhieus;
+using Web.ServiceApi_Admin_User.Service.Orders;
+using Web.ServiceApi_Admin_User.Service.PhieuNhaps;
+using Web.ServiceApi_Admin_User.Service.Products;
+using Web.ServiceApi_Admin_User.Service.Roles;
+using Web.ServiceApi_Admin_User.Service.Sizes;
+using Web.ServiceApi_Admin_User.Service.Sliders;
+using Web.ServiceApi_Admin_User.Service.Users;
 using Web.ViewModels.System.User;
 
 namespace Web.AdminApp
@@ -28,15 +36,36 @@ namespace Web.AdminApp
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddHttpClient();
-            services.AddControllersWithViews().AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<LoginRequestValidator>()); ;
+            services.AddControllersWithViews().AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<LoginRequestValidator>());
             services.AddTransient<IUserApi, UserAPi>();
+            services.AddTransient<IRoleApi, RoleApi>();
+            services.AddTransient<ILanguageApi, LanguageApi>();
+            services.AddTransient<IProductApi, ProductApi>();
+            services.AddTransient<ICategoryApi, CategoryApi>();
+            services.AddTransient<ISliderApi, SliderApi>();
+            services.AddTransient<ISizeApi, SizeApi>();
+            services.AddTransient<IContactApi, ContactApi>();
+            services.AddTransient<ICongtyApi, CongtyApi>();
+            services.AddTransient<ILoaiPhieuApi, LoaiPhieuApi>();
+            services.AddTransient<ICommentApi, CommentApi>();
+            services.AddTransient<IPhieuNhapApi, PhieuNhapApi>();
+            services.AddTransient<IOrderApi, OrderApi>();
 
+            //Session
+            services.AddDistributedMemoryCache();
+
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
             // authenticatiom
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
                 {
-                    options.LoginPath = "/User/Login/";
-                    options.AccessDeniedPath = "/User/Forbidden/";
+                    options.LoginPath = "/Login/Login/";
+                    options.AccessDeniedPath = "/Login/Forbidden/";
                 });
         }
 
@@ -60,7 +89,7 @@ namespace Web.AdminApp
             app.UseRouting();
 
             app.UseAuthorization();
-
+            app.UseSession();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(

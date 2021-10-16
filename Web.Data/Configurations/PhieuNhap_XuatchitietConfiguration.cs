@@ -22,7 +22,7 @@ namespace Web.Data.Configurations
             //// 1 Product có nhiều chi tiết Phiếu NX
             //builder.HasOne(x => x.Product).WithMany(x => x.PhieuNXchitiets).HasForeignKey(x => x.ProductId);
             // 1 Product_Color_Size có nhiều chi tiết Phiếu NX
-            builder.HasOne(x => x.Product_Color_Size).WithMany(x => x.PhieuNXchitiets).HasForeignKey(x => new { x.ProductId, x.ColorId, x.SizeId });
+            builder.HasOne(x => x.Product_Size).WithMany(x => x.PhieuNXchitiets).HasForeignKey(x => new { x.ProductId, x.SizeId });
         }
     }
 }

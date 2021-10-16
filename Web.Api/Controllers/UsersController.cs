@@ -6,12 +6,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Web.Application.System;
+using Web.ViewModels.Catalog.Common;
+using Web.ViewModels.Catalog.Users;
 using Web.ViewModels.System.User;
 
 namespace Web.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class UsersController : ControllerBase
     {
         private readonly IUserService _userService;
@@ -21,35 +24,79 @@ namespace Web.Api.Controllers
             _userService = userService;
         }
 
-        [HttpPost("Login")]
-        [AllowAnonymous]  // chưa đăng nhập vẫn có thể gọi phương thức này
-        public async Task<IActionResult> Login([FromBody] LoginRequest request)
+        [HttpGet("paging")]
+        public async Task<PageResult<UserViewModel>> GetAllPaging([FromQuery] GetUserPagingRequest request)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return null;
             }
-            var auth = await _userService.Login(request);
-            if (string.IsNullOrEmpty(auth))
-            {
-                return BadRequest("UserName or Password is Incorrect");
-            }
-            return Ok(auth);
+            var result = await _userService.GetAllPaging(request);
+            return result.ResultObj;
         }
 
-        [HttpPost("Register")]
-        public async Task<IActionResult> Register([FromBody] RegisterRequest request)
+        [HttpGet("getUser/{IdUser}")]
+        public async Task<UserViewModel> GetUserById(Guid IdUser)
+        {
+            if (!ModelState.IsValid)
+            {
+                return null;
+            }
+            var result = await _userService.GetUserById(IdUser);
+            return result.ResultObj;
+        }
+
+        [HttpGet("getUser-username/{username}")]
+        [AllowAnonymous]
+        public async Task<ResultApi<string>> GetUserByUsername(string username)
+        {
+            if (!ModelState.IsValid)
+            {
+                return null;
+            }
+            var result = await _userService.GetUserByUsername(username);
+            return result;
+        }
+
+        [HttpPut("{IdUser}")]
+        public async Task<IActionResult> Update(Guid IdUser, [FromBody] UpdateUserRequest request)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var isSuccess = await _userService.Register(request);
-            if (!isSuccess)
+            var result = await _userService.Update(IdUser, request);
+            if (result.IsSuccess == false)
             {
-                return BadRequest("Register Failed");
+                return BadRequest(result.Message);
             }
-            return Ok("Register Successful");
+            return Ok(result.ResultObj);
+        }
+
+        [HttpDelete("Delete/{IdUser}")]
+        public async Task<IActionResult> DeleteUser(Guid IdUser)
+        {
+            if (!ModelState.IsValid)
+            {
+                return null;
+            }
+            var result = await _userService.DeleteUser(IdUser);
+            return Ok(result);
+        }
+
+        [HttpPut("{IdUser}/roles")]
+        public async Task<IActionResult> RoleAssign(Guid IdUser, [FromBody] RoleAssignRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var result = await _userService.RoleAssign(IdUser, request);
+            if (result.IsSuccess == false)
+            {
+                return BadRequest(result.ResultObj);
+            }
+            return Ok(result.ResultObj);
         }
     }
 }

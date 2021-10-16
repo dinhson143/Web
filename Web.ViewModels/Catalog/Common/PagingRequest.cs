@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Web.ViewModels.Catalog.Common
 {
-    public class PagingRequest
+    public class PagingRequest : RequestBase
     {
         public int pageIndex { get; set; }
         public int pageSize { get; set; }

@@ -1,13 +1,15 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Web.Data.Enums;
+using Web.ViewModels.Catalog.Common;
 
 namespace Web.ViewModels.Catalog.Products
 {
-    public class ProductCreate
+    public class ProductCreate : RequestBase
     {
         public decimal Price { get; set; }
         public decimal OriginalPrice { get; set; }
@@ -19,8 +21,7 @@ namespace Web.ViewModels.Catalog.Products
 
         public string SeoAlias { get; set; }
         public string LanguageId { set; get; }
-        public int CategoryId { set; get; }
 
-        public List<string> ImageURL { set; get; }
+        public IFormFile[] ImageURL { set; get; }
     }
 }

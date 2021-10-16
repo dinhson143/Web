@@ -12,5 +12,6 @@ namespace Web.Data.Entities
         public DateTime DateCreated { get; set; }
 
         public Product Product { get; set; }
+        public User User { get; set; }
     }
 }

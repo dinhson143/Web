@@ -17,6 +17,8 @@ namespace Web.Data.Configurations
 
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Id).UseIdentityColumn();
+            // 1 user co nhieu transaction
+            //builder.HasOne(x => x.User).WithMany(x => x.Transactions).HasForeignKey(x => x.UserId);
         }
     }
 }

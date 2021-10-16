@@ -1,0 +1,139 @@
+﻿@model IEnumerable<Web.ViewModels.Catalog.Products.ProductViewModel>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!-- Begin Page Content -->
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">DANH SÁCH SẢN PHẨM</h1>
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3" style="display:flex">
+            <a asp-action="Create" asp-controller="Product" class="btn btn-success btn-icon-split">
+                <span class="icon text-white-50">
+                    <i class="fas fa-plus-circle"></i>
+                </span>
+                <span class="text">Tạo mới sản phẩm</span>
+            </a>
+
+            <form asp-action="Index" method="get">
+                <div asp-action="Create" asp-controller="Product" style="margin:0 10px;" class="btn btn-success btn-icon-split">
+                    <span class="icon text-white-50">
+                        <i class="fas fa-sort-down"></i>
+                    </span>
+                    <select name="categoryId" onchange="this.form.submit()" asp-items="@ViewBag.Categories">
+                        <option>---Chọn danh mục---</option>
+                    </select>
+                </div>
+            </form>
+
+            <a asp-action="UpdatePrice" asp-controller="Product" class="btn btn-success btn-icon-split">
+                <span class="icon text-white-50">
+                    <i class="fas fa-dollar-sign"></i>
+                </span>
+                <span class="text">Cập nhật Giá</span>
+            </a>
+        </div>
+        @if (@TempData["Message"] != null)
+        {
+            <div class="alert alert-success" role="alert" style="text-align:center">
+                @TempData["Message"]
+            </div>
+        }
+
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Name)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.DateCreated)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.SeoDescription)
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Name)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.DateCreated)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.SeoDescription)
+                            </th>
+                            <th></th>
+                        </tr>
+                    </tfoot>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Name)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.DateCreated)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.SeoDescription)
+                                </td>
+                                <td>
+                                    @Html.ActionLink("Sửa", "Edit", new { id = item.Id }) |
+                                    @Html.ActionLink("Chi tiết", "Details", new { id = item.Id }) |
+                                    @Html.ActionLink(" Xóa", "Delete", new { id = item.Id }) |
+                                    @Html.ActionLink("Gán loại", "AssignCategory", new { id = item.Id }) |
+                                    @Html.ActionLink(" Thêm Size", "AssignSize", new { id = item.Id })
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        setTimeout(function () {
+            $(".alert").fadeOut('slow');
+        }, 2000);
+    </script>
+}
+
+@*<a class="" href="#" data-toggle="modal" data-target="#logoutModal2">
+        Xóa |
+    </a>
+    <div class="modal fade" id="logoutModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Xác nhận xóa? @item.Id</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">Select "Delete" product.</div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                    <form data-toggle="modal" data-target="#logoutModal2">
+                        <button class="btn btn-danger" style="color:#fff">
+                            @Html.ActionLink(" Xác nhận", "Delete", new { id = item.Id })
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>*@

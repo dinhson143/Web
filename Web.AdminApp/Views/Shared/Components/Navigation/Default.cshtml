@@ -1,0 +1,15 @@
+﻿@model NavigationViewModel
+
+<li class="nav-item dropdown no-arrow mx-1">
+    <div class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button"
+         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        @*<i class="fas fa-language" style="font-size:20px"></i>*@
+        <!-- Counter - Messages -->
+        <form action="/Home/Language" method="post">
+            <input type="hidden" name="ReturnURL" value="@Context.Request.Path" />
+            <select onchange="this.form.submit()" asp-for="CurrentLanguageId" asp-items="@(new SelectList(Model.Languages,"Id","Name",Model.CurrentLanguageId))">
+            </select>
+        </form>
+    </div>
+    <!-- Dropdown - Messages -->
+</li>

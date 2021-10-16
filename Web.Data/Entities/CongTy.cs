@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Web.Data.Enums;
 
 namespace Web.Data.Entities
 {
@@ -13,6 +14,7 @@ namespace Web.Data.Entities
         public string Masothue { get; set; }
         public string Diachi { get; set; }
         public string Sdt { get; set; }
+        public Status Status { get; set; }
 
         public List<PhieuNhap_Xuat> PhieuNXs { get; set; }
     }

@@ -1,0 +1,78 @@
+﻿@model SideBarViewModel
+@inject LazZiya.ExpressLocalization.ISharedCultureLocalizer _loc;
+@{
+    var culture = CultureInfo.CurrentCulture.Name;
+    CultureInfo cul;
+}
+<div id="sidebar" class="span3">
+    <div class="well well-small">
+        <a id="myCart" href="/@culture/Cart">
+            <img src="/themes/images/ico-cart.png" alt="cart"><span id="lbl_numberItem_sidebar"></span> <localize>Items in your cart</localize>
+            <span class="badge badge-warning pull-right">
+                <span id="total_sidebar"></span>
+            </span>
+        </a>
+    </div>
+    <ul id="sideManu" class="nav nav-tabs nav-stacked">
+        @{
+            var parents = Model.listCate.Where(x => x.ParentId == null);
+        }
+        @foreach (var parent in parents)
+        {
+            <li class="subMenu open">
+                <a>@parent.Name</a>
+                @{
+                    var childrens = Model.listCate.Where(x => x.ParentId == parent.Id);
+
+                }
+                @if (childrens.Any())
+                {
+                    <ul>
+                        @foreach (var children in childrens)
+                        {
+                            var url = $"/{culture}/{_loc["categoryURL"]}/{children.Id}";
+                            <li>
+                                <a class="active" href="@url">
+                                    <i class="icon-chevron-right"></i> @children.Name
+                                </a>
+                            </li>
+
+                        }
+                    </ul>
+                }
+            </li>
+        }
+    </ul>
+    <br />
+
+    @*sản phẩm mua nhiều nhất*@
+    @if (Model.listpro != null)
+    {
+        @foreach (var item in Model.listpro)
+        {
+            var url = $"/{culture}/{_loc["productURL"]}/{item.Id}";
+            <div class="thumbnail">
+                <img src="@item.Image" alt="@item.Name" />
+                <div class="caption">
+                    <h5>@item.Name</h5>
+                    <h4 style="text-align:center">
+                        <a class="btn" href="@url">
+                            <i class="icon-zoom-in"></i>
+                        </a>
+                        <a class="btn" href="@url"> <localize>Add to </localize><i class="icon-shopping-cart"></i></a>
+                        @if (String.Compare(culture.ToString(), "vi") == 0)
+                        {
+                            cul = CultureInfo.GetCultureInfo("vi-VN");
+                            <a class="btn btn-primary" href="@url">@item.listPS[0].Price.ToString("C", cul.NumberFormat) - @item.listPS[item.listPS.Count - 1].Price.ToString("C", cul.NumberFormat)</a>
+                        }
+                        else
+                        {
+                            cul = CultureInfo.GetCultureInfo("en-US");
+                            <a class="btn btn-primary" href="@url">@item.listPS[0].Price.ToString("C", cul.NumberFormat) - @item.listPS[item.listPS.Count - 1].Price.ToString("C", cul.NumberFormat)</a>
+                        }
+                    </h4>
+                </div>
+            </div><br />
+        }
+    }
+</div>

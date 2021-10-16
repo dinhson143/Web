@@ -1,0 +1,124 @@
+﻿@model Web.ViewModels.Catalog.PhieuNhaps.CTPhieuNhapCreateViewModel
+
+@{
+    ViewData["Title"] = "CreateCTPN";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .dropbtn {
+        background-color: #3498DB;
+        color: white;
+        padding: 16px;
+        font-size: 16px;
+        border: none;
+        cursor: pointer;
+    }
+
+        /* Dropdown button on hover & focus */
+        .dropbtn:hover, .dropbtn:focus {
+            background-color: #2980B9;
+        }
+
+    /* The container <div> - needed to position the dropdown content */
+    .dropdown {
+        position: relative;
+        display: inline-block;
+    }
+
+    /* Dropdown Content (Hidden by Default) */
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #f1f1f1;
+        min-width: 160px;
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        z-index: 1;
+    }
+
+        /* Links inside the dropdown */
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+            /* Change color of dropdown links on hover */
+            .dropdown-content a:hover {
+                background-color: #ddd
+            }
+
+    /* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
+    .show {
+        display: block;
+    }
+</style>
+<h1>THÊM CHI TIẾT PHIẾU NHẬP</h1>
+<hr />
+@if (@TempData["Message"] != null)
+{
+    <div class="alert alert-danger" role="alert" style="text-align:center">
+        @TempData["Message"]
+    </div>
+}
+<div class="row">
+    <form asp-action="CreateCTPN" method="post">
+        <label class="control-label">Sản phẩm</label>
+        <div class="col-md-6" style="display:flex">
+            <select id="sanphamDropdown" onchange="return chonsp()" class="dropdownx-select" asp-for="ProductId" asp-items="@(new SelectList(Model.listProduct,"Id","Name",Model.ProductId))">
+            </select>
+            <select id="size" asp-for="SizeId">
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="control-label">Số lượng</label>
+            <input asp-for="Soluong" class="form-control" />
+            <span asp-validation-for="Soluong" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label class="control-label">Giá bán</label>
+            <input asp-for="Giaban" class="form-control" />
+            <span asp-validation-for="Giaban" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label class="control-label">Đơn giá</label>
+            <input asp-for="Dongia" class="form-control" />
+            <span asp-validation-for="Dongia" class="text-danger"></span>
+        </div>
+        <input type="submit" value="Create" class="btn btn-primary" />
+        <a class="btn btn-primary" asp-action="Index">Back to List</a>
+    </form>
+</div>
+
+@section Scripts{
+    <script type="text/javascript">
+
+        var listPro = JSON.parse('@Newtonsoft.Json.JsonConvert.SerializeObject(Model.listProduct)'.replace(/&quot;/g, "\""));
+
+        // setSize sản phẩm đầu tiên
+        var listSize = listPro[0].listPS;
+        for (let j = 0; j < listSize.length; j++) {
+            $('#size').append(`<option asp-for="SizeId" value="${listSize[j].SizeId}">
+                                ${listSize[j].Size}
+                            </option>`);
+        }
+
+        function chonsp() {
+            $('#size').empty();
+            var value = $('#sanphamDropdown :selected').val();
+
+            for (let i = 0; i < listPro.length; i++) {
+                if (value == listPro[i].Id) {
+                    var listSize = listPro[i].listPS;
+                    for (let j = 0; j < listSize.length; j++) {
+                        $('#size').append(`<option  value="${listSize[j].SizeId}">
+                                       ${listSize[j].Size}
+                                  </option>`);
+                    }
+                    break;
+                }
+            }
+
+        }
+    </script>
+}

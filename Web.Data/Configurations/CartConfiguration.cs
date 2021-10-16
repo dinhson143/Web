@@ -20,7 +20,11 @@ namespace Web.Data.Configurations
 
             builder.Property(x => x.Id).UseIdentityColumn();
 
+            // 1 san pham có thể trong nhiều cart
             builder.HasOne(x => x.Product).WithMany(x => x.Carts).HasForeignKey(x => x.ProductId);
+
+            // 1 user cp1 nhiều cart
+            builder.HasOne(x => x.User).WithMany(x => x.Carts).HasForeignKey(x => x.UserId);
         }
     }
 }

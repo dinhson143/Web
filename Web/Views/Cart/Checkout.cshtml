@@ -79,7 +79,11 @@ else
                         </div>
                         <div class="control-group">
                             <div class="controls">
-                                <button type="submit" class="btn">Purchase </button>
+                                @if (@Model.CartItems.Count > 0)
+                                {
+
+                                    <button type="submit" class="btn">Purchase </button>
+                                }
                             </div>
                         </div>
                     </form>

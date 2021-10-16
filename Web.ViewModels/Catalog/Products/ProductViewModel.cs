@@ -50,5 +50,6 @@ namespace Web.ViewModels.Catalog.Products
         public List<ProductImagesModel> Images { set; get; }
         public List<ProductSizeViewModel> listPS { get; set; }
         public int SluongDaban { get; set; }
+        public decimal Diem { get; set; }
     }
 }

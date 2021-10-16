@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Facebook;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -79,6 +80,15 @@ namespace Web.Controllers
             return Challenge(properties, FacebookDefaults.AuthenticationScheme);
         }
 
+        public IActionResult singinGG()
+        {
+            var properties = new AuthenticationProperties
+            {
+                RedirectUri = Url.Action("GoogleRespone")
+            };
+            return Challenge(properties, GoogleDefaults.AuthenticationScheme);
+        }
+
         public async Task<IActionResult> FacebookRespone()
         {
             var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
@@ -108,6 +118,63 @@ namespace Web.Controllers
                     LastName = lastname,
                     Password = id + "Fb@",
                     Username = id,
+                    loaiRegister = "FB"
+                };
+                return RedirectToAction("Register", data);
+            }
+            else if (user.IsSuccess == true)
+            {
+                var userPricipal = this.ValidateToken(user.ResultObj);
+                var authProperties = new AuthenticationProperties
+                {
+                    ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10),
+                    IsPersistent = false   // tắt đi mở lại vẫn còn cookie login trước đó
+                };
+
+                //HttpContext.Session.SetString(SystemContants.AppSettings.DefaultLanguageId, _config["DefaultLanguageId"]);
+                HttpContext.Session.SetString(SystemContants.AppSettings.Token, user.ResultObj);
+                await HttpContext.SignInAsync(
+                    CookieAuthenticationDefaults.AuthenticationScheme,
+                    userPricipal,
+                    authProperties);
+                return RedirectToAction("Index", "Home");
+            }
+            return RedirectToAction("Error", "Home");
+        }
+
+        public async Task<IActionResult> GoogleRespone()
+        {
+            var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+            var identity = (ClaimsIdentity)User.Identity;
+            var claims = result.Principal.Identities
+                .FirstOrDefault().Claims.Select(claim => new
+                {
+                    claim.Issuer,
+                    claim.OriginalIssuer,
+                    claim.Type,
+                    claim.Value,
+                });
+
+            var firstname = identity.Claims.Where(c => c.Type == ClaimTypes.GivenName)
+                           .Select(c => c.Value).SingleOrDefault();
+            var lastname = identity.Claims.Where(c => c.Type == ClaimTypes.Surname)
+                           .Select(c => c.Value).SingleOrDefault();
+            var email = identity.Claims.Where(c => c.Type == ClaimTypes.Email)
+                           .Select(c => c.Value).SingleOrDefault();
+            var id = identity.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier)
+                           .Select(c => c.Value).SingleOrDefault();
+            var user = await _userApi.GetUserByUsername(id);
+            if (user.IsSuccess == false)
+            {
+                var data = new FacebookUserRequest()
+                {
+                    FirstName = firstname,
+                    LastName = lastname,
+                    Password = id + "Gg@",
+                    Username = id,
+                    Email = email,
+                    loaiRegister = "GG"
                 };
                 return RedirectToAction("Register", data);
             }
@@ -150,7 +217,8 @@ namespace Web.Controllers
                     LastName = request.LastName,
                     Username = request.Username,
                     Password = request.Password,
-                    loaiRegister = "FB"
+                    Email = request.Email,
+                    loaiRegister = request.loaiRegister
                 };
                 return View(data);
             }

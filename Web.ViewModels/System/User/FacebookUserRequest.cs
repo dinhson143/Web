@@ -30,5 +30,7 @@ namespace Web.ViewModels.System.User
         [Display(Name = "Mật khẩu")]
         [DataType(DataType.Password)]
         public string Password { get; set; }
+
+        public string loaiRegister { get; set; }
     }
 }

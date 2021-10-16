@@ -54,6 +54,11 @@ namespace Web
                     facebookOptions.AppSecret = facebookAuthNSection["AppSecret"];
                     //facebookOptions.CallbackPath = "/Account/singinFB";
                 })
+                .AddGoogle(options =>
+                {
+                    options.ClientId = "20451726728-k0m18pcts431mv9chagpkghbuci2033p.apps.googleusercontent.com";
+                    options.ClientSecret = "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";
+                })
                 .AddCookie(options =>
                 {
                     options.LoginPath = "/Account/Login/";

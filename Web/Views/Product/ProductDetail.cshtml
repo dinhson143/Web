@@ -79,6 +79,9 @@
         $("#btnRating").click(function () {
             $('#ratingSP').show();
         });
+        $("#btnRatingCM").click(function () {
+            $('#ratingSP').show();
+        });
         $(".btnCancel").click(function () {
             $('#ratingSP').hide();
             $('.titleRating').text("ĐÁNH GIÁ SẢN PHẨM")
@@ -193,6 +196,186 @@
                     </form>
                 </div>
             </div>
+            <div style="display:flex;">
+                <p class="text-muted text-sm">
+                    @if (@Model.ProductInfo.Diem == 0)
+                    {
+                        <fieldset class="rate" style="margin:auto">
+                            <input class="cmRating" value="10" /><label class="lbRating" title="5 stars"></label>
+                            <input class="cmRating" value="9" /><label class="half lbRating" title="4 1/2 stars"></label>
+                            <input class="cmRating" value="8" /><label class="lbRating" title="4 stars"></label>
+                            <input class="cmRating" value="7" /><label class="half lbRating" title="3 1/2 stars"></label>
+                            <input class="cmRating" value="6" /><label class="lbRating" title="3 stars"></label>
+                            <input class="cmRating" value="5" /><label class="half lbRating" title="2 1/2 stars"></label>
+                            <input class="cmRating" value="4" /><label class="lbRating" title="2 stars"></label>
+                            <input class="cmRating" value="3" /><label class="half lbRating" title="1 1/2 stars"></label>
+                            <input class="cmRating" value="2" /><label class="lbRating" title="1 star"></label>
+                            <input class="cmRating" value="1" /><label class="half lbRating" title="1/2 star"></label>
+                            <input class="cmRating" type="radio" checked value="0" /><label class="lbRating" title="No star"></label>
+                        </fieldset>
+                    }
+                    @if (@Model.ProductInfo.Diem == 1)
+                    {
+                        <fieldset class="rate" style="margin:auto">
+                            <input class="cmRating" value="10" /><label class="lbRating" title="5 stars"></label>
+                            <input class="cmRating" value="9" /><label class="half lbRating" title="4 1/2 stars"></label>
+                            <input class="cmRating" value="8" /><label class="lbRating" title="4 stars"></label>
+                            <input class="cmRating" value="7" /><label class="half lbRating" title="3 1/2 stars"></label>
+                            <input class="cmRating" value="6" /><label class="lbRating" title="3 stars"></label>
+                            <input class="cmRating" value="5" /><label class="half lbRating" title="2 1/2 stars"></label>
+                            <input class="cmRating" value="4" /><label class="lbRating" title="2 stars"></label>
+                            <input class="cmRating" value="3" /><label class="half lbRating" title="1 1/2 stars"></label>
+                            <input class="cmRating" value="2" /><label class="lbRating" title="1 star"></label>
+                            <input class="cmRating" type="radio" checked value="1" /><label class="half lbRating" title="1/2 star"></label>
+                            <input class="cmRating" value="0" /><label class="lbRating" title="No star"></label>
+                        </fieldset>
+                    }
+                    @if (@Model.ProductInfo.Diem == 2)
+                    {
+                        <fieldset class="rate" style="margin:auto">
+                            <input class="cmRating" value="10" /><label class="lbRating" title="5 stars"></label>
+                            <input class="cmRating" value="9" /><label class="half lbRating" title="4 1/2 stars"></label>
+                            <input class="cmRating" value="8" /><label class="lbRating" title="4 stars"></label>
+                            <input class="cmRating" value="7" /><label class="half lbRating" title="3 1/2 stars"></label>
+                            <input class="cmRating" value="6" /><label class="lbRating" title="3 stars"></label>
+                            <input class="cmRating" value="5" /><label class="half lbRating" title="2 1/2 stars"></label>
+                            <input class="cmRating" value="4" /><label class="lbRating" title="2 stars"></label>
+                            <input class="cmRating" value="3" /><label class="half lbRating" title="1 1/2 stars"></label>
+                            <input class="cmRating" type="radio" checked value="2" /><label class="lbRating" title="1 star"></label>
+                            <input class="cmRating" value="1" /><label class="half lbRating" title="1/2 star"></label>
+                            <input class="cmRating" value="0" /><label class="lbRating" title="No star"></label>
+                        </fieldset>
+                    }
+                    @if (@Model.ProductInfo.Diem == 3)
+                    {
+                        <fieldset class="rate" style="margin:auto">
+                            <input class="cmRating" value="10" /><label class="lbRating" title="5 stars"></label>
+                            <input class="cmRating" value="9" /><label class="half lbRating" title="4 1/2 stars"></label>
+                            <input class="cmRating" value="8" /><label class="lbRating" title="4 stars"></label>
+                            <input class="cmRating" value="7" /><label class="half lbRating" title="3 1/2 stars"></label>
+                            <input class="cmRating" value="6" /><label class="lbRating" title="3 stars"></label>
+                            <input class="cmRating" value="5" /><label class="half lbRating" title="2 1/2 stars"></label>
+                            <input class="cmRating" value="4" /><label class="lbRating" title="2 stars"></label>
+                            <input class="cmRating" type="radio" checked value="3" /><label class="half lbRating" title="1 1/2 stars"></label>
+                            <input class="cmRating" value="2" /><label class="lbRating" title="1 star"></label>
+                            <input class="cmRating" value="1" /><label class="half lbRating" title="1/2 star"></label>
+                            <input class="cmRating" value="0" /><label class="lbRating" title="No star"></label>
+                        </fieldset>
+                    }
+                    @if (@Model.ProductInfo.Diem == 4)
+                    {
+                        <fieldset class="rate " style="margin:auto">
+                            <input class="cmRating" value="10" /><label class="lbRating" title="5 stars"></label>
+                            <input class="cmRating" value="9" /><label class="half lbRating" title="4 1/2 stars"></label>
+                            <input class="cmRating" value="8" /><label class="lbRating" title="4 stars"></label>
+                            <input class="cmRating" value="7" /><label class="half lbRating" title="3 1/2 stars"></label>
+                            <input class="cmRating" value="6" /><label class="lbRating" title="3 stars"></label>
+                            <input class="cmRating" value="5" /><label class="half lbRating" title="2 1/2 stars"></label>
+                            <input class="cmRating" type="radio" checked value="4" /><label class="lbRating" title="2 stars"></label>
+                            <input class="cmRating" value="3" /><label class="half lbRating" title="1 1/2 stars"></label>
+                            <input class="cmRating" value="2" /><label class="lbRating" title="1 star"></label>
+                            <input class="cmRating" value="1" /><label class="half lbRating" title="1/2 star"></label>
+                            <input class="cmRating" value="0" /><label class="lbRating" title="No star"></label>
+                        </fieldset>
+                    }
+                    @if (@Model.ProductInfo.Diem == 5)
+                    {
+                        <fieldset class="rate" style="margin:auto">
+                            <input class="cmRating" value="10" /><label class="lbRating" title="5 stars"></label>
+                            <input class="cmRating" value="9" /><label class="half lbRating" title="4 1/2 stars"></label>
+                            <input class="cmRating" value="8" /><label class="lbRating" title="4 stars"></label>
+                            <input class="cmRating" value="7" /><label class="half lbRating" title="3 1/2 stars"></label>
+                            <input class="cmRating" value="6" /><label class="lbRating" title="3 stars"></label>
+                            <input class="cmRating" type="radio" checked value="5" /><label class="half lbRating" title="2 1/2 stars"></label>
+                            <input class="cmRating" value="4" /><label class="lbRating" title="2 stars"></label>
+                            <input class="cmRating" value="3" /><label class="half lbRating" title="1 1/2 stars"></label>
+                            <input class="cmRating" value="2" /><label class="lbRating" title="1 star"></label>
+                            <input class="cmRating" value="1" /><label class="half lbRating" title="1/2 star"></label>
+                            <input class="cmRating" value="0" /><label class="lbRating" title="No star"></label>
+                        </fieldset>
+                    }
+                    @if (@Model.ProductInfo.Diem == 6)
+                    {
+                        <fieldset class="rate" style="margin:auto">
+                            <input class="cmRating" value="10" /><label class="lbRating" title="5 stars"></label>
+                            <input class="cmRating" value="9" /><label class="half lbRating" title="4 1/2 stars"></label>
+                            <input class="cmRating" value="8" /><label class="lbRating" title="4 stars"></label>
+                            <input class="cmRating" value="7" /><label class="half lbRating" title="3 1/2 stars"></label>
+                            <input class="cmRating" type="radio" checked value="6" /><label class="lbRating" title="3 stars"></label>
+                            <input class="cmRating" value="5" /><label class="half lbRating" title="2 1/2 stars"></label>
+                            <input class="cmRating" value="4" /><label class="lbRating" title="2 stars"></label>
+                            <input class="cmRating" value="3" /><label class="half lbRating" title="1 1/2 stars"></label>
+                            <input class="cmRating" value="2" /><label class="lbRating" title="1 star"></label>
+                            <input class="cmRating" value="1" /><label class="half lbRating" title="1/2 star"></label>
+                            <input class="cmRating" value="0" /><label class="lbRating" title="No star"></label>
+                        </fieldset>
+                    }
+                    @if (@Model.ProductInfo.Diem == 7)
+                    {
+                        <fieldset class="rate" style="margin:auto">
+                            <input class="cmRating" value="10" /><label class="lbRating" title="5 stars"></label>
+                            <input class="cmRating" value="9" /><label class="half lbRating" title="4 1/2 stars"></label>
+                            <input class="cmRating" value="8" /><label class="lbRating" title="4 stars"></label>
+                            <input class="cmRating" type="radio" checked value="7" /><label class="half lbRating" title="3 1/2 stars"></label>
+                            <input class="cmRating" value="6" /><label class="lbRating" title="3 stars"></label>
+                            <input class="cmRating" value="5" /><label class="half lbRating" title="2 1/2 stars"></label>
+                            <input class="cmRating" value="4" /><label class="lbRating" title="2 stars"></label>
+                            <input class="cmRating" value="3" /><label class="half lbRating" title="1 1/2 stars"></label>
+                            <input class="cmRating" value="2" /><label class="lbRating" title="1 star"></label>
+                            <input class="cmRating" value="1" /><label class="half lbRating" title="1/2 star"></label>
+                            <input class="cmRating" value="0" /><label class="lbRating" title="No star"></label>
+                        </fieldset>
+                    }
+                    @if (@Model.ProductInfo.Diem == 8)
+                    {
+                        <fieldset class="rate" style="margin:auto">
+                            <input class="cmRating" value="10" /><label class="lbRating" title="5 stars"></label>
+                            <input class="cmRating" value="9" /><label class="half lbRating" title="4 1/2 stars"></label>
+                            <input class="cmRating" type="radio" checked value="8" /><label class="lbRating" title="4 stars"></label>
+                            <input class="cmRating" value="7" /><label class="half lbRating" title="3 1/2 stars"></label>
+                            <input class="cmRating" value="6" /><label class="lbRating" title="3 stars"></label>
+                            <input class="cmRating" value="5" /><label class="half lbRating" title="2 1/2 stars"></label>
+                            <input class="cmRating" value="4" /><label class="lbRating" title="2 stars"></label>
+                            <input class="cmRating" value="3" /><label class="half lbRating" title="1 1/2 stars"></label>
+                            <input class="cmRating" value="2" /><label class="lbRating" title="1 star"></label>
+                            <input class="cmRating" value="1" /><label class="half lbRating" title="1/2 star"></label>
+                            <input class="cmRating" value="0" /><label class="lbRating" title="No star"></label>
+                        </fieldset>
+                    }
+                    @if (@Model.ProductInfo.Diem == 9)
+                    {
+                        <fieldset class="rate" style="margin:auto">
+                            <input class="cmRating" value="10" /><label class="lbRating" title="5 stars"></label>
+                            <input class="cmRating" type="radio" checked value="9" /><label class="half lbRating" title="4 1/2 stars"></label>
+                            <input class="cmRating" value="8" /><label class="lbRating" title="4 stars"></label>
+                            <input class="cmRating" value="7" /><label class="half lbRating" title="3 1/2 stars"></label>
+                            <input class="cmRating" value="6" /><label class="lbRating" title="3 stars"></label>
+                            <input class="cmRating" value="5" /><label class="half lbRating" title="2 1/2 stars"></label>
+                            <input class="cmRating" value="4" /><label class="lbRating" title="2 stars"></label>
+                            <input class="cmRating" value="3" /><label class="half lbRating" title="1 1/2 stars"></label>
+                            <input class="cmRating" value="2" /><label class="lbRating" title="1 star"></label>
+                            <input class="cmRating" value="1" /><label class="half lbRating" title="1/2 star"></label>
+                            <input class="cmRating" value="0" /><label class="lbRating" title="No star"></label>
+                        </fieldset>
+                    }
+                    @if (@Model.ProductInfo.Diem == 10)
+                    {
+                        <fieldset class="rate" style="margin:auto">
+                            <input class="cmRating" type="radio" checked value="10" /><label class="lbRating" title="5 stars"></label>
+                            <input class="cmRating" value="9" /><label class="half lbRating" title="4 1/2 stars"></label>
+                            <input class="cmRating" value="8" /><label class="lbRating" title="4 stars"></label>
+                            <input class="cmRating" value="7" /><label class="half lbRating" title="3 1/2 stars"></label>
+                            <input class="cmRating" value="6" /><label class="lbRating" title="3 stars"></label>
+                            <input class="cmRating" value="5" /><label class="half lbRating" for="rating5" title="2 1/2 stars"></label>
+                            <input class="cmRating" value="4" /><label class="lbRating" title="2 stars"></label>
+                            <input class="cmRating" value="3" /><label class="half lbRating" title="1 1/2 stars"></label>
+                            <input class="cmRating" value="2" /><label class="lbRating" title="1 star"></label>
+                            <input class="cmRating" value="1" /><label class="half lbRating" title="1/2 star"></label>
+                            <input class="cmRating" value="0" /><label class="lbRating" title="No star"></label>
+                        </fieldset>
+                    }
+                </p>
+            </div>
         </div>
         <div class="span6">
             <h3>@Model.ProductInfo.Name</h3>
@@ -245,9 +428,12 @@
                         <div class="col-md-12 bootstrap snippets">
                             <div class="panel">
                                 <div class="panel-body">
-                                    <textarea style="width:100%" class="form-control" rows="5" placeholder="What are you thinking?"></textarea>
+                                    @*<textarea style="width:100%" class="form-control" rows="5" placeholder="What are you thinking?"></textarea>*@
                                     <div class="mar-top clearfix">
-                                        <button class="btn btn-sm btn-primary pull-right" type="submit"><i class="fa fa-pencil fa-fw"></i> Share</button>
+                                        @*<span id="btnRating" class="btn" style="width:100%">Đánh Giá Sản Phẩm</span>*@
+                                        <button id="btnRatingCM" class="btn btn-sm btn-primary pull-right">
+                                            <i class="fa fa-pencil fa-fw"></i> Comment
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -445,9 +631,9 @@
                                                     </div>
                                                 </div>
                                                 <p>@item.Content.</p>
-                                                <div class="pad-ver">
+                                                @*<div class="pad-ver">
                                                     <a class="btn btn-sm btn-default btn-hover-primary" href="#">Comment</a>
-                                                </div>
+                                                </div>*@
                                                 <hr>
 
                                                 <!-- Comments -->

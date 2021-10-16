@@ -337,6 +337,20 @@ namespace Web.Application.Catalog.Products
                                join ps in _context.PCSs on s.Id equals ps.SizeId
                                where ps.ProductId == productId
                                select s.Name).ToListAsync();
+
+            var danhgia = await (from c in _context.Comments
+                                 where c.ProductId == productId
+                                 select c).ToListAsync();
+
+            decimal diem = 0;
+            var dem = 0;
+            foreach (var item in danhgia)
+            {
+                diem += item.Star;
+                dem++;
+            }
+            decimal diemDM = diem / dem;
+            diem = Math.Round(diemDM);
             //
             List<ProductSizeViewModel> list = new List<ProductSizeViewModel>();
             var query = from p in _context.PCSs
@@ -371,7 +385,8 @@ namespace Web.Application.Catalog.Products
                 Categories = categories,
                 Sizes = sizes,
                 IsFeatured = product.IsFeatured,
-                listPS = list
+                listPS = list,
+                Diem = diem
             };
             return new ResultSuccessApi<ProductViewModel>(data);
         }

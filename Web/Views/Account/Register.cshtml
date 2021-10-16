@@ -7,6 +7,7 @@
     var ln = "";
     var un = "";
     var pw = "";
+    var em = "";
     if (@Model != null)
     {
         loai = @Model.loaiRegister;
@@ -14,6 +15,7 @@
         ln = @Model.LastName;
         un = @Model.Username;
         pw = @Model.Password;
+        em = @Model.Email;
     }
     var culture = CultureInfo.CurrentCulture.Name;
 }
@@ -22,14 +24,20 @@
     <script>
         var loai = '@loai';
         var language = '@culture';
-        if (loai == "FB") {
+        if (loai == "FB" || loai=="GG") {
             $('.PW').hide();
             $('.US').hide();
-            if (language == "vi") {
+            if (language == "vi" && loai=="FB") {
                 $('.titleContent').text("Điền thông tin để xác nhận đăng nhập FaceBook.")
             }
-            else {
+            else if (language == "vi" && loai == "GG") {
+                $('.titleContent').text("Điền thông tin để xác nhận đăng nhập Google.")
+            }
+            else if (language == "en" && loai == "FB"){
                 $('.titleContent').text("Complete information to login FaceBook.")
+            }
+            else if (language == "en" && loai == "GG") {
+                $('.titleContent').text("Complete information to login Google.")
             }
         }
     </script>
@@ -78,7 +86,7 @@
             <div class="control-group">
                 <label class="control-label" for="input_email">Email <sup>*</sup></label>
                 <div class="controls">
-                    <input type="email" asp-for="Email" placeholder="Email">
+                    <input type="email" value="@em" asp-for="Email" placeholder="Email">
                     <span asp-validation-for="Email" class="text-error"></span>
                 </div>
             </div>

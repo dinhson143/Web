@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Web.AdminApp.Models;
 using Web.Utilities.Contants;
@@ -24,7 +25,18 @@ namespace Web.AdminApp.Controllers
 
         public IActionResult Index()
         {
+            var identity = (ClaimsIdentity)User.Identity;
+            var claimsPrincipal = new ClaimsPrincipal(identity);
+
+            // Get the claims values
+            var role = identity.Claims.Where(c => c.Type == ClaimTypes.Role)
+                               .Select(c => c.Value).SingleOrDefault();
             var user = User.Identity.Name;
+
+            if (role != "admin")
+            {
+                return RedirectToAction("Login", "Login", new { message = "Tài khoản không phải Admin" });
+            }
             return View();
         }
 

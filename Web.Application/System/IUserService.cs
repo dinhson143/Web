@@ -23,6 +23,8 @@ namespace Web.Application.System
 
         public Task<ResultApi<UserViewModel>> GetUserById(Guid IdUser);
 
+        public Task<ResultApi<string>> GetUserByUsername(string username);
+
         public Task<ResultApi<string>> DeleteUser(Guid IdUser);
 
         public Task<ResultApi<PageResult<UserViewModel>>> GetAllPaging(GetUserPagingRequest request);

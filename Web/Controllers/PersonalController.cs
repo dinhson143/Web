@@ -41,8 +41,9 @@ namespace Web.Controllers
             var dob = identity.Claims.Where(c => c.Type == ClaimTypes.DateOfBirth)
                                .Select(c => c.Value).SingleOrDefault();
 
-            if (id == null)
+            if (id == null || (id.Length < 36 && id.Length > 10))
             {
+                await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
                 return RedirectToAction("Login", "Account");
             }
             var user = await _userApi.GetUserById(new Guid(id), token);

@@ -23,6 +23,7 @@ namespace Web.Api.Controllers
         }
 
         [HttpGet("languages")]
+        [AllowAnonymous]
         public async Task<List<LanguageViewModel>> GetAll()
         {
             var result = await _languageService.GetAll();

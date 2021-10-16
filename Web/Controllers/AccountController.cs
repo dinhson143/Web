@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Facebook;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -68,6 +70,67 @@ namespace Web.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+        public IActionResult singinFB()
+        {
+            var properties = new AuthenticationProperties
+            {
+                RedirectUri = Url.Action("FacebookRespone")
+            };
+            return Challenge(properties, FacebookDefaults.AuthenticationScheme);
+        }
+
+        public async Task<IActionResult> FacebookRespone()
+        {
+            var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+            var identity = (ClaimsIdentity)User.Identity;
+            var claims = result.Principal.Identities
+                .FirstOrDefault().Claims.Select(claim => new
+                {
+                    claim.Issuer,
+                    claim.OriginalIssuer,
+                    claim.Type,
+                    claim.Value,
+                });
+
+            var firstname = identity.Claims.Where(c => c.Type == ClaimTypes.GivenName)
+                           .Select(c => c.Value).SingleOrDefault();
+            var lastname = identity.Claims.Where(c => c.Type == ClaimTypes.Surname)
+                           .Select(c => c.Value).SingleOrDefault();
+            var id = identity.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier)
+                           .Select(c => c.Value).SingleOrDefault();
+            var user = await _userApi.GetUserByUsername(id);
+            if (user.IsSuccess == false)
+            {
+                var data = new FacebookUserRequest()
+                {
+                    FirstName = firstname,
+                    LastName = lastname,
+                    Password = id + "Fb@",
+                    Username = id,
+                };
+                return RedirectToAction("Register", data);
+            }
+            else if (user.IsSuccess == true)
+            {
+                var userPricipal = this.ValidateToken(user.ResultObj);
+                var authProperties = new AuthenticationProperties
+                {
+                    ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10),
+                    IsPersistent = false   // tắt đi mở lại vẫn còn cookie login trước đó
+                };
+
+                //HttpContext.Session.SetString(SystemContants.AppSettings.DefaultLanguageId, _config["DefaultLanguageId"]);
+                HttpContext.Session.SetString(SystemContants.AppSettings.Token, user.ResultObj);
+                await HttpContext.SignInAsync(
+                    CookieAuthenticationDefaults.AuthenticationScheme,
+                    userPricipal,
+                    authProperties);
+                return RedirectToAction("Index", "Home");
+            }
+            return RedirectToAction("Error", "Home");
+        }
+
         [HttpPost]
         public async Task<IActionResult> Logout()
         {
@@ -77,8 +140,20 @@ namespace Web.Controllers
         }
 
         [HttpGet]
-        public IActionResult Register()
+        public IActionResult Register(FacebookUserRequest request)
         {
+            if (request.Password != null)
+            {
+                var data = new RegisterRequest()
+                {
+                    FirstName = request.FirstName,
+                    LastName = request.LastName,
+                    Username = request.Username,
+                    Password = request.Password,
+                    loaiRegister = "FB"
+                };
+                return View(data);
+            }
             return View();
         }
 
@@ -102,7 +177,7 @@ namespace Web.Controllers
             {
                 Password = request.Password,
                 Username = request.Username,
-                Rememberme = true
+                Rememberme = false
             });
 
             if (string.IsNullOrEmpty(token))

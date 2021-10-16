@@ -12,6 +12,8 @@ namespace Web.ServiceApi_Admin_User.Service.Users
     {
         public Task<string> Login(LoginRequest request);
 
+        public Task<ResultApi<string>> GetUserByUsername(string username);
+
         public Task<ResultApi<string>> Register(RegisterRequest request);
 
         public Task<ResultApi<string>> ForgetPassword(ForgetPassViewModel request);

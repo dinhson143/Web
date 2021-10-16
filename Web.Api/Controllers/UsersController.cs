@@ -46,6 +46,18 @@ namespace Web.Api.Controllers
             return result.ResultObj;
         }
 
+        [HttpGet("getUser-username/{username}")]
+        [AllowAnonymous]
+        public async Task<ResultApi<string>> GetUserByUsername(string username)
+        {
+            if (!ModelState.IsValid)
+            {
+                return null;
+            }
+            var result = await _userService.GetUserByUsername(username);
+            return result;
+        }
+
         [HttpPut("{IdUser}")]
         public async Task<IActionResult> Update(Guid IdUser, [FromBody] UpdateUserRequest request)
         {

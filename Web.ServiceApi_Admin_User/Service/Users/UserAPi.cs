@@ -91,6 +91,18 @@ namespace Web.ServiceApi_Admin_User.Service.Users
             return JsonConvert.DeserializeObject<UserViewModel>(result);
         }
 
+        public async Task<ResultApi<string>> GetUserByUsername(string username)
+        {
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+
+            var response = await client.GetAsync($"/api/Users/getUser-username/{username}");
+
+            var result = await response.Content.ReadAsStringAsync();
+
+            return JsonConvert.DeserializeObject<ResultApi<string>>(result);
+        }
+
         public async Task<string> Login(LoginRequest request)
         {
             var json = JsonConvert.SerializeObject(request);

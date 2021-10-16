@@ -1,6 +1,7 @@
 using FluentValidation.AspNetCore;
 using LazZiya.ExpressLocalization;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Facebook;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Localization;
@@ -40,7 +41,19 @@ namespace Web
                 options.Cookie.IsEssential = true;
             });
             // authenticatiom
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+            services.AddAuthentication(options =>
+           {
+               //CookieAuthenticationDefaults.AuthenticationScheme;
+               //options.DefaultChallengeScheme = FacebookDefaults.AuthenticationScheme;
+               options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+           })
+                .AddFacebook(facebookOptions =>
+                {
+                    IConfigurationSection facebookAuthNSection = Configuration.GetSection("Authentication:Facebook");
+                    facebookOptions.AppId = facebookAuthNSection["AppId"];
+                    facebookOptions.AppSecret = facebookAuthNSection["AppSecret"];
+                    //facebookOptions.CallbackPath = "/Account/singinFB";
+                })
                 .AddCookie(options =>
                 {
                     options.LoginPath = "/Account/Login/";

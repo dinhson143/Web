@@ -21,6 +21,7 @@ namespace Web.AdminApp.Controllers.Components
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
+            string token = HttpContext.Session.GetString(SystemContants.AppSettings.Token);
             var laguages = await _languageApi.GetAll(HttpContext.Session.GetString(SystemContants.AppSettings.Token));
             var navigationVM = new NavigationViewModel()
             {

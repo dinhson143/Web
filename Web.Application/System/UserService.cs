@@ -182,7 +182,7 @@ namespace Web.Application.System
                 new Claim(ClaimTypes.GivenName,user.FirstName),
                 new Claim(ClaimTypes.Surname,user.LastName),
                 new Claim(ClaimTypes.DateOfBirth,user.Dob.ToString("MM/dd/yyyy")),
-                new Claim(ClaimTypes.Name,user.UserName),
+                new Claim(ClaimTypes.Name,user.FirstName+ user.LastName),
                 new Claim(ClaimTypes.MobilePhone,user.PhoneNumber),
                 new Claim(ClaimTypes.StreetAddress,user.Address),
                 new Claim(ClaimTypes.Role,string.Join(";",roles))
@@ -222,11 +222,13 @@ namespace Web.Application.System
                 PhoneNumber = request.Phonenumber,
             };
             var result = await _userManager.CreateAsync(user, request.Password);
+
+            await _userManager.AddToRoleAsync(user, "customer");
             if (result.Succeeded)
             {
                 return new ResultSuccessApi<string>("Đăng kí thành công");
             }
-            return new ResultErrorApi<string>("Đăng kí thất bại");
+            return new ResultErrorApi<string>(result.Errors.ToString());
         }
 
         public async Task<ResultApi<string>> RoleAssign(Guid IdUser, RoleAssignRequest request)
@@ -282,6 +284,41 @@ namespace Web.Application.System
                 return new ResultSuccessApi<string>("Update thành công");
             }
             return new ResultErrorApi<string>("Update thất bại");
+        }
+
+        public async Task<ResultApi<string>> GetUserByUsername(string username)
+        {
+            var user = await _userManager.FindByNameAsync(username);
+            if (user == null)
+            {
+                //throw new WebException("Cannot find Username");
+                return new ResultErrorApi<string>("Cannot find Username");
+            }
+            var roles = await _userManager.GetRolesAsync(user);
+            var claims = new[]
+            {
+                new Claim(ClaimTypes.NameIdentifier,user.Id.ToString()),
+                new Claim(ClaimTypes.Email,user.Email),
+                new Claim(ClaimTypes.GivenName,user.FirstName),
+                new Claim(ClaimTypes.Surname,user.LastName),
+                new Claim(ClaimTypes.DateOfBirth,user.Dob.ToString("MM/dd/yyyy")),
+                new Claim(ClaimTypes.Name,user.FirstName+user.LastName),
+                new Claim(ClaimTypes.MobilePhone,user.PhoneNumber),
+                new Claim(ClaimTypes.StreetAddress,user.Address),
+                new Claim(ClaimTypes.Role,string.Join(";",roles))
+            };
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Tokens:Key"]));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            // token issuer: 16 kí tự
+            var token = new JwtSecurityToken(_config["Tokens:Issuer"],
+                _config["Tokens:Issuer"],
+                claims,
+                expires: DateTime.Now.AddHours(3),
+                signingCredentials: creds);
+
+            return new ResultSuccessApi<string>(new JwtSecurityTokenHandler().WriteToken(token));
         }
     }
 }

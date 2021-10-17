@@ -5,6 +5,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewData["Title"] = "ProductDetail";
     var culture = CultureInfo.CurrentCulture.Name;
+    CultureInfo cul;
 }
 
 @section Scripts{
@@ -136,7 +137,7 @@
             @TempData["msg"]
         </div>
     }
-    else if(@TempData["error"] != null)
+    else if (@TempData["error"] != null)
     {
         <div class="alert alert-error" role="alert" style="text-align:center">
             @TempData["error"]
@@ -632,8 +633,8 @@
                                                 </div>
                                                 <p>@item.Content.</p>
                                                 @*<div class="pad-ver">
-                                                    <a class="btn btn-sm btn-default btn-hover-primary" href="#">Comment</a>
-                                                </div>*@
+                                                        <a class="btn btn-sm btn-default btn-hover-primary" href="#">Comment</a>
+                                                    </div>*@
                                                 <hr>
 
                                                 <!-- Comments -->
@@ -655,78 +656,35 @@
                     <div class="tab-content">
                         <div class="tab-pane active" id="blockView">
                             <ul class="thumbnails">
-                                <li class="span3">
-                                    <div class="thumbnail">
-                                        <a href="product_details.html"><img src="/themes/images/products/10.jpg" alt="" /></a>
-                                        <div class="caption">
-                                            <h5>Manicure &amp; Pedicure</h5>
-                                            <p>
-                                                Lorem Ipsum is simply dummy text.
-                                            </p>
-                                            <h4 style="text-align:center"><a class="btn" href="product_details.html"> <i class="icon-zoom-in"></i></a> <a class="btn" href="#">Add to <i class="icon-shopping-cart"></i></a> <a class="btn btn-primary" href="#">&euro;222.00</a></h4>
+                                @foreach (var item in Model.ProductLQ)
+                                {
+                                    var link = $"/{culture}/{_loc["productURL"]}/{item.Id}";
+                                    <li class="span3">
+                                        <div class="thumbnail">
+                                            <a href="@link"><img src="@item.Images[0].URL" alt="" /></a>
+                                            <div class="caption">
+                                                <h5>@item.Name</h5>
+                                                <p>
+                                                    @item.Description
+                                                </p>
+                                                <h4 style="text-align:center">
+                                                    <a class="btn" href="@link"> <i class="icon-zoom-in"></i></a> <a class="btn" href="@link">Add to <i class="icon-shopping-cart"></i></a> <a class="btn btn-primary" href="@link">
+                                                        @if (String.Compare(culture.ToString(), "vi") == 0)
+                                                        {
+                                                            cul = CultureInfo.GetCultureInfo("vi-VN");
+                                                            <span style="font-size:11px" class="pull-right">@item.listPS[0].Price.ToString("C", cul.NumberFormat) - @item.listPS[item.listPS.Count - 1].Price.ToString("C", cul.NumberFormat)</span>
+                                                        }
+                                                        else
+                                                        {
+                                                            cul = CultureInfo.GetCultureInfo("en-US");
+                                                            <span style="font-size:11px" class="pull-right">@item.listPS[0].Price.ToString("C", cul.NumberFormat) - @item.listPS[item.listPS.Count - 1].Price.ToString("C", cul.NumberFormat)</span>
+                                                        }
+                                                    </a>
+                                                </h4>
+                                            </div>
                                         </div>
-                                    </div>
-                                </li>
-                                <li class="span3">
-                                    <div class="thumbnail">
-                                        <a href="product_details.html"><img src="/themes/images/products/11.jpg" alt="" /></a>
-                                        <div class="caption">
-                                            <h5>Manicure &amp; Pedicure</h5>
-                                            <p>
-                                                Lorem Ipsum is simply dummy text.
-                                            </p>
-                                            <h4 style="text-align:center"><a class="btn" href="product_details.html"> <i class="icon-zoom-in"></i></a> <a class="btn" href="#">Add to <i class="icon-shopping-cart"></i></a> <a class="btn btn-primary" href="#">&euro;222.00</a></h4>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li class="span3">
-                                    <div class="thumbnail">
-                                        <a href="product_details.html"><img src="/themes/images/products/12.jpg" alt="" /></a>
-                                        <div class="caption">
-                                            <h5>Manicure &amp; Pedicure</h5>
-                                            <p>
-                                                Lorem Ipsum is simply dummy text.
-                                            </p>
-                                            <h4 style="text-align:center"><a class="btn" href="product_details.html"> <i class="icon-zoom-in"></i></a> <a class="btn" href="#">Add to <i class="icon-shopping-cart"></i></a> <a class="btn btn-primary" href="#">&euro;222.00</a></h4>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li class="span3">
-                                    <div class="thumbnail">
-                                        <a href="product_details.html"><img src="/themes/images/products/13.jpg" alt="" /></a>
-                                        <div class="caption">
-                                            <h5>Manicure &amp; Pedicure</h5>
-                                            <p>
-                                                Lorem Ipsum is simply dummy text.
-                                            </p>
-                                            <h4 style="text-align:center"><a class="btn" href="product_details.html"> <i class="icon-zoom-in"></i></a> <a class="btn" href="#">Add to <i class="icon-shopping-cart"></i></a> <a class="btn btn-primary" href="#">&euro;222.00</a></h4>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li class="span3">
-                                    <div class="thumbnail">
-                                        <a href="product_details.html"><img src="/themes/images/products/1.jpg" alt="" /></a>
-                                        <div class="caption">
-                                            <h5>Manicure &amp; Pedicure</h5>
-                                            <p>
-                                                Lorem Ipsum is simply dummy text.
-                                            </p>
-                                            <h4 style="text-align:center"><a class="btn" href="product_details.html"> <i class="icon-zoom-in"></i></a> <a class="btn" href="#">Add to <i class="icon-shopping-cart"></i></a> <a class="btn btn-primary" href="#">&euro;222.00</a></h4>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li class="span3">
-                                    <div class="thumbnail">
-                                        <a href="product_details.html"><img src="/themes/images/products/2.jpg" alt="" /></a>
-                                        <div class="caption">
-                                            <h5>Manicure &amp; Pedicure</h5>
-                                            <p>
-                                                Lorem Ipsum is simply dummy text.
-                                            </p>
-                                            <h4 style="text-align:center"><a class="btn" href="product_details.html"> <i class="icon-zoom-in"></i></a> <a class="btn" href="#">Add to <i class="icon-shopping-cart"></i></a> <a class="btn btn-primary" href="#">&euro;222.00</a></h4>
-                                        </div>
-                                    </div>
-                                </li>
+                                    </li>
+                                }
                             </ul>
                             <hr class="soft" />
                         </div>

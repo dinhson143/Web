@@ -38,9 +38,9 @@ namespace Web.Api.Controllers
 
         [HttpGet("danh-sach-web")]
         [AllowAnonymous]
-        public async Task<List<CommentViewModel>> GetAllWeb(string languageID)
+        public async Task<List<CommentViewModel>> GetAllWeb(int productID, string languageID)
         {
-            var result = await _commentService.GetAllweb(languageID);
+            var result = await _commentService.GetAllweb(productID, languageID);
             return result;
         }
 

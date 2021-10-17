@@ -44,6 +44,14 @@ namespace Web.Api.Controllers
             return Ok(Product);
         }
 
+        [HttpGet("product_lienquan/{productId}/{languageId}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetProductLQ(int productId, string languageId)
+        {
+            var Product = await _manageservice.GetProductLQ(productId, languageId);
+            return Ok(Product);
+        }
+
         [HttpPost]
         [Consumes("multipart/form-data")]
         [DisableRequestSizeLimit]

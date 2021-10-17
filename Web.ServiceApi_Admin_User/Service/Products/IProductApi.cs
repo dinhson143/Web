@@ -28,6 +28,8 @@ namespace Web.ServiceApi_Admin_User.Service.Products
 
         public Task<ResultApi<ProductViewModel>> GetProductById(int productId, string BearerToken, string languageId);
 
+        public Task<ResultApi<List<ProductViewModel>>> GetProductLQ(int productId, string languageId);
+
         public Task<List<ProductViewModel>> GetFeaturedProducts(string languageId, int soluong);
 
         public Task<List<ProductViewModel>> GetLatestProducts(string languageId, int soluong);

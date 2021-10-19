@@ -1,0 +1,61 @@
+﻿@model Web.ViewModels.Catalog.Products.ProductViewModel
+@{
+    ViewData["Title"] = "ProductStock";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid tonkho">
+
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800 ttTable">SẢN PHẨM</h1>
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3" style="display:flex">
+            <a class="btn btn-success btn-icon-split" href="/Product/Nhap_Xuat_TonKho">
+                <span class="icon text-white-50">
+                    <i class="fas fa-dolly-flatbed"></i>
+                </span>
+                <span class="text">Trở về</span>
+            </a>
+        </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped" id="tonkhoTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>
+                            Size
+                        </th>
+                        <th>
+                            Số lượng
+                        </th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th>
+                            Size
+                        </th>
+                        <th>
+                            Số lượng
+                        </th>
+                    </tr>
+                </tfoot>
+                <tbody>
+                    @foreach (var item in Model.listPS)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Size)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Stock)
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    </div>
+</div>

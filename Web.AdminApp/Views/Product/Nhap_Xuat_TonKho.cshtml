@@ -15,37 +15,29 @@
         }, 2000);
 
         $('#xuathangTable').DataTable();
+        $('#tonkhoTable').DataTable();
         //
 
         $('.xuathang').hide();
-
-        var table = $('#dataTable').DataTable();
+        $('.tonkho').hide();
 
         $('.btn-nh').click(function () {
             $('.ttTable').text("DANH SÁCH NHẬP HÀNG");
             $('.nhaphang').toggle();
             $('.xuathang').hide();
-            //table.destroy();
-            //table = $('#dataTable').DataTable({
-            //    data,
-            //    columns: [
-            //        { data:'Id'},
-            //        { data:'TenLoaiphieu'},
-            //        { data:'TenCongTy'},
-            //        { data: 'NgayNhap' },
-            //        {
-            //            data: 'Id',
-            //            "render": function ( data, type, full, meta ) {
-            //                return '<form asp-action="Nhap_Xuat_TonKhoDetail" asp-controller="Product" method="post" ><input type="hidden" value="' + data +'" asp-for="Id" />  <input type="submit" value="Chitiet" class="btn btn-primary" /> </form>';
-            //            }
-            //        },
-            //    ]
-            //})
+            $('.tonkho').hide();
         })
         $('.btn-xh').click(function () {
             $('.ttTable').text("DANH SÁCH XUẤT HÀNG")
             $('.xuathang').toggle();
             $('.nhaphang').hide();
+            $('.tonkho').hide();
+        })
+        $('.btn-tonkho').click(function () {
+            $('.ttTable').text("SẢN PHẨM")
+            $('.tonkho').toggle();
+            $('.nhaphang').hide();
+            $('.xuathang').hide();
         })
         //$('.btn-tonkho').click(function () {
         //    $('.ttTable').text("QUẢN LÝ TỒN KHO")
@@ -143,9 +135,9 @@
                                 <td>
                                     @*@Html.ActionLink("Chi tiết", "Nhap_Xuat_TonKhoDetail", new { id = item.Id })*@
                                     <form asp-action="Nhap_Xuat_TonKhoDetail" asp-controller="Product" method="post">
-                                            <input type="hidden" value="@item.Id" asp-for="Id" />
-                                            <input type="submit" value="Chitiet" class="btn btn-primary" />
-                                        </form>
+                                        <input type="hidden" value="@item.Id" asp-for="Id" />
+                                        <input type="submit" value="Chitiet" class="btn btn-primary" />
+                                    </form>
                                 </td>
                             </tr>
                         }
@@ -264,6 +256,97 @@
                                 </td>
                                 <td>
                                     @Html.ActionLink("Chi tiết", "Details", new { id = item.Id })
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* ////////////////////////////////////////////////////////// *@
+<div class="container-fluid tonkho">
+
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800 ttTable">SẢN PHẨM</h1>
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3" style="display:flex">
+            <a class="btn btn-success btn-icon-split btn-nh">
+                <span class="icon text-white-50">
+                    <i class="fas fa-plus-circle"></i>
+                </span>
+                <span class="text">Nhập Hàng</span>
+            </a>
+
+            <a style="margin:0 10px;" class="btn btn-success btn-icon-split btn-xh">
+                <span class="icon text-white-50">
+                    <i class="fas fa-minus"></i>
+                </span>
+                <span class="text">Xuất Hàng</span>
+            </a>
+            <a class="btn btn-success btn-icon-split btn-tonkho">
+                <span class="icon text-white-50">
+                    <i class="fas fa-dolly-flatbed"></i>
+                </span>
+                <span class="text">Tồn Kho</span>
+            </a>
+        </div>
+        @if (@TempData["Message"] != null)
+        {
+            <div class="alert alert-success" role="alert" style="text-align:center">
+                @TempData["Message"]
+            </div>
+        }
+
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped" id="tonkhoTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>
+                                Name
+                            </th>
+                            <th>
+                                Ngày
+                            </th>
+                            <th>
+                                Mô tả
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th>
+                                Name
+                            </th>
+                            <th>
+                                Ngày
+                            </th>
+                            <th>
+                                Mô tả
+                            </th>
+                            <th></th>
+                        </tr>
+                    </tfoot>
+                    <tbody>
+                        @foreach (var item in Model.Products)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Name)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.DateCreated)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.SeoDescription)
+                                </td>
+                                <td>
+                                    @Html.ActionLink("Tồn kho", "ProductStock", new { id = item.Id })
                                 </td>
                             </tr>
                         }

@@ -358,9 +358,20 @@ namespace Web.AdminApp.Controllers
             HttpContext.Session.SetString("phieunhapID", "0");
             var pn = await _phieuNhapApi.GetAll(token);
             var px = await _orderApi.GetallOrderSuccess(languageId, token);
+            //
+            var model = new GetManageProductPagingRequest()
+            {
+                LanguageId = languageId,
+                BearerToken = token,
+                CategoryId = 0
+            };
+            var products = await _productApi.GetAll(model);
+
+            //
             var data = new Nhap_Xuat_TonKho_ViewModel();
             data.PhieuNhap = pn.ResultObj;
             data.PhieuXuat = px.ResultObj;
+            data.Products = products.Items;
             return View(data);
         }
 
@@ -373,6 +384,19 @@ namespace Web.AdminApp.Controllers
             HttpContext.Session.SetString("phieunhapID", Id.ToString());
             HttpContext.Session.SetString("ProductID", "0");
             return View(response);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ProductStock(int id)
+        {
+            var token = HttpContext.Session.GetString(SystemContants.AppSettings.Token);
+            var languageId = HttpContext.Session.GetString(SystemContants.AppSettings.DefaultLanguageId);
+            var response = await _productApi.GetProductById(id, token, languageId);
+            if (response.IsSuccess != false)
+            {
+                return View(response.ResultObj);
+            }
+            return RedirectToAction("Error", "Home");
         }
     }
 }

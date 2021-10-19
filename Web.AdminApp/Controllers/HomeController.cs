@@ -33,9 +33,9 @@ namespace Web.AdminApp.Controllers
                                .Select(c => c.Value).SingleOrDefault();
             var user = User.Identity.Name;
 
-            if (role != "admin")
+            if (role != "admin" && role != "user")
             {
-                return RedirectToAction("Login", "Login", new { message = "Tài khoản không phải Admin" });
+                return RedirectToAction("Login", "Login", new { message = "Tài khoản không có quyền đăng nhập" });
             }
             return View();
         }

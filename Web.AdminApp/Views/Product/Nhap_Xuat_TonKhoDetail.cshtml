@@ -1,21 +1,20 @@
-﻿@model IEnumerable<Web.ViewModels.Catalog.PhieuNhaps.PhieuNhapViewModel>
-
+﻿@model List<Web.ViewModels.Catalog.PhieuNhaps.PhieuNXchitietViewModel>
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Nhap_Xuat_TonKhoDetail";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <div class="container-fluid">
 
     <!-- Page Heading -->
-    <h1 class="h3 mb-2 text-gray-800">DANH MỤC</h1>
+    <h1 class="h3 mb-2 text-gray-800">Thông Tin Chi Tiết Phiếu Nhập</h1>
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
         <div class="card-header py-3" style="display:flex">
-            <a asp-action="Create" asp-controller="PhieuNhap" class="btn btn-success btn-icon-split">
+            <a asp-action="Nhap_Xuat_TonKho" asp-controller="Product" style="margin:0 10px;" class="btn btn-success btn-icon-split">
                 <span class="icon text-white-50">
-                    <i class="fas fa-plus-circle"></i>
+                    <i class="fas fa-long-arrow-alt-left"></i>
                 </span>
-                <span class="text">Tạo mới Phiếu nhập</span>
+                <span class="text">Back To List</span>
             </a>
         </div>
         @if (@TempData["Message"] != null)
@@ -30,36 +29,40 @@
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
                         <tr>
-                            <th>
-                                @Html.DisplayNameFor(model => model.Id)
+                            <th class="col-sm-2">
+                                Tên sản phẩm
                             </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.TenLoaiphieu)
+                            <th class="col-sm-2">
+                                Size
                             </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.TenCongTy)
+                            <th class="col-sm-2">
+                                Số lượng
                             </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.NgayNhap)
+                            <th class="col-sm-2">
+                                Đơn giá
                             </th>
-                            <th></th>
+                            <th class="col-sm-2">
+                                Giá bán
+                            </th>
                         </tr>
                     </thead>
                     <tfoot>
                         <tr>
-                            <th>
-                                @Html.DisplayNameFor(model => model.Id)
+                            <th class="col-sm-2">
+                                Tên sản phẩm
                             </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.TenLoaiphieu)
+                            <th class="col-sm-2">
+                                Size
                             </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.TenCongTy)
+                            <th class="col-sm-2">
+                                Số lượng
                             </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.NgayNhap)
+                            <th class="col-sm-2">
+                                Đơn giá
                             </th>
-                            <th></th>
+                            <th class="col-sm-2">
+                                Giá bán
+                            </th>
                         </tr>
                     </tfoot>
                     <tbody>
@@ -67,21 +70,19 @@
                         {
                             <tr>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.Id)
+                                    @Html.DisplayFor(modelItem => item.TenSP)
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.TenLoaiphieu)
+                                    @Html.DisplayFor(modelItem => item.TenSize)
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.TenCongTy)
+                                    @Html.DisplayFor(modelItem => item.Soluong)
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.NgayNhap)
+                                    @Html.DisplayFor(modelItem => item.Dongia)
                                 </td>
                                 <td>
-                                    @Html.ActionLink("Chỉnh sửa", "Edit", new { id = item.Id }) |
-                                    @Html.ActionLink("Chi tiết", "Details", new { id = item.Id }) |
-                                    @Html.ActionLink("Xóa", "Delete", new { id = item.Id })
+                                    @Html.DisplayFor(modelItem => item.Giaban)
                                 </td>
                             </tr>
                         }

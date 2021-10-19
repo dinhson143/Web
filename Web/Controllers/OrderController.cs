@@ -111,5 +111,12 @@ namespace Web.Controllers
             }
             return RedirectToAction("Index");
         }
+
+        [HttpGet]
+        public async Task<IActionResult> TrackingOrder(int id)
+        {
+            //var order = await _orderApi.GetAllOrder();
+            return View();
+        }
     }
 }

@@ -5,7 +5,10 @@ using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Web.AdminApp.Models;
 using Web.ServiceApi_Admin_User.Service.Categories;
+using Web.ServiceApi_Admin_User.Service.Orders;
+using Web.ServiceApi_Admin_User.Service.PhieuNhaps;
 using Web.ServiceApi_Admin_User.Service.Products;
 using Web.ServiceApi_Admin_User.Service.Sizes;
 using Web.Utilities.Contants;
@@ -23,13 +26,17 @@ namespace Web.AdminApp.Controllers
         private readonly IConfiguration _config;
         private readonly ICategoryApi _categoryApi;
         private readonly ISizeApi _sizeApi;
+        private readonly IPhieuNhapApi _phieuNhapApi;
+        private readonly IOrderApi _orderApi;
 
-        public ProductController(IProductApi productApi, IConfiguration config, ICategoryApi categoryApi, ISizeApi sizeApi)
+        public ProductController(IProductApi productApi, IOrderApi orderApi, IPhieuNhapApi phieuNhapApi, IConfiguration config, ICategoryApi categoryApi, ISizeApi sizeApi)
         {
             _productApi = productApi;
             _config = config;
             _categoryApi = categoryApi;
             _sizeApi = sizeApi;
+            _phieuNhapApi = phieuNhapApi;
+            _orderApi = orderApi;
         }
 
         public async Task<IActionResult> Index(int? categoryId)
@@ -341,6 +348,31 @@ namespace Web.AdminApp.Controllers
             }
             TempData["Message"] = "Cập nhật giá thành công";
             return RedirectToAction("Index", "Product");
+        }
+
+        public async Task<IActionResult> Nhap_Xuat_TonKho()
+        {
+            var languageId = HttpContext.Session.GetString(SystemContants.AppSettings.DefaultLanguageId);
+            var token = HttpContext.Session.GetString(SystemContants.AppSettings.Token);
+
+            HttpContext.Session.SetString("phieunhapID", "0");
+            var pn = await _phieuNhapApi.GetAll(token);
+            var px = await _orderApi.GetallOrderSuccess(languageId, token);
+            var data = new Nhap_Xuat_TonKho_ViewModel();
+            data.PhieuNhap = pn.ResultObj;
+            data.PhieuXuat = px.ResultObj;
+            return View(data);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Nhap_Xuat_TonKhoDetail(int Id)
+        {
+            var token = HttpContext.Session.GetString(SystemContants.AppSettings.Token);
+            var languageId = HttpContext.Session.GetString(SystemContants.AppSettings.DefaultLanguageId);
+            var response = await _phieuNhapApi.GetPhieuNhapById(Id, languageId, token);
+            HttpContext.Session.SetString("phieunhapID", Id.ToString());
+            HttpContext.Session.SetString("ProductID", "0");
+            return View(response);
         }
     }
 }

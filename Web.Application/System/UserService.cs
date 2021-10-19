@@ -182,7 +182,7 @@ namespace Web.Application.System
                 new Claim(ClaimTypes.GivenName,user.FirstName),
                 new Claim(ClaimTypes.Surname,user.LastName),
                 new Claim(ClaimTypes.DateOfBirth,user.Dob.ToString("MM/dd/yyyy")),
-                new Claim(ClaimTypes.Name,user.FirstName+ user.LastName),
+                new Claim(ClaimTypes.Name,user.FirstName+" "+ user.LastName),
                 new Claim(ClaimTypes.MobilePhone,user.PhoneNumber),
                 new Claim(ClaimTypes.StreetAddress,user.Address),
                 new Claim(ClaimTypes.Role,string.Join(";",roles))

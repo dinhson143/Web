@@ -1,6 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using PayPal.Core;
+using PayPal.Payments;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -13,6 +17,7 @@ using Web.ServiceApi_Admin_User.Service.Products;
 using Web.Utilities.Contants;
 using Web.ViewModels.Catalog.Comments;
 using Web.ViewModels.Catalog.Sales;
+using Transaction = PayPal.Payments.Transaction;
 
 namespace Web.Controllers
 {
@@ -21,12 +26,18 @@ namespace Web.Controllers
         private readonly IProductApi _productApi;
         private readonly IOrderApi _orderApi;
         private readonly ICommentApi _commentApi;
+        private readonly string _clientId;
+        private readonly string _secretKey;
 
-        public CartController(IProductApi productApi, IOrderApi orderApi, ICommentApi commentApi)
+        public decimal TyGiaUSD = 23300;
+
+        public CartController(IProductApi productApi, IOrderApi orderApi, ICommentApi commentApi, IConfiguration configuration)
         {
             _productApi = productApi;
             _orderApi = orderApi;
             _commentApi = commentApi;
+            _clientId = configuration["PayPal:ClientId"];
+            _secretKey = configuration["PayPal:SecretKey"];
         }
 
         public IActionResult Index()
@@ -63,25 +74,177 @@ namespace Web.Controllers
                     SizeId = item.SizeId
                 });
             }
+
             var checkoutRequest = new CheckoutRequest()
             {
                 Address = request.CheckoutModel.Address,
                 Email = request.CheckoutModel.Email,
                 Name = request.CheckoutModel.Name,
                 PhoneNumber = request.CheckoutModel.PhoneNumber,
-                OrderDetails = orderDetails
+                OrderDetails = orderDetails,
+                ThanhToan = "Normal"
             };
             string token = HttpContext.Session.GetString(SystemContants.AppSettings.Token);
             var result = await _orderApi.CreateOrder(checkoutRequest, token);
             if (result.IsSuccess == true)
             {
                 TempData["msg"] = "Đặt hàng thành công";
+                HttpContext.Session.Remove(SystemContants.CartSession);
             }
             else
             {
                 TempData["msg"] = null;
             }
             return View(data);
+        }
+
+        public async Task<IActionResult> PaypalCheckout(CheckoutViewModel checkout)
+        {
+            var culture = CultureInfo.CurrentCulture.Name;
+            var session = HttpContext.Session.GetString(SystemContants.CartSession);
+            List<CartItemViewModel> currentCart = new List<CartItemViewModel>();
+            if (session != null)
+            {
+                currentCart = JsonConvert.DeserializeObject<List<CartItemViewModel>>(session);
+                checkout.CartItems = currentCart;
+            }
+            if (currentCart.Count == 0)
+            {
+                return RedirectToAction("Index", "Cart");
+            }
+            HttpContext.Session.SetString(SystemContants.CheckoutVMD, JsonConvert.SerializeObject(checkout));
+            decimal tempTotalAmount = 0;
+            foreach (var item in currentCart)
+            {
+                tempTotalAmount += (item.Quantity * item.Price);
+            }
+            var environment = new SandboxEnvironment(_clientId, _secretKey);
+            var client = new PayPalHttpClient(environment);
+
+            var total = Math.Round(tempTotalAmount / TyGiaUSD, 2);
+            var paypalOrderId = DateTime.Now.Ticks;
+            var hostname = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}";
+            var payment = new Payment()
+            {
+                Intent = "sale",
+                Transactions = new List<Transaction>()
+                {
+                    new Transaction()
+                    {
+                        Amount = new Amount()
+                        {
+                            Total = total.ToString(CultureInfo.InvariantCulture),
+                            Currency = "USD",
+                            Details = new AmountDetails
+                            {
+                                Tax = "0",
+                                Shipping = "0",
+                                Subtotal = total.ToString(CultureInfo.InvariantCulture)
+                            }
+                        },
+						//ItemList = itemList,
+						Description = $"Invoice #{paypalOrderId}",
+                        InvoiceNumber = paypalOrderId.ToString()
+                    }
+                },
+                RedirectUrls = new RedirectUrls()
+                {
+                    CancelUrl = $"{hostname}/{culture}/Cart/CheckoutFail",
+                    ReturnUrl = $"{hostname}/{culture}/Cart/CheckoutSuccess"
+                },
+                Payer = new Payer()
+                {
+                    PaymentMethod = "paypal"
+                }
+            };
+            PaymentCreateRequest request = new PaymentCreateRequest();
+            request.RequestBody(payment);
+
+            try
+            {
+                var response = await client.Execute(request);
+                var statusCode = response.StatusCode;
+                Payment result = response.Result<Payment>();
+
+                var links = result.Links.GetEnumerator();
+                string paypalRedirectUrl = null;
+                while (links.MoveNext())
+                {
+                    LinkDescriptionObject lnk = links.Current;
+                    if (lnk.Rel.ToLower().Trim().Equals("approval_url"))
+                    {
+                        //saving the payapalredirect URL to which user will be redirected for payment
+                        paypalRedirectUrl = lnk.Href;
+                    }
+                }
+
+                return Redirect(paypalRedirectUrl);
+            }
+            //catch (Exception ex)
+            //{
+            //    var message = ex.Message;
+
+            //    //Process when Checkout with Paypal fails
+            //    return Redirect("/Cart/CheckoutFail");
+            //}
+            catch (BraintreeHttp.HttpException httpException)
+            {
+                var statusCode = httpException.StatusCode;
+                var debugId = httpException.Headers.GetValues("PayPal-Debug-Id").FirstOrDefault();
+
+                //Process when Checkout with Paypal fails
+                return Redirect($"{culture}/Cart/CheckoutFail");
+            }
+        }
+
+        public IActionResult CheckoutFail()
+        {
+            //Tạo đơn hàng trong database với trạng thái thanh toán là "Chưa thanh toán"
+            //Xóa session
+            TempData["err"] = null;
+            return RedirectToAction("Checkout");
+        }
+
+        public async Task<IActionResult> CheckoutSuccess()
+        {
+            var session = HttpContext.Session.GetString(SystemContants.CheckoutVMD);
+            var data = JsonConvert.DeserializeObject<CheckoutViewModel>(session);
+            //Tạo đơn hàng trong database với trạng thái thanh toán là "Paypal" và thành công
+            var orderDetails = new List<OrderDetailVM>();
+            foreach (var item in data.CartItems)
+            {
+                orderDetails.Add(new OrderDetailVM()
+                {
+                    ProductId = item.ProductId,
+                    Quantity = item.Quantity,
+                    Price = item.Price,
+                    SizeId = item.SizeId
+                });
+            }
+
+            var checkoutRequest = new CheckoutRequest()
+            {
+                Address = data.CheckoutModel.Address,
+                Email = data.CheckoutModel.Email,
+                Name = data.CheckoutModel.Name,
+                PhoneNumber = data.CheckoutModel.PhoneNumber,
+                OrderDetails = orderDetails,
+                ThanhToan = "PayPal"
+            };
+            string token = HttpContext.Session.GetString(SystemContants.AppSettings.Token);
+            var result = await _orderApi.CreateOrder(checkoutRequest, token);
+            if (result.IsSuccess == true)
+            {
+                TempData["msg"] = "Đặt hàng thành công";
+                HttpContext.Session.Remove(SystemContants.CartSession);
+            }
+            else
+            {
+                TempData["msg"] = null;
+            }
+            //Xóa session
+            HttpContext.Session.Remove(SystemContants.CheckoutVMD);
+            return RedirectToAction("Checkout");
         }
 
         [HttpGet]

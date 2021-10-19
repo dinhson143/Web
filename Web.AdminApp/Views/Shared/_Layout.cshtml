@@ -59,29 +59,32 @@
             </div>
 
             <!-- Nav Item - Pages Collapse Menu -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
-                   aria-expanded="true" aria-controls="collapseTwo">
-                    <i class="fas fa-fw fa-cog"></i>
-                    <span>Quản lý</span>
-                </a>
-                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        @*<h6 class="collapse-header">Quản lý:</h6>*@
-                        <a class="collapse-item" asp-action="Index" asp-controller="User">Người dùng</a>
-                        <a class="collapse-item" asp-action="Index" asp-controller="Product">Sản phẩm</a>
-                        <a class="collapse-item" asp-action="Index" asp-controller="Category">Danh mục</a>
-                        <a class="collapse-item" asp-action="Index" asp-controller="Slider">Sliders</a>
-                        <a class="collapse-item" asp-action="Index" asp-controller="Size">Sizes</a>
-                        <a class="collapse-item" asp-action="Index" asp-controller="Role">Roles</a>
-                        <a class="collapse-item" asp-action="Index" asp-controller="Contact">Contacts</a>
-                        <a class="collapse-item" asp-action="Index" asp-controller="Congty">Công ty</a>
-                        <a class="collapse-item" asp-action="Index" asp-controller="Language">Ngôn ngữ</a>
-                        <a class="collapse-item" asp-action="Index" asp-controller="LoaiPhieu">Loại Phiếu</a>
-                    </div>
-                </div>
-            </li>
+            @if (@User.IsInRole("admin"))
+            {
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
+                       aria-expanded="true" aria-controls="collapseTwo">
+                        <i class="fas fa-fw fa-cog"></i>
+                        <span>Quản lý </span>
+                    </a>
 
+                    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                        <div class="bg-white py-2 collapse-inner rounded">
+                            @*<h6 class="collapse-header">Quản lý:</h6>*@
+                            <a class="collapse-item" asp-action="Index" asp-controller="User">Quản Lý Người dùng</a>
+                            <a class="collapse-item" asp-action="Index" asp-controller="Product">Quản Lý Sản phẩm</a>
+                            <a class="collapse-item" asp-action="Index" asp-controller="Category">Quản Lý Danh mục</a>
+                            <a class="collapse-item" asp-action="Index" asp-controller="Slider">Quản Lý Sliders</a>
+                            <a class="collapse-item" asp-action="Index" asp-controller="Size">Quản Lý Sizes</a>
+                            <a class="collapse-item" asp-action="Index" asp-controller="Role">Quản Lý Roles</a>
+                            <a class="collapse-item" asp-action="Index" asp-controller="Contact">Quản Lý Contacts</a>
+                            <a class="collapse-item" asp-action="Index" asp-controller="Congty">Quản Lý Công ty</a>
+                            <a class="collapse-item" asp-action="Index" asp-controller="Language">Quản Lý Ngôn ngữ</a>
+                            <a class="collapse-item" asp-action="Index" asp-controller="LoaiPhieu">Quản Lý Loại Phiếu</a>
+                        </div>
+                    </div>
+                </li>
+            }
             <!-- Nav Item - Utilities Collapse Menu -->
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
@@ -93,10 +96,10 @@
                      data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         @*<h6 class="collapse-header">Custom Utilities:</h6>*@
-                        <a class="collapse-item" asp-action="Index" asp-controller="Comment">Bình Luận</a>
-                        <a class="collapse-item" asp-action="Index" asp-controller="PhieuNhap">Nhập Hàng</a>
-                        <a class="collapse-item" asp-action="Index" asp-controller="Order">Đơn hàng</a>
-                        <a class="collapse-item" href="utilities-animation.html">Animations</a>
+                        <a class="collapse-item" asp-action="Index" asp-controller="Comment">Quản Lý Bình Luận</a>
+                        <a class="collapse-item" asp-action="Index" asp-controller="PhieuNhap">Quản Lý Nhập Hàng</a>
+                        <a class="collapse-item" asp-action="Index" asp-controller="Order">Quản Lý Đơn hàng</a>
+                        <a class="collapse-item" asp-action="Nhap_Xuat_TonKho" asp-controller="Product">Quản Lý Kho</a>
                         <a class="collapse-item" href="utilities-other.html">Other</a>
                     </div>
                 </div>

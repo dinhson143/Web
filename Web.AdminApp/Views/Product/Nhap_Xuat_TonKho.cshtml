@@ -1,0 +1,275 @@
+﻿@model Web.AdminApp.Models.Nhap_Xuat_TonKho_ViewModel
+@{
+    ViewData["Title"] = "Nhap_Xuat_TonKho";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    foreach (var item in Model.PhieuNhap)
+    {
+        item.NgayNhap = DateTime.Parse(item.NgayNhap.Day + "/" + item.NgayNhap.Month + "/" + item.NgayNhap.Year);
+    }
+}
+@section Scripts {
+    <script>
+        var data = JSON.parse('@Newtonsoft.Json.JsonConvert.SerializeObject(Model.PhieuNhap)'.replace(/&quot;/g, "\""));
+        setTimeout(function () {
+            $(".alert").fadeOut('slow');
+        }, 2000);
+
+        $('#xuathangTable').DataTable();
+        //
+
+        $('.xuathang').hide();
+
+        var table = $('#dataTable').DataTable();
+
+        $('.btn-nh').click(function () {
+            $('.ttTable').text("DANH SÁCH NHẬP HÀNG");
+            $('.nhaphang').toggle();
+            $('.xuathang').hide();
+            //table.destroy();
+            //table = $('#dataTable').DataTable({
+            //    data,
+            //    columns: [
+            //        { data:'Id'},
+            //        { data:'TenLoaiphieu'},
+            //        { data:'TenCongTy'},
+            //        { data: 'NgayNhap' },
+            //        {
+            //            data: 'Id',
+            //            "render": function ( data, type, full, meta ) {
+            //                return '<form asp-action="Nhap_Xuat_TonKhoDetail" asp-controller="Product" method="post" ><input type="hidden" value="' + data +'" asp-for="Id" />  <input type="submit" value="Chitiet" class="btn btn-primary" /> </form>';
+            //            }
+            //        },
+            //    ]
+            //})
+        })
+        $('.btn-xh').click(function () {
+            $('.ttTable').text("DANH SÁCH XUẤT HÀNG")
+            $('.xuathang').toggle();
+            $('.nhaphang').hide();
+        })
+        //$('.btn-tonkho').click(function () {
+        //    $('.ttTable').text("QUẢN LÝ TỒN KHO")
+        //})
+    </script>
+}
+
+<div class="container-fluid nhaphang">
+
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800 ttTable">DANH SÁCH NHẬP HÀNG</h1>
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3" style="display:flex">
+            <a class="btn btn-success btn-icon-split btn-nh">
+                <span class="icon text-white-50">
+                    <i class="fas fa-plus-circle"></i>
+                </span>
+                <span class="text">Nhập Hàng</span>
+            </a>
+
+            <a style="margin:0 10px;" class="btn btn-success btn-icon-split btn-xh">
+                <span class="icon text-white-50">
+                    <i class="fas fa-minus"></i>
+                </span>
+                <span class="text">Xuất Hàng</span>
+            </a>
+            <a class="btn btn-success btn-icon-split btn-tonkho">
+                <span class="icon text-white-50">
+                    <i class="fas fa-dolly-flatbed"></i>
+                </span>
+                <span class="text">Tồn Kho</span>
+            </a>
+        </div>
+        @if (@TempData["Message"] != null)
+        {
+            <div class="alert alert-success" role="alert" style="text-align:center">
+                @TempData["Message"]
+            </div>
+        }
+
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>
+                                Mã Phiếu Nhập
+                            </th>
+                            <th>
+                                Tên Phiếu
+                            </th>
+                            <th>
+                                Tên Công Ty
+                            </th>
+                            <th>
+                                Ngày Nhập
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th>
+                                Mã Phiếu Nhập
+                            </th>
+                            <th>
+                                Tên Phiếu
+                            </th>
+                            <th>
+                                Tên Công Ty
+                            </th>
+                            <th>
+                                Ngày Nhập
+                            </th>
+                            <th></th>
+                        </tr>
+                    </tfoot>
+                    <tbody>
+                        @foreach (var item in Model.PhieuNhap)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Id)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.TenLoaiphieu)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.TenCongTy)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.NgayNhap)
+                                </td>
+                                <td>
+                                    @*@Html.ActionLink("Chi tiết", "Nhap_Xuat_TonKhoDetail", new { id = item.Id })*@
+                                    <form asp-action="Nhap_Xuat_TonKhoDetail" asp-controller="Product" method="post">
+                                            <input type="hidden" value="@item.Id" asp-for="Id" />
+                                            <input type="submit" value="Chitiet" class="btn btn-primary" />
+                                        </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* ////////////////////////////////////////////////////////// *@
+<div class="container-fluid xuathang">
+
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800 ttTable">DANH SÁCH XUẤT HÀNG</h1>
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3" style="display:flex">
+            <a class="btn btn-success btn-icon-split btn-nh">
+                <span class="icon text-white-50">
+                    <i class="fas fa-plus-circle"></i>
+                </span>
+                <span class="text">Nhập Hàng</span>
+            </a>
+
+            <a style="margin:0 10px;" class="btn btn-success btn-icon-split btn-xh">
+                <span class="icon text-white-50">
+                    <i class="fas fa-minus"></i>
+                </span>
+                <span class="text">Xuất Hàng</span>
+            </a>
+            <a class="btn btn-success btn-icon-split btn-tonkho">
+                <span class="icon text-white-50">
+                    <i class="fas fa-dolly-flatbed"></i>
+                </span>
+                <span class="text">Tồn Kho</span>
+            </a>
+        </div>
+        @if (@TempData["Message"] != null)
+        {
+            <div class="alert alert-success" role="alert" style="text-align:center">
+                @TempData["Message"]
+            </div>
+        }
+
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped" id="xuathangTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>
+                                Ngày
+                            </th>
+                            <th>
+                                Name
+                            </th>
+                            <th>
+                                Địa chỉ
+                            </th>
+                            <th>
+                                Email
+                            </th>
+                            <th>
+                                Phone
+                            </th>
+                            <th>
+                                Trạng thái
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th>
+                                Ngày
+                            </th>
+                            <th>
+                                Name
+                            </th>
+                            <th>
+                                Địa chỉ
+                            </th>
+                            <th>
+                                Email
+                            </th>
+                            <th>
+                                Phone
+                            </th>
+                            <th>
+                                Trạng thái
+                            </th>
+                            <th></th>
+                        </tr>
+                    </tfoot>
+                    <tbody>
+                        @foreach (var item in Model.PhieuXuat)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.OrderDate)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.ShipName)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.ShipAddress)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.ShipEmail)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.ShipPhone)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Status)
+                                </td>
+                                <td>
+                                    @Html.ActionLink("Chi tiết", "Details", new { id = item.Id })
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

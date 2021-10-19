@@ -209,9 +209,43 @@ namespace Web.Application.Catalog.Orders
             return new List<OrderViewModel>(data);
         }
 
-        public Task<OrderViewModel> GetOrderByID(int orderId, string languageID)
+        public async Task<OrderViewModel> GetOrderByID(int orderId, string languageID)
         {
-            throw new NotImplementedException();
+            var x = await _context.Orders.FindAsync(orderId);
+            var order = new OrderViewModel()
+            {
+                Id = x.Id,
+                OrderDate = x.OrderDate,
+                ShipAddress = x.ShipAddress,
+                ShipEmail = x.ShipEmail,
+                ShipName = x.ShipName,
+                ShipPhone = x.ShipPhoneNumber,
+                Status = x.Status
+            };
+
+            var list = new List<OrderDetailViewModel>();
+            var result = from od in _context.OrderDetails
+                         join pt in _context.ProductTranslations on od.ProductId equals pt.ProductId
+                         join pi in _context.ProductImages on od.ProductId equals pi.ProductId
+                         join ods in _context.Sizes on od.SizeId equals ods.Id
+                         where od.OrderId == order.Id && pt.LanguageId == languageID && pi.IsDefault == true
+                         select new { od, pt, ods, pi };
+            foreach (var item in result)
+            {
+                var oddt = new OrderDetailViewModel()
+                {
+                    Price = item.od.Price,
+                    ProductName = item.pt.Name,
+                    Quantity = item.od.Quantity,
+                    SizeName = item.ods.Name,
+                    Image = item.pi.ImagePath,
+                    OrderID = order.Id
+                };
+                list.Add(oddt);
+            }
+            order.ListOrDetail = list;
+
+            return order;
         }
 
         public async Task<List<OrderViewModel>> GetOrderUser(Guid userId, string languageID)

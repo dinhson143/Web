@@ -113,5 +113,22 @@ namespace Web.ServiceApi_Admin_User.Service.Orders
 
             return response.IsSuccessStatusCode;
         }
+
+        public async Task<ResultApi<OrderViewModel>> GetOrderByID(int orderID, string languageID, string BearerToken)
+        {
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", BearerToken);
+
+            var response = await client.GetAsync($"/api/Orders/order-id/{orderID}/{languageID}");
+            if (response.IsSuccessStatusCode)
+            {
+                var body = await response.Content.ReadAsStringAsync();
+                var order = JsonConvert.DeserializeObject<OrderViewModel>(body);
+                return new ResultSuccessApi<OrderViewModel>(order);
+            }
+            return new ResultErrorApi<OrderViewModel>("Không thể lấy danh sách Orders");
+        }
     }
 }

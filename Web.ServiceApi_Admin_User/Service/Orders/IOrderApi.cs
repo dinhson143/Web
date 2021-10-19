@@ -17,6 +17,8 @@ namespace Web.ServiceApi_Admin_User.Service.Orders
 
         public Task<ResultApi<List<OrderViewModel>>> GetAllOrder(string languageID, string BearerToken);
 
+        public Task<ResultApi<OrderViewModel>> GetOrderByID(int orderID, string languageID, string BearerToken);
+
         public Task<ResultApi<List<OrderViewModel>>> GetallOrderSuccess(string languageID, string BearerToken);
 
         public Task<bool> CancelOrder(Guid userId, int orderId, string BearerToken);

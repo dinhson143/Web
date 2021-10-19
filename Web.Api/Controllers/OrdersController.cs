@@ -36,6 +36,13 @@ namespace Web.Api.Controllers
             return Ok(result);
         }
 
+        [HttpGet("order-id/{orderID}/{languageID}")]
+        public async Task<IActionResult> GetOrderByID(int orderID, string languageID)
+        {
+            var result = await _manageservice.GetOrderByID(orderID, languageID);
+            return Ok(result);
+        }
+
         [HttpGet("get-all-order/{languageID}")]
         public async Task<IActionResult> GetallOrder(string languageID)
         {

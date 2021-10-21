@@ -35,6 +35,9 @@ namespace Web.ViewModels.Catalog.Users
         [Display(Name = "Điểm Thưởng")]
         public int Diem { get; set; }
 
+        [Display(Name = "Trạng thái")]
+        public string Status { get; set; }
+
         public IList<string> Roles { get; set; }
     }
 }

@@ -89,7 +89,16 @@ namespace Web.AdminApp.Controllers
         {
             var session = HttpContext.Session.GetString("Token");
             var response = await _userApi.DeleteUser(IdUser, session);
-            TempData["Message"] = response.ResultObj;
+            TempData["Message"] = "Đã khóa tài khoản";
+            return RedirectToAction("Index", "User");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Unlock(Guid IdUser)
+        {
+            var session = HttpContext.Session.GetString("Token");
+            var response = await _userApi.UnlockUser(IdUser, session);
+            TempData["Message"] = "Mở khóa thành công";
             return RedirectToAction("Index", "User");
         }
 

@@ -103,6 +103,18 @@ namespace Web.ServiceApi_Admin_User.Service.Users
             return JsonConvert.DeserializeObject<ResultApi<string>>(result);
         }
 
+        public async Task<UserViewModel> GetUserByUSN(string username)
+        {
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+
+            var response = await client.GetAsync($"/api/Users/getUserMoBile-username/{username}");
+
+            var result = await response.Content.ReadAsStringAsync();
+
+            return JsonConvert.DeserializeObject<UserViewModel>(result);
+        }
+
         public async Task<string> Login(LoginRequest request)
         {
             var json = JsonConvert.SerializeObject(request);
@@ -148,6 +160,20 @@ namespace Web.ServiceApi_Admin_User.Service.Users
                 return new ResultErrorApi<string>(result);
 
             return new ResultSuccessApi<string>(result);
+        }
+
+        public async Task<ResultApi<string>> UnlockUser(Guid IdUser, string BearerToken)
+        {
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", BearerToken);
+
+            var response = await client.GetAsync($"/api/Users/Unlock/{IdUser}");
+
+            var result = await response.Content.ReadAsStringAsync();
+            if (response.IsSuccessStatusCode)
+                return JsonConvert.DeserializeObject<ResultSuccessApi<string>>(result);
+            return JsonConvert.DeserializeObject<ResultErrorApi<string>>(result);
         }
 
         public async Task<ResultApi<string>> Update(Guid IdUser, UpdateUserRequest request)

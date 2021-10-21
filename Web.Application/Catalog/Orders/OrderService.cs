@@ -126,7 +126,7 @@ namespace Web.Application.Catalog.Orders
         public async Task<List<OrderViewModel>> GetallOrder(string languageID)
         {
             var query = from o in _context.Orders
-                        where o.Status != OrderStatus.Success && o.Status != OrderStatus.Canceled && o.Status != OrderStatus.Shipping
+                        //where o.Status != OrderStatus.Success && o.Status != OrderStatus.Canceled && o.Status != OrderStatus.Shipping
                         select new { o };
             var data = await query.Select(x => new OrderViewModel()
             {

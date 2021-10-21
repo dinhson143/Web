@@ -58,6 +58,18 @@ namespace Web.Api.Controllers
             return result;
         }
 
+        [HttpGet("getUserMoBile-username/{username}")]
+        [AllowAnonymous]
+        public async Task<UserViewModel> GetUserByUSN(string username)
+        {
+            if (!ModelState.IsValid)
+            {
+                return null;
+            }
+            var result = await _userService.GetUserByUSN(username);
+            return result.ResultObj;
+        }
+
         [HttpPut("{IdUser}")]
         public async Task<IActionResult> Update(Guid IdUser, [FromBody] UpdateUserRequest request)
         {
@@ -81,6 +93,17 @@ namespace Web.Api.Controllers
                 return null;
             }
             var result = await _userService.DeleteUser(IdUser);
+            return Ok(result);
+        }
+
+        [HttpGet("Unlock/{IdUser}")]
+        public async Task<IActionResult> UnlockUser(Guid IdUser)
+        {
+            if (!ModelState.IsValid)
+            {
+                return null;
+            }
+            var result = await _userService.UnlockUser(IdUser);
             return Ok(result);
         }
 

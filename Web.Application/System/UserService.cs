@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Web.Data.EF;
 using Web.Data.Entities;
+using Web.Data.Enums;
 using Web.Utilities.Exceptions;
 using Web.ViewModels.Catalog.Common;
 using Web.ViewModels.Catalog.Users;
@@ -41,12 +42,30 @@ namespace Web.Application.System
             {
                 return new ResultErrorApi<string>("User không tồn tại");
             }
-            var result = await _userManager.DeleteAsync(user);
+            //var result = await _userManager.DeleteAsync(user);
+            user.Status = Status.InActive;
+            var result = await _userManager.UpdateAsync(user);
             if (result.Succeeded)
             {
-                return new ResultSuccessApi<string>("Xóa thành công");
+                return new ResultSuccessApi<string>("Khóa tài khoản thành công");
             }
-            return new ResultErrorApi<string>("Xóa thất bại");
+            return new ResultErrorApi<string>("Khóa tài khoản thất bại");
+        }
+
+        public async Task<ResultApi<string>> UnlockUser(Guid IdUser)
+        {
+            var user = await _userManager.FindByIdAsync(IdUser.ToString());
+            if (user == null)
+            {
+                return new ResultErrorApi<string>("User không tồn tại");
+            }
+            user.Status = Status.Active;
+            var result = await _userManager.UpdateAsync(user);
+            if (result.Succeeded)
+            {
+                return new ResultSuccessApi<string>("Mở khóa thành công");
+            }
+            return new ResultErrorApi<string>("Mở khóa thất bại");
         }
 
         public async Task<ResultApi<int>> CheckMail(string Email)
@@ -125,7 +144,8 @@ namespace Web.Application.System
                     FirstName = x.FirstName,
                     LastName = x.LastName,
                     PhoneNumber = x.PhoneNumber,
-                    Username = x.UserName
+                    Username = x.UserName,
+                    Status = x.Status.ToString()
                 }).ToListAsync();
             // 4 Select Page Result
             var pageResult = new PageResult<UserViewModel>()
@@ -174,6 +194,10 @@ namespace Web.Application.System
             {
                 return new ResultErrorApi<string>("Password sai");
             }
+            if (user.Status == Status.InActive)
+            {
+                return new ResultErrorApi<string>("Tài khoản đã bị khóa");
+            }
             var roles = await _userManager.GetRolesAsync(user);
             var claims = new[]
             {
@@ -220,6 +244,7 @@ namespace Web.Application.System
                 LastName = request.LastName,
                 UserName = request.Username,
                 PhoneNumber = request.Phonenumber,
+                Status = Status.Active
             };
             var result = await _userManager.CreateAsync(user, request.Password);
 
@@ -319,6 +344,31 @@ namespace Web.Application.System
                 signingCredentials: creds);
 
             return new ResultSuccessApi<string>(new JwtSecurityTokenHandler().WriteToken(token));
+        }
+
+        public async Task<ResultApi<UserViewModel>> GetUserByUSN(string username)
+        {
+            var user = await _userManager.FindByNameAsync(username);
+            if (user == null)
+            {
+                //throw new WebException("Cannot find Username");
+                return new ResultErrorApi<UserViewModel>();
+            }
+            var roles = await _userManager.GetRolesAsync(user);
+            var userViewmodel = new UserViewModel()
+            {
+                Id = user.Id,
+                Dob = user.Dob,
+                Address = user.Address,
+                Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                PhoneNumber = user.PhoneNumber,
+                Username = user.UserName,
+                Roles = roles,
+                Diem = user.Diem
+            };
+            return new ResultSuccessApi<UserViewModel>(userViewmodel);
         }
     }
 }

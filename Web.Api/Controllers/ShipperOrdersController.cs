@@ -1,0 +1,40 @@
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Web.Application.Catalog.ShipperOrder;
+using Web.ViewModels.Catalog.ShipperOrders;
+
+namespace Web.Api.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    [Authorize]
+    public class ShipperOrdersController : ControllerBase
+    {
+        private readonly IShipperOrderService _manageservice;
+
+        public ShipperOrdersController(IShipperOrderService manageservice)
+        {
+            _manageservice = manageservice;
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] ShipperOrderCreate request)
+        {
+            var result = await _manageservice.CreateShipperOrder(request);
+            return Ok(result);
+        }
+
+        [HttpGet("danh-sach-order-shipper/{shipperId}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetOrderUser(Guid shipperId)
+        {
+            var result = await _manageservice.GetAll(shipperId);
+            return Ok(result);
+        }
+    }
+}

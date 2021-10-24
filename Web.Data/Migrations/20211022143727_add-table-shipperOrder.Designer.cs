@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Web.Data.EF;
 
 namespace Web.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211022143727_add-table-shipperOrder")]
+    partial class addtableshipperOrder
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -657,7 +659,7 @@ namespace Web.Data.Migrations
                         new
                         {
                             Id = 1,
-                            DateCreated = new DateTime(2021, 10, 22, 21, 41, 27, 268, DateTimeKind.Local).AddTicks(6307),
+                            DateCreated = new DateTime(2021, 10, 22, 21, 37, 26, 260, DateTimeKind.Local).AddTicks(7384),
                             Status = 1,
                             ViewCount = 0
                         });
@@ -938,7 +940,7 @@ namespace Web.Data.Migrations
                         new
                         {
                             Id = new Guid("0d5b7850-46c1-4c80-99c4-d94fc38a3ea7"),
-                            ConcurrencyStamp = "c6aa1fcd-6c9a-40df-8159-afead27c60f2",
+                            ConcurrencyStamp = "4a897407-a71f-404f-8121-5e5e7b5c1605",
                             Description = "Adminstrator Role ",
                             Name = "admin",
                             NormalizedName = "admin",
@@ -964,7 +966,14 @@ namespace Web.Data.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("OrderID");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("ShipperOrders");
                 });
@@ -1070,7 +1079,7 @@ namespace Web.Data.Migrations
                         new
                         {
                             Id = 1,
-                            DateCreated = new DateTime(2021, 10, 22, 21, 41, 27, 291, DateTimeKind.Local).AddTicks(3183),
+                            DateCreated = new DateTime(2021, 10, 22, 21, 37, 26, 284, DateTimeKind.Local).AddTicks(2293),
                             Description = "Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.",
                             Image = "https://gaubongonline.vn/wp-content/uploads/2021/06/gaubongonline1.jpg",
                             Name = "slider 1",
@@ -1080,7 +1089,7 @@ namespace Web.Data.Migrations
                         new
                         {
                             Id = 2,
-                            DateCreated = new DateTime(2021, 10, 22, 21, 41, 27, 291, DateTimeKind.Local).AddTicks(4525),
+                            DateCreated = new DateTime(2021, 10, 22, 21, 37, 26, 284, DateTimeKind.Local).AddTicks(3999),
                             Description = "Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.",
                             Image = "https://gaubongonline.vn/wp-content/uploads/2021/06/gaubongonline.jpg",
                             Name = "slider 1",
@@ -1090,7 +1099,7 @@ namespace Web.Data.Migrations
                         new
                         {
                             Id = 3,
-                            DateCreated = new DateTime(2021, 10, 22, 21, 41, 27, 291, DateTimeKind.Local).AddTicks(4534),
+                            DateCreated = new DateTime(2021, 10, 22, 21, 37, 26, 284, DateTimeKind.Local).AddTicks(4008),
                             Description = "Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.",
                             Image = "https://gaubongonline.vn/wp-content/uploads/2021/05/web-gaubongonline.vn_.jpg",
                             Name = "slider 1",
@@ -1181,7 +1190,7 @@ namespace Web.Data.Migrations
                             Id = new Guid("b38060f2-8b1c-47ae-80aa-2cf1b518b812"),
                             AccessFailedCount = 0,
                             Address = "Hcm city",
-                            ConcurrencyStamp = "300c4e73-7ac7-404f-b8d8-411ced300e17",
+                            ConcurrencyStamp = "8bb4b55e-bc3e-44a3-9b68-bd278146757f",
                             Diem = 0,
                             Dob = new DateTime(1999, 3, 14, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "dinhson14399@gmail.com",
@@ -1191,7 +1200,7 @@ namespace Web.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "dinhson14399@gmail.com",
                             NormalizedUserName = "dinhson",
-                            PasswordHash = "AQAAAAEAACcQAAAAEJWbqoD4AdFT6/nMpXNtMVfN25+AcpIqH6ZOeTqjBvEdveUHmE0mYhZPF6Dj4CyQeQ==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEBYiN0LA/7L0LYPClFXaxuFrglkQfwG0Ug8Hu0fKhWLGjrPIXGiZzwTOWbYW/8H7fw==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
                             Status = 1,
@@ -1410,6 +1419,23 @@ namespace Web.Data.Migrations
                     b.Navigation("Product");
 
                     b.Navigation("Size");
+                });
+
+            modelBuilder.Entity("Web.Data.Entities.ShipperOrder", b =>
+                {
+                    b.HasOne("Web.Data.Entities.Order", "Order")
+                        .WithMany()
+                        .HasForeignKey("OrderID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Web.Data.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Order");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Web.Data.Entities.Category", b =>

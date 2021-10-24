@@ -37,6 +37,7 @@ namespace Web.Data.EF
             modelBuilder.ApplyConfiguration(new ProductInCategoryConfiguration());
             modelBuilder.ApplyConfiguration(new ProductTranlationConfiguration());
             modelBuilder.ApplyConfiguration(new PromotionConfiguration());
+            modelBuilder.ApplyConfiguration(new ShipperOrderConfiguration());
             modelBuilder.ApplyConfiguration(new SizeConfiguration());
             modelBuilder.ApplyConfiguration(new SliderConfiguration());
             //modelBuilder.ApplyConfiguration(new TransactionConfiguration());
@@ -80,6 +81,8 @@ namespace Web.Data.EF
         public DbSet<ProductTranslation> ProductTranslations { get; set; }
 
         public DbSet<Promotion> Promotions { get; set; }
+        public DbSet<ShipperOrder> ShipperOrders { get; set; }
+
         public DbSet<Size> Sizes { get; set; }
         public DbSet<Slider> Sliders { get; set; }
 

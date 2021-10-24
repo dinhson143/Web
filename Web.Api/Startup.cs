@@ -20,6 +20,7 @@ using Web.Application.Catalog.Orders;
 using Web.Application.Catalog.PhieuNhap;
 using Web.Application.Catalog.Products;
 using Web.Application.Catalog.Roles;
+using Web.Application.Catalog.ShipperOrder;
 using Web.Application.Catalog.Sizes;
 using Web.Application.Catalog.Sliders;
 using Web.Application.System;
@@ -66,6 +67,7 @@ namespace Web.Api
             services.AddTransient<ILoaiPhieuService, LoaiPhieuService>();
             services.AddTransient<ICommentService, CommentService>();
             services.AddTransient<IPhieuNhapService, PhieuNhapService>();
+            services.AddTransient<IShipperOrderService, ShipperOrderService>();
             // FluentValidator
             //services.AddTransient<IValidator<LoginRequest>, LoginRequestValidator>();
             // swagger

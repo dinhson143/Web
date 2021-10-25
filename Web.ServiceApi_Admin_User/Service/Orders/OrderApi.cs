@@ -147,5 +147,16 @@ namespace Web.ServiceApi_Admin_User.Service.Orders
             }
             return new ResultErrorApi<List<OrderViewModel>>("Không thể lấy danh sách Orders");
         }
+
+        public async Task<bool> SuccessOrder(int orderId, string BearerToken)
+        {
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", BearerToken);
+
+            var response = await client.GetAsync($"/api/Orders/success-order/{orderId}");
+
+            return response.IsSuccessStatusCode;
+        }
     }
 }

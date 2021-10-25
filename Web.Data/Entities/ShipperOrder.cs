@@ -9,5 +9,6 @@ namespace Web.Data.Entities
         public Guid ShipperId { set; get; }
         public int OrderID { set; get; }
         public ShipStatus Status { set; get; }
+        public DateTime Date { set; get; }
     }
 }

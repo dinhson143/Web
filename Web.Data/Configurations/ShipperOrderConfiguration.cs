@@ -19,6 +19,7 @@ namespace Web.Data.Configurations
             builder.Property(x => x.ShipperId).IsRequired();
             builder.Property(x => x.OrderID).IsRequired();
             builder.Property(x => x.Status).IsRequired();
+            builder.Property(x => x.Date).IsRequired();
         }
     }
 }

@@ -30,10 +30,18 @@ namespace Web.Api.Controllers
         }
 
         [HttpGet("danh-sach-order-shipper/{shipperId}")]
-        [AllowAnonymous]
+        [Authorize]
         public async Task<IActionResult> GetOrderUser(Guid shipperId)
         {
             var result = await _manageservice.GetAll(shipperId);
+            return Ok(result);
+        }
+
+        [HttpGet("lich-su-order-shipper/{shipperId}")]
+        [Authorize]
+        public async Task<IActionResult> GetAll_HistorySP(Guid shipperId)
+        {
+            var result = await _manageservice.GetAll_HistorySP(shipperId);
             return Ok(result);
         }
     }

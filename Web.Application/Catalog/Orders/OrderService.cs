@@ -71,6 +71,17 @@ namespace Web.Application.Catalog.Orders
             return await _context.SaveChangesAsync();
         }
 
+        public async Task<int> SuccessOrder(int orderId)
+        {
+            var order = await _context.Orders.FirstOrDefaultAsync(x => x.Id == orderId);
+            if (order == null) throw new WebException($"Cannot find a order: {orderId}");
+            var orderSP = await _context.ShipperOrders.FirstOrDefaultAsync(x => x.OrderID == orderId);
+            if (orderSP == null) throw new WebException($"Cannot find a order shiper: {orderId}");
+            orderSP.Status = ShipStatus.Success;
+            orderSP.Date = DateTime.Now;
+            return await _context.SaveChangesAsync();
+        }
+
         public async Task<ResultApi<string>> CreateOrder(CheckoutRequest request)
         {
             var user = await _userManager.FindByEmailAsync(request.Email);
@@ -136,7 +147,7 @@ namespace Web.Application.Catalog.Orders
                 ShipEmail = x.o.ShipEmail,
                 ShipName = x.o.ShipName,
                 ShipPhone = x.o.ShipPhoneNumber,
-                Status = x.o.Status
+                Status = x.o.Status.ToString()
             }).ToListAsync();
 
             foreach (var order in data)
@@ -179,7 +190,7 @@ namespace Web.Application.Catalog.Orders
                 ShipEmail = x.o.ShipEmail,
                 ShipName = x.o.ShipName,
                 ShipPhone = x.o.ShipPhoneNumber,
-                Status = x.o.Status
+                Status = x.o.Status.ToString()
             }).ToListAsync();
 
             foreach (var order in data)
@@ -222,7 +233,7 @@ namespace Web.Application.Catalog.Orders
                 ShipEmail = x.o.ShipEmail,
                 ShipName = x.o.ShipName,
                 ShipPhone = x.o.ShipPhoneNumber,
-                Status = x.o.Status
+                Status = x.o.Status.ToString()
             }).ToListAsync();
 
             foreach (var order in data)
@@ -263,7 +274,7 @@ namespace Web.Application.Catalog.Orders
                 ShipEmail = x.ShipEmail,
                 ShipName = x.ShipName,
                 ShipPhone = x.ShipPhoneNumber,
-                Status = x.Status
+                Status = x.Status.ToString()
             };
 
             var list = new List<OrderDetailViewModel>();
@@ -304,7 +315,7 @@ namespace Web.Application.Catalog.Orders
                 ShipEmail = x.o.ShipEmail,
                 ShipName = x.o.ShipName,
                 ShipPhone = x.o.ShipPhoneNumber,
-                Status = x.o.Status
+                Status = x.o.Status.ToString()
             }).ToListAsync();
 
             foreach (var order in data)

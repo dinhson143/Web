@@ -72,9 +72,16 @@ namespace Web.Api.Controllers
         }
 
         [HttpGet("confirm-order/{orderId}")]
-        public async Task<IActionResult> ConfirmOrder(Guid userId, int orderId)
+        public async Task<IActionResult> ConfirmOrder(int orderId)
         {
             var result = await _manageservice.ConfirmOrder(orderId);
+            return Ok(result);
+        }
+
+        [HttpGet("success-order/{orderId}")]
+        public async Task<IActionResult> SuccessOrder(int orderId)
+        {
+            var result = await _manageservice.SuccessOrder(orderId);
             return Ok(result);
         }
     }

@@ -26,5 +26,7 @@ namespace Web.ServiceApi_Admin_User.Service.Orders
         public Task<bool> CancelOrder(Guid userId, int orderId, string BearerToken);
 
         public Task<bool> ConfirmOrder(int orderId, string BearerToken);
+
+        public Task<bool> SuccessOrder(int orderId, string BearerToken);
     }
 }

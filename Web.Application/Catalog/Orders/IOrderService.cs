@@ -26,5 +26,7 @@ namespace Web.Application.Catalog.Orders
         public Task<int> CancelOrder(Guid userId, int orderId);
 
         public Task<int> ConfirmOrder(int orderId);
+
+        public Task<int> SuccessOrder(int orderId);
     }
 }

@@ -54,5 +54,22 @@ namespace Web.ServiceApi_Admin_User.Service.ShipperOrder
             }
             return new List<OrderViewModel>(null);
         }
+
+        public async Task<List<OrderViewModel>> GetAll_HistorySP(Guid shipperId)
+        {
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+
+            //client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", BearerToken);
+
+            var response = await client.GetAsync($"/api/ShipperOrders/lich-su-order-shipper/{shipperId}");
+            if (response.IsSuccessStatusCode)
+            {
+                var body = await response.Content.ReadAsStringAsync();
+                var list = JsonConvert.DeserializeObject<List<OrderViewModel>>(body);
+                return new List<OrderViewModel>(list);
+            }
+            return new List<OrderViewModel>(null);
+        }
     }
 }

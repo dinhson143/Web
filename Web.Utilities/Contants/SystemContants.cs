@@ -10,6 +10,7 @@ namespace Web.Utilities.Contants
     {
         public const string ConnectionString = "DefaultConnectionString";
         public const string CartSession = "CartSession";
+        public const string CheckoutVMD = "CheckoutVMD";
 
         public class AppSettings
         {

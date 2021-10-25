@@ -20,6 +20,7 @@ namespace Web.Data.Configurations
             builder.Property(x => x.ShipAddress).IsRequired().IsUnicode(true).HasMaxLength(200);
             builder.Property(x => x.ShipName).IsRequired().IsUnicode(true).HasMaxLength(200);
             builder.Property(x => x.ShipPhoneNumber).IsRequired().IsUnicode(false).HasMaxLength(20);
+            builder.Property(x => x.ThanhToan).IsRequired().IsUnicode(true);
             // 1 user co nhieu order
             builder.HasOne(x => x.User).WithMany(x => x.Orders).HasForeignKey(x => x.UserId);
         }

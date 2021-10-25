@@ -326,18 +326,23 @@ namespace Web.Application.Catalog.Products
             var product = await _context.Products.FindAsync(productId);
             var productTranslation = await _context.ProductTranslations.FirstOrDefaultAsync(x => x.ProductId == productId
             && x.LanguageId == languageId);
-
+            //
             var categories = await (from c in _context.Categories
                                     join ct in _context.CategoryTranslations on c.Id equals ct.CategoryId
                                     join pc in _context.ProductInCategories on c.Id equals pc.CategoryId
                                     where pc.ProductId == productId && ct.LanguageId == languageId
-                                    select ct.Name).ToListAsync();
-
+                                    select ct).ToListAsync();
+            var categoryName = new List<string>();
+            foreach (var item in categories)
+            {
+                categoryName.Add(item.Name);
+            }
+            //
             var sizes = await (from s in _context.Sizes
                                join ps in _context.PCSs on s.Id equals ps.SizeId
                                where ps.ProductId == productId
                                select s.Name).ToListAsync();
-
+            //
             var danhgia = await (from c in _context.Comments
                                  where c.ProductId == productId
                                  select c).ToListAsync();
@@ -349,8 +354,11 @@ namespace Web.Application.Catalog.Products
                 diem += item.Star;
                 dem++;
             }
-            decimal diemDM = diem / dem;
-            diem = Math.Round(diemDM);
+            if (dem != 0)
+            {
+                decimal diemDM = diem / dem;
+                diem = Math.Round(diemDM);
+            }
             //
             List<ProductSizeViewModel> list = new List<ProductSizeViewModel>();
             var query = from p in _context.PCSs
@@ -382,7 +390,7 @@ namespace Web.Application.Catalog.Products
                 SeoTitle = productTranslation.SeoTitle,
                 SeoAlias = productTranslation.SeoAlias,
                 LanguageId = productTranslation.LanguageId,
-                Categories = categories,
+                Categories = categoryName,
                 Sizes = sizes,
                 IsFeatured = product.IsFeatured,
                 listPS = list,
@@ -947,6 +955,89 @@ namespace Web.Application.Catalog.Products
             _context.ProductFavorites.Remove(productFv);
 
             return await _context.SaveChangesAsync();
+        }
+
+        public async Task<ResultApi<List<ProductViewModel>>> GetProductLQ(int productId, string languageId)
+        {
+            //
+            var categories = await (from c in _context.Categories
+                                    join ct in _context.CategoryTranslations on c.Id equals ct.CategoryId
+                                    join pc in _context.ProductInCategories on c.Id equals pc.CategoryId
+                                    where pc.ProductId == productId && ct.LanguageId == languageId
+                                    select c).ToListAsync();
+
+            var category = categories[0].Id;
+
+            var product = from p in _context.Products
+                          join pt in _context.ProductTranslations on p.Id equals pt.ProductId
+                          join pic in _context.ProductInCategories on p.Id equals pic.ProductId into ppic
+                          from pic in ppic.DefaultIfEmpty()
+                          join c in _context.Categories on pic.CategoryId equals c.Id into picc
+                          from c in picc.DefaultIfEmpty()
+                          where c.Id == category && p.Id != productId
+                          select new { p, pt, pic };
+            //
+            var listSPLQ = await product.Select(x => new ProductViewModel()
+            {
+                Id = x.p.Id,
+                ViewCount = x.p.ViewCount,
+                DateCreated = x.p.DateCreated,
+                Name = x.pt.Name,
+                Description = x.pt.Description,
+                Details = x.pt.Details,
+                SeoDescription = x.pt.SeoDescription,
+                SeoTitle = x.pt.SeoTitle,
+                SeoAlias = x.pt.SeoAlias,
+            }).ToListAsync();
+            // remove phần tử trùng
+            for (var i = 0; i < listSPLQ.Count; i++)
+            {
+                for (var j = i + 1; j < listSPLQ.Count; j++)
+                {
+                    if (listSPLQ[i].Id == listSPLQ[j].Id)
+                    {
+                        listSPLQ.Remove(listSPLQ[j]);
+                    }
+                }
+            }
+            //
+            foreach (var item in listSPLQ)
+            {
+                List<ProductSizeViewModel> list = new List<ProductSizeViewModel>();
+                var query = from p in _context.PCSs
+                            join s in _context.Sizes on p.SizeId equals s.Id
+                            where p.ProductId == item.Id
+                            select new { p, s };
+                foreach (var pcs in query)
+                {
+                    var x = new ProductSizeViewModel()
+                    {
+                        Size = pcs.s.Name,
+                        SizeId = pcs.p.SizeId,
+                        OriginalPrice = pcs.p.OriginalPrice,
+                        Price = pcs.p.Price,
+                        Stock = pcs.p.Stock
+                    };
+                    list.Add(x);
+                }
+                item.listPS = list;
+            }
+            foreach (var item in listSPLQ)
+            {
+                var images = from pi in _context.ProductImages
+                             where pi.ProductId == item.Id
+                             select pi;
+                var data = await images.Select(x => new ProductImagesModel()
+                {
+                    URL = x.ImagePath,
+                    isDefault = x.IsDefault,
+                    Caption = x.Caption
+                }).ToListAsync();
+
+                item.Images = data;
+            }
+
+            return new ResultSuccessApi<List<ProductViewModel>>(listSPLQ);
         }
     }
 }

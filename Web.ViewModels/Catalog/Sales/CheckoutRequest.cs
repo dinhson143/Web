@@ -12,6 +12,7 @@ namespace Web.ViewModels.Catalog.Sales
         public string Address { get; set; }
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
+        public string ThanhToan { get; set; }
 
         public List<OrderDetailVM> OrderDetails { get; set; } = new List<OrderDetailVM>();
     }

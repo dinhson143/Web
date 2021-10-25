@@ -23,6 +23,8 @@ namespace Web.Application.Catalog.Products
 
         public Task<ResultApi<ProductViewModel>> GetProductById(int productId, string languageId);
 
+        public Task<ResultApi<List<ProductViewModel>>> GetProductLQ(int productId, string languageId);
+
         public Task<ResultApi<string>> UpdatePrice(UpdatePriceRequest request);
 
         public Task UpdateStock();

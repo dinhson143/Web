@@ -322,5 +322,17 @@ namespace Web.ServiceApi_Admin_User.Service.Products
 
             return response.IsSuccessStatusCode;
         }
+
+        public async Task<ResultApi<List<ProductViewModel>>> GetProductLQ(int productId, string languageId)
+        {
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+
+            var response = await client.GetAsync($"/api/Products/product_lienquan/{productId}/{languageId}");
+
+            var result = await response.Content.ReadAsStringAsync();
+
+            return JsonConvert.DeserializeObject<ResultApi<List<ProductViewModel>>>(result);
+        }
     }
 }

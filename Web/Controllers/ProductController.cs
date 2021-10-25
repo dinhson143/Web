@@ -68,12 +68,14 @@ namespace Web.Controllers
             var culture = CultureInfo.CurrentCulture.Name;
             var result = await _productApi.GetProductById(id, "", culture);
             var images = await _productApi.GetListImage(id);
-            var comments = await _commentApi.GetAllWeb(culture);
+            var comments = await _commentApi.GetAllWeb(id, culture);
+            var productLQ = await _productApi.GetProductLQ(id, culture);
             var product = new ProductDetailViewModel()
             {
                 ProductInfo = result.ResultObj,
                 Images = images.ResultObj,
-                Comments = comments.ResultObj
+                Comments = comments.ResultObj,
+                ProductLQ = productLQ.ResultObj
             };
             return View(product);
         }

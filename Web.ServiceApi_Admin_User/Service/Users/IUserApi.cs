@@ -24,7 +24,11 @@ namespace Web.ServiceApi_Admin_User.Service.Users
 
         public Task<UserViewModel> GetUserById(Guid IdUser, string BearerToken);
 
+        public Task<UserViewModel> GetUserByUSN(string username);
+
         public Task<ResultApi<string>> DeleteUser(Guid IdUser, string BearerToken);
+
+        public Task<ResultApi<string>> UnlockUser(Guid IdUser, string BearerToken);
 
         public Task<ResultApi<string>> RoleAssign(Guid IdUser, RoleAssignRequest request);
 

@@ -102,10 +102,10 @@ namespace Web.Application.Catalog.Comments
             return (listData);
         }
 
-        public async Task<List<CommentViewModel>> GetAllweb(string languageId)
+        public async Task<List<CommentViewModel>> GetAllweb(int productID, string languageId)
         {
             var list = from c in _context.Comments
-                       where c.Status == Status.Active
+                       where c.Status == Status.Active && c.ProductId == productID
                        select new { c };
             var listData = new List<CommentViewModel>();
             foreach (var item in list)

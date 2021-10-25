@@ -36,10 +36,31 @@ namespace Web.Api.Controllers
             return Ok(result);
         }
 
+        [HttpGet("order-id/{orderID}/{languageID}")]
+        public async Task<IActionResult> GetOrderByID(int orderID, string languageID)
+        {
+            var result = await _manageservice.GetOrderByID(orderID, languageID);
+            return Ok(result);
+        }
+
         [HttpGet("get-all-order/{languageID}")]
         public async Task<IActionResult> GetallOrder(string languageID)
         {
             var result = await _manageservice.GetallOrder(languageID);
+            return Ok(result);
+        }
+
+        [HttpGet("get-all-order-success/{languageID}")]
+        public async Task<IActionResult> GetallOrderSuccess(string languageID)
+        {
+            var result = await _manageservice.GetallOrderSuccess(languageID);
+            return Ok(result);
+        }
+
+        [HttpGet("get-all-order-confirm/{languageID}")]
+        public async Task<IActionResult> GetallOrderConfirm(string languageID)
+        {
+            var result = await _manageservice.GetallOrderConfirm(languageID);
             return Ok(result);
         }
 
@@ -51,9 +72,16 @@ namespace Web.Api.Controllers
         }
 
         [HttpGet("confirm-order/{orderId}")]
-        public async Task<IActionResult> ConfirmOrder(Guid userId, int orderId)
+        public async Task<IActionResult> ConfirmOrder(int orderId)
         {
             var result = await _manageservice.ConfirmOrder(orderId);
+            return Ok(result);
+        }
+
+        [HttpGet("success-order/{orderId}")]
+        public async Task<IActionResult> SuccessOrder(int orderId)
+        {
+            var result = await _manageservice.SuccessOrder(orderId);
             return Ok(result);
         }
     }

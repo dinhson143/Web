@@ -111,5 +111,14 @@ namespace Web.Controllers
             }
             return RedirectToAction("Index");
         }
+
+        [HttpGet]
+        public async Task<IActionResult> TrackingOrder(int id)
+        {
+            var culture = CultureInfo.CurrentCulture.Name;
+            var token = HttpContext.Session.GetString(SystemContants.AppSettings.Token);
+            var order = await _orderApi.GetOrderByID(id, culture, token);
+            return View(order.ResultObj);
+        }
     }
 }

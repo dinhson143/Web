@@ -523,6 +523,11 @@ namespace Web.Data.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
+                    b.Property<string>("ThanhToan")
+                        .IsRequired()
+                        .IsUnicode(true)
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
@@ -652,7 +657,7 @@ namespace Web.Data.Migrations
                         new
                         {
                             Id = 1,
-                            DateCreated = new DateTime(2021, 10, 13, 19, 45, 16, 487, DateTimeKind.Local).AddTicks(9822),
+                            DateCreated = new DateTime(2021, 10, 25, 21, 10, 10, 57, DateTimeKind.Local).AddTicks(7726),
                             Status = 1,
                             ViewCount = 0
                         });
@@ -933,12 +938,38 @@ namespace Web.Data.Migrations
                         new
                         {
                             Id = new Guid("0d5b7850-46c1-4c80-99c4-d94fc38a3ea7"),
-                            ConcurrencyStamp = "ff454ebd-2b4e-4fb9-918c-0850adf8377f",
+                            ConcurrencyStamp = "463a1c24-b881-4023-94cf-845972055923",
                             Description = "Adminstrator Role ",
                             Name = "admin",
                             NormalizedName = "admin",
                             Status = 1
                         });
+                });
+
+            modelBuilder.Entity("Web.Data.Entities.ShipperOrder", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:IdentityIncrement", 1)
+                        .HasAnnotation("SqlServer:IdentitySeed", 1)
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("OrderID")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("ShipperId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ShipperOrders");
                 });
 
             modelBuilder.Entity("Web.Data.Entities.Size", b =>
@@ -1042,7 +1073,7 @@ namespace Web.Data.Migrations
                         new
                         {
                             Id = 1,
-                            DateCreated = new DateTime(2021, 10, 13, 19, 45, 16, 520, DateTimeKind.Local).AddTicks(498),
+                            DateCreated = new DateTime(2021, 10, 25, 21, 10, 10, 79, DateTimeKind.Local).AddTicks(5656),
                             Description = "Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.",
                             Image = "https://gaubongonline.vn/wp-content/uploads/2021/06/gaubongonline1.jpg",
                             Name = "slider 1",
@@ -1052,7 +1083,7 @@ namespace Web.Data.Migrations
                         new
                         {
                             Id = 2,
-                            DateCreated = new DateTime(2021, 10, 13, 19, 45, 16, 520, DateTimeKind.Local).AddTicks(2419),
+                            DateCreated = new DateTime(2021, 10, 25, 21, 10, 10, 79, DateTimeKind.Local).AddTicks(6987),
                             Description = "Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.",
                             Image = "https://gaubongonline.vn/wp-content/uploads/2021/06/gaubongonline.jpg",
                             Name = "slider 1",
@@ -1062,7 +1093,7 @@ namespace Web.Data.Migrations
                         new
                         {
                             Id = 3,
-                            DateCreated = new DateTime(2021, 10, 13, 19, 45, 16, 520, DateTimeKind.Local).AddTicks(2430),
+                            DateCreated = new DateTime(2021, 10, 25, 21, 10, 10, 79, DateTimeKind.Local).AddTicks(6993),
                             Description = "Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.",
                             Image = "https://gaubongonline.vn/wp-content/uploads/2021/05/web-gaubongonline.vn_.jpg",
                             Name = "slider 1",
@@ -1153,7 +1184,7 @@ namespace Web.Data.Migrations
                             Id = new Guid("b38060f2-8b1c-47ae-80aa-2cf1b518b812"),
                             AccessFailedCount = 0,
                             Address = "Hcm city",
-                            ConcurrencyStamp = "5a0e520b-2a11-483f-b8b2-895ab1496ffd",
+                            ConcurrencyStamp = "a19deaab-7ea3-46e4-970c-163d52368039",
                             Diem = 0,
                             Dob = new DateTime(1999, 3, 14, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "dinhson14399@gmail.com",
@@ -1163,7 +1194,7 @@ namespace Web.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "dinhson14399@gmail.com",
                             NormalizedUserName = "dinhson",
-                            PasswordHash = "AQAAAAEAACcQAAAAEEeAli6C+11pIc1dn52uA7RC+D3VcynSgvX7xpltWLvB+/J5HtSYZbB5/ipPq5B5eA==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEOvfg5pj4vDcom+iF94yE+qvUUOjogjgSRApYBXQ6XEfmA3QTpxbABnhflcs2EnaMw==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
                             Status = 1,

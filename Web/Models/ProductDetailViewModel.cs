@@ -12,7 +12,7 @@ namespace Web.Models
         public ProductViewModel ProductInfo { get; set; }
         public List<ProductImagesModel> Images { get; set; }
         public List<CommentViewModel> Comments { get; set; }
-
+        public List<ProductViewModel> ProductLQ { get; set; }
         public int ProductId { get; set; }
     }
 }

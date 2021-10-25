@@ -5,9 +5,28 @@
     var culture = CultureInfo.CurrentCulture.Name;
 }
 
+@section Scripts{
+    <link href="~/css/buttonPayPal.css" rel="stylesheet" />
+    <script>
+        $('.muahangOL').hide()
+        $('.thanhtoanOL').click(function () {
+            $('.muahangOL').toggle()
+            $('.muahang').toggle();
+        })
+        $('.btnThanhToan').click(function () {
+            $('.muahangOL').toggle()
+            $('.muahang').toggle();
+        })
+    </script>
+}
+
 @if (@TempData["msg"] != null)
 {
     <span class="alert alert-success" style="text-align:center;display:block">@TempData["msg"]</span>
+}
+else if (@TempData["err"] != null)
+{
+    <span class="alert alert-danger" style="text-align:center;display:block">@TempData["err"]</span>
 }
 else
 {
@@ -51,30 +70,30 @@ else
         <table class="table table-bordered">
             <tr><th>ESTIMATE YOUR SHIPPING </th></tr>
             <tr>
-                <td>
+                <td class="muahang">
                     <form class="form-horizontal" action="/@culture/Cart/Checkout" method="post">
                         <div class="control-group">
                             <label class="control-label">Name </label>
                             <div class="controls">
-                                <input type="text" asp-for="CheckoutModel.Name" id="inputCountry" value="@Model.CheckoutModel.Name" placeholder="Name">
+                                <input style="width:90%" type="text" asp-for="CheckoutModel.Name" id="inputCountry" value="@Model.CheckoutModel.Name" placeholder="Name">
                             </div>
                         </div>
                         <div class="control-group">
                             <label class="control-label">Address </label>
                             <div class="controls">
-                                <input type="text" asp-for="CheckoutModel.Address" value="@Model.CheckoutModel.Address" id="inputCountry" placeholder="Address">
+                                <input style="width:90%" type="text" asp-for="CheckoutModel.Address" value="@Model.CheckoutModel.Address" id="inputCountry" placeholder="Address">
                             </div>
                         </div>
                         <div class="control-group">
                             <label class="control-label">Email </label>
                             <div class="controls">
-                                <input type="text" asp-for="CheckoutModel.Email" value="@Model.CheckoutModel.Email" id="inputCountry" placeholder="Email">
+                                <input style="width:90%" type="text" asp-for="CheckoutModel.Email" value="@Model.CheckoutModel.Email" id="inputCountry" placeholder="Email">
                             </div>
                         </div>
                         <div class="control-group">
                             <label class="control-label">Số điện thoại </label>
                             <div class="controls">
-                                <input type="text" asp-for="CheckoutModel.PhoneNumber" value="@Model.CheckoutModel.PhoneNumber" id="inputCountry" placeholder="Số điện thoại">
+                                <input style="width:90%" type="text" asp-for="CheckoutModel.PhoneNumber" value="@Model.CheckoutModel.PhoneNumber" id="inputCountry" placeholder="Số điện thoại">
                             </div>
                         </div>
                         <div class="control-group">
@@ -82,19 +101,56 @@ else
                                 @if (@Model.CartItems.Count > 0)
                                 {
 
-                                    <button type="submit" class="btn">Purchase </button>
+                                    <button type="submit" class="btn btn-primary">Thanh toán </button>
+                                    <div class="btn btn-danger thanhtoanOL">Thanh toán online </div>
                                 }
                             </div>
                         </div>
                     </form>
                 </td>
-                <td>
-                    <div class="thumbnail">
-                        <img src="/themes/images/payment_methods.png" title="Bootshop Payment Methods" alt="Payments Methods">
-                        <div class="caption">
-                            <h5>Payment Online Methods</h5>
+                <td class="muahangOL">
+                    <form class="form-horizontal" action="/@culture/Cart/PaypalCheckout" method="post">
+                        <div class="control-group">
+                            <label class="control-label">Name </label>
+                            <div class="controls">
+                                <input style="width:90%" type="text" asp-for="CheckoutModel.Name" id="inputCountry" value="@Model.CheckoutModel.Name" placeholder="Name">
+                            </div>
                         </div>
-                    </div>
+                        <div class="control-group">
+                            <label class="control-label">Address </label>
+                            <div class="controls">
+                                <input style="width:90%" type="text" asp-for="CheckoutModel.Address" value="@Model.CheckoutModel.Address" id="inputCountry" placeholder="Address">
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Email </label>
+                            <div class="controls">
+                                <input style="width:90%" type="text" asp-for="CheckoutModel.Email" value="@Model.CheckoutModel.Email" id="inputCountry" placeholder="Email">
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Số điện thoại </label>
+                            <div class="controls">
+                                <input style="width:90%" type="text" asp-for="CheckoutModel.PhoneNumber" value="@Model.CheckoutModel.PhoneNumber" id="inputCountry" placeholder="Số điện thoại">
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <div class="controls" style="display:flex">
+                                @if (@Model.CartItems.Count > 0)
+                                {
+                                    <div class="btn btn-primary btnThanhToan" style="height:max-content">Thanh toán </div>
+                                    <button type="submit" class="paypal-button">
+                                        <span class="paypal-button-title">
+                                            Buy now with
+                                        </span>
+                                        <span class="paypal-logo">
+                                            <i>Pay</i><i>Pal</i>
+                                        </span>
+                                    </button>
+                                }
+                            </div>
+                        </div>
+                    </form>
                 </td>
             </tr>
         </table>

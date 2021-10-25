@@ -75,6 +75,23 @@ namespace Web.ServiceApi_Admin_User.Service.Orders
             return new ResultErrorApi<List<OrderViewModel>>("Không thể lấy danh sách Orders");
         }
 
+        public async Task<ResultApi<List<OrderViewModel>>> GetallOrderSuccess(string languageID, string BearerToken)
+        {
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", BearerToken);
+
+            var response = await client.GetAsync($"/api/Orders/get-all-order-success/{languageID}");
+            if (response.IsSuccessStatusCode)
+            {
+                var body = await response.Content.ReadAsStringAsync();
+                var list = JsonConvert.DeserializeObject<List<OrderViewModel>>(body);
+                return new ResultSuccessApi<List<OrderViewModel>>(list);
+            }
+            return new ResultErrorApi<List<OrderViewModel>>("Không thể lấy danh sách Orders");
+        }
+
         public async Task<bool> CancelOrder(Guid userId, int orderId, string BearerToken)
         {
             var client = _httpClientFactory.CreateClient();
@@ -93,6 +110,51 @@ namespace Web.ServiceApi_Admin_User.Service.Orders
             client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", BearerToken);
 
             var response = await client.GetAsync($"/api/Orders/confirm-order/{orderId}");
+
+            return response.IsSuccessStatusCode;
+        }
+
+        public async Task<ResultApi<OrderViewModel>> GetOrderByID(int orderID, string languageID, string BearerToken)
+        {
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", BearerToken);
+
+            var response = await client.GetAsync($"/api/Orders/order-id/{orderID}/{languageID}");
+            if (response.IsSuccessStatusCode)
+            {
+                var body = await response.Content.ReadAsStringAsync();
+                var order = JsonConvert.DeserializeObject<OrderViewModel>(body);
+                return new ResultSuccessApi<OrderViewModel>(order);
+            }
+            return new ResultErrorApi<OrderViewModel>("Không thể lấy danh sách Orders");
+        }
+
+        public async Task<ResultApi<List<OrderViewModel>>> GetallOrderConfirm(string languageID, string BearerToken)
+        {
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", BearerToken);
+
+            var response = await client.GetAsync($"/api/Orders/get-all-order-confirm/{languageID}");
+            if (response.IsSuccessStatusCode)
+            {
+                var body = await response.Content.ReadAsStringAsync();
+                var list = JsonConvert.DeserializeObject<List<OrderViewModel>>(body);
+                return new ResultSuccessApi<List<OrderViewModel>>(list);
+            }
+            return new ResultErrorApi<List<OrderViewModel>>("Không thể lấy danh sách Orders");
+        }
+
+        public async Task<bool> SuccessOrder(int orderId, string BearerToken)
+        {
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", BearerToken);
+
+            var response = await client.GetAsync($"/api/Orders/success-order/{orderId}");
 
             return response.IsSuccessStatusCode;
         }

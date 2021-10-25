@@ -12,7 +12,7 @@ namespace Web.ServiceApi_Admin_User.Service.Comments
     {
         public Task<ResultApi<List<CommentViewModel>>> GetAllAdmin(string languageId, string BearerToken);
 
-        public Task<ResultApi<List<CommentViewModel>>> GetAllWeb(string languageId);
+        public Task<ResultApi<List<CommentViewModel>>> GetAllWeb(int productID, string languageId);
 
         public Task<bool> Delete(int commentId, string BearerToken);
 

@@ -11,11 +11,13 @@ namespace Web.Data.Entities
     {
         public int Id { set; get; }
         public Guid UserId { set; get; }
+
         public DateTime OrderDate { set; get; }
         public string ShipName { set; get; }
         public string ShipAddress { set; get; }
         public string ShipEmail { set; get; }
         public string ShipPhoneNumber { set; get; }
+        public string ThanhToan { set; get; }
         public OrderStatus Status { set; get; }
 
         public List<OrderDetail> OrderDetails { get; set; }

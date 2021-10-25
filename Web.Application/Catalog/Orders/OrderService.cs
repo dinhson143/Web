@@ -71,6 +71,17 @@ namespace Web.Application.Catalog.Orders
             return await _context.SaveChangesAsync();
         }
 
+        public async Task<int> SuccessOrder(int orderId)
+        {
+            var order = await _context.Orders.FirstOrDefaultAsync(x => x.Id == orderId);
+            if (order == null) throw new WebException($"Cannot find a order: {orderId}");
+            var orderSP = await _context.ShipperOrders.FirstOrDefaultAsync(x => x.OrderID == orderId);
+            if (orderSP == null) throw new WebException($"Cannot find a order shiper: {orderId}");
+            orderSP.Status = ShipStatus.Success;
+            orderSP.Date = DateTime.Now;
+            return await _context.SaveChangesAsync();
+        }
+
         public async Task<ResultApi<string>> CreateOrder(CheckoutRequest request)
         {
             var user = await _userManager.FindByEmailAsync(request.Email);
@@ -106,7 +117,8 @@ namespace Web.Application.Catalog.Orders
                 ShipPhoneNumber = request.PhoneNumber,
                 UserId = user.Id,
                 Status = OrderStatus.InProgress,
-                OrderDetails = orderdetails
+                OrderDetails = orderdetails,
+                ThanhToan = request.ThanhToan
             };
             await _context.Orders.AddAsync(order);
             var result = await _context.SaveChangesAsync();
@@ -125,7 +137,7 @@ namespace Web.Application.Catalog.Orders
         public async Task<List<OrderViewModel>> GetallOrder(string languageID)
         {
             var query = from o in _context.Orders
-                        where o.Status != OrderStatus.Success && o.Status != OrderStatus.Canceled && o.Status != OrderStatus.Shipping
+                            //where o.Status != OrderStatus.Success && o.Status != OrderStatus.Canceled && o.Status != OrderStatus.Shipping
                         select new { o };
             var data = await query.Select(x => new OrderViewModel()
             {
@@ -135,7 +147,7 @@ namespace Web.Application.Catalog.Orders
                 ShipEmail = x.o.ShipEmail,
                 ShipName = x.o.ShipName,
                 ShipPhone = x.o.ShipPhoneNumber,
-                Status = x.o.Status
+                Status = x.o.Status.ToString()
             }).ToListAsync();
 
             foreach (var order in data)
@@ -165,6 +177,131 @@ namespace Web.Application.Catalog.Orders
             return new List<OrderViewModel>(data);
         }
 
+        public async Task<List<OrderViewModel>> GetallOrderSuccess(string languageID)
+        {
+            var query = from o in _context.Orders
+                        where o.Status == OrderStatus.Success
+                        select new { o };
+            var data = await query.Select(x => new OrderViewModel()
+            {
+                Id = x.o.Id,
+                OrderDate = x.o.OrderDate,
+                ShipAddress = x.o.ShipAddress,
+                ShipEmail = x.o.ShipEmail,
+                ShipName = x.o.ShipName,
+                ShipPhone = x.o.ShipPhoneNumber,
+                Status = x.o.Status.ToString()
+            }).ToListAsync();
+
+            foreach (var order in data)
+            {
+                var list = new List<OrderDetailViewModel>();
+                var result = from od in _context.OrderDetails
+                             join pt in _context.ProductTranslations on od.ProductId equals pt.ProductId
+                             join pi in _context.ProductImages on od.ProductId equals pi.ProductId
+                             join ods in _context.Sizes on od.SizeId equals ods.Id
+                             where od.OrderId == order.Id && pt.LanguageId == languageID && pi.IsDefault == true
+                             select new { od, pt, ods, pi };
+                foreach (var item in result)
+                {
+                    var x = new OrderDetailViewModel()
+                    {
+                        Price = item.od.Price,
+                        ProductName = item.pt.Name,
+                        Quantity = item.od.Quantity,
+                        SizeName = item.ods.Name,
+                        Image = item.pi.ImagePath,
+                        OrderID = order.Id
+                    };
+                    list.Add(x);
+                }
+                order.ListOrDetail = list;
+            }
+            return new List<OrderViewModel>(data);
+        }
+
+        public async Task<List<OrderViewModel>> GetallOrderConfirm(string languageID)
+        {
+            var query = from o in _context.Orders
+                        where o.Status == OrderStatus.Confirmed
+                        select new { o };
+            var data = await query.Select(x => new OrderViewModel()
+            {
+                Id = x.o.Id,
+                OrderDate = x.o.OrderDate,
+                ShipAddress = x.o.ShipAddress,
+                ShipEmail = x.o.ShipEmail,
+                ShipName = x.o.ShipName,
+                ShipPhone = x.o.ShipPhoneNumber,
+                Status = x.o.Status.ToString()
+            }).ToListAsync();
+
+            foreach (var order in data)
+            {
+                var list = new List<OrderDetailViewModel>();
+                var result = from od in _context.OrderDetails
+                             join pt in _context.ProductTranslations on od.ProductId equals pt.ProductId
+                             join pi in _context.ProductImages on od.ProductId equals pi.ProductId
+                             join ods in _context.Sizes on od.SizeId equals ods.Id
+                             where od.OrderId == order.Id && pt.LanguageId == languageID && pi.IsDefault == true
+                             select new { od, pt, ods, pi };
+                foreach (var item in result)
+                {
+                    var x = new OrderDetailViewModel()
+                    {
+                        Price = item.od.Price,
+                        ProductName = item.pt.Name,
+                        Quantity = item.od.Quantity,
+                        SizeName = item.ods.Name,
+                        Image = item.pi.ImagePath,
+                        OrderID = order.Id
+                    };
+                    list.Add(x);
+                }
+                order.ListOrDetail = list;
+            }
+            return new List<OrderViewModel>(data);
+        }
+
+        public async Task<OrderViewModel> GetOrderByID(int orderId, string languageID)
+        {
+            var x = await _context.Orders.FindAsync(orderId);
+            var order = new OrderViewModel()
+            {
+                Id = x.Id,
+                OrderDate = x.OrderDate,
+                ShipAddress = x.ShipAddress,
+                ShipEmail = x.ShipEmail,
+                ShipName = x.ShipName,
+                ShipPhone = x.ShipPhoneNumber,
+                Status = x.Status.ToString()
+            };
+
+            var list = new List<OrderDetailViewModel>();
+            var result = from od in _context.OrderDetails
+                         join pt in _context.ProductTranslations on od.ProductId equals pt.ProductId
+                         join pi in _context.ProductImages on od.ProductId equals pi.ProductId
+                         join ods in _context.Sizes on od.SizeId equals ods.Id
+                         where od.OrderId == order.Id && pt.LanguageId == languageID && pi.IsDefault == true
+                         select new { od, pt, ods, pi };
+            foreach (var item in result)
+            {
+                var oddt = new OrderDetailViewModel()
+                {
+                    Price = item.od.Price,
+                    ProductName = item.pt.Name,
+                    Quantity = item.od.Quantity,
+                    SizeName = item.ods.Name,
+                    Image = item.pi.ImagePath,
+                    OrderID = order.Id
+                };
+                list.Add(oddt);
+            }
+            order.ListOrDetail = list;
+
+            return order;
+        }
+
         public async Task<List<OrderViewModel>> GetOrderUser(Guid userId, string languageID)
         {
             var query = from o in _context.Orders
@@ -178,7 +315,7 @@ namespace Web.Application.Catalog.Orders
                 ShipEmail = x.o.ShipEmail,
                 ShipName = x.o.ShipName,
                 ShipPhone = x.o.ShipPhoneNumber,
-                Status = x.o.Status
+                Status = x.o.Status.ToString()
             }).ToListAsync();
 
             foreach (var order in data)

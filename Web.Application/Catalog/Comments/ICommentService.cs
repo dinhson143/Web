@@ -12,7 +12,7 @@ namespace Web.Application.Catalog.Comments
     {
         public Task<List<CommentViewModel>> GetAlladmin(string languageId);
 
-        public Task<List<CommentViewModel>> GetAllweb(string languageId);
+        public Task<List<CommentViewModel>> GetAllweb(int productID, string languageId);
 
         public Task<int> Delete(int id);
 

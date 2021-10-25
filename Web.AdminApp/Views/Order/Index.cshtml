@@ -91,7 +91,10 @@
                                 </td>
                                 <td>
                                     @Html.ActionLink("Details", "Details", new { id = item.Id }) |
-                                    @Html.ActionLink("Confirm", "ConfirmOrder", new { id = item.Id })
+                                    @if (item.Status.ToString() == "InProgress")
+                                    {
+                                        @Html.ActionLink("Confirm", "ConfirmOrder", new { id = item.Id })
+                                    }
                                 </td>
                             </tr>
                         }

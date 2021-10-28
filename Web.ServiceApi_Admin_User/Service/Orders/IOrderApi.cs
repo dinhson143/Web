@@ -15,6 +15,8 @@ namespace Web.ServiceApi_Admin_User.Service.Orders
 
         public Task<ResultApi<List<OrderViewModel>>> GetOrderUser(Guid userId, string languageID, string BearerToken);
 
+        public Task<ResultApi<List<OrderViewModel>>> GetOrderUserHistory(Guid userId, string languageID, string BearerToken);
+
         public Task<ResultApi<List<OrderViewModel>>> GetAllOrder(string languageID, string BearerToken);
 
         public Task<ResultApi<OrderViewModel>> GetOrderByID(int orderID, string languageID, string BearerToken);

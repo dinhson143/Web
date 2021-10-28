@@ -36,6 +36,13 @@ namespace Web.Api.Controllers
             return Ok(result);
         }
 
+        [HttpGet("danh-sach-order-history/{languageID}/{userId}")]
+        public async Task<IActionResult> GetOrderUserHistory(Guid userId, string languageID)
+        {
+            var result = await _manageservice.GetOrderUserHistory(userId, languageID);
+            return Ok(result);
+        }
+
         [HttpGet("order-id/{orderID}/{languageID}")]
         public async Task<IActionResult> GetOrderByID(int orderID, string languageID)
         {

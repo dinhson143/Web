@@ -13,6 +13,7 @@ using System.Globalization;
 using Web.LocalizationResources;
 using Web.ServiceApi_Admin_User.Service.Categories;
 using Web.ServiceApi_Admin_User.Service.Comments;
+using Web.ServiceApi_Admin_User.Service.Contacts;
 using Web.ServiceApi_Admin_User.Service.Orders;
 using Web.ServiceApi_Admin_User.Service.Products;
 using Web.ServiceApi_Admin_User.Service.Roles;
@@ -73,6 +74,7 @@ namespace Web
             services.AddTransient<ICategoryApi, CategoryApi>();
             services.AddTransient<IOrderApi, OrderApi>();
             services.AddTransient<ICommentApi, CommentApi>();
+            services.AddTransient<IContactApi, ContactApi>();
             // * mutiple language
             //1. add culture
             var cultures = new[]

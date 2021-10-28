@@ -9,5 +9,6 @@ namespace Web.Models
     public class OrderViewModelWeb
     {
         public List<OrderViewModel> listOrder { get; set; }
+        public List<OrderViewModel> listOrderHistory { get; set; }
     }
 }

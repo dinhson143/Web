@@ -133,6 +133,10 @@
     <value>Comments</value>
     <comment>ProductDetail</comment>
   </data>
+  <data name="Contact" xml:space="preserve">
+    <value>Contact</value>
+    <comment>Home/Index</comment>
+  </data>
   <data name="English" xml:space="preserve">
     <value>English</value>
     <comment>Layouts</comment>

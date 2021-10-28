@@ -14,8 +14,7 @@ namespace Web.ViewModels.Catalog.Contacts
             RuleFor(x => x.Name).NotEmpty().WithMessage("Name is required")
                 .MaximumLength(200).WithMessage("Name at max 200 charaters");
 
-            RuleFor(x => x.Message).NotEmpty().WithMessage("Message is required")
-                    .MaximumLength(500).WithMessage("Message at max 200 charaters");
+            RuleFor(x => x.Message).MaximumLength(500).WithMessage("Message at max 200 charaters");
             RuleFor(x => x.PhoneNumber).NotEmpty().WithMessage("PhoneNumber is required");
             RuleFor(x => x.Email).NotEmpty().WithMessage("Email is required")
               .EmailAddress().WithMessage("Value is not Email");

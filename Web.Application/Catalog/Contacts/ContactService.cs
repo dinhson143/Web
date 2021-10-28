@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using MailKit.Net.Smtp;
+using Microsoft.EntityFrameworkCore;
+using MimeKit;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -28,6 +30,7 @@ namespace Web.Application.Catalog.Contacts
                 Message = request.Message,
                 Name = request.Name,
                 PhoneNumber = request.PhoneNumber,
+                Address = request.Address,
                 Status = Status.Active
             };
 
@@ -51,7 +54,8 @@ namespace Web.Application.Catalog.Contacts
                 Name = x.c.Name,
                 Email = x.c.Email,
                 Message = x.c.Message,
-                PhoneNumber = x.c.PhoneNumber
+                PhoneNumber = x.c.PhoneNumber,
+                Address = x.c.Address
             }).ToListAsync();
         }
 
@@ -91,5 +95,30 @@ namespace Web.Application.Catalog.Contacts
             };
             return data;
         }
+
+        //public async Task<ResultApi<int>> SendMail(ContactSendMail request)
+        //{
+        //    var message = new MimeMessage();
+        //    message.From.Add(new MailboxAddress("Khách hàng", request.Email));
+        //    message.To.Add(new MailboxAddress("", Email));
+        //    message.Subject = "Xác nhận reset mật khẩu !!!";
+        //    message.Body = new TextPart("plain")
+        //    {
+        //        Text = "Mã xác nhận: " + r.ToString()
+        //    };
+        //    using (var client = new SmtpClient())
+        //    {
+        //        client.Connect("smtp.gmail.com", 587, false);
+        //        client.Authenticate("dinhson14399@gmail.com", "tranthingocyen");
+        //        client.Send(message);
+
+        //        client.Disconnect(true);
+        //    }
+
+        //    return new ResultSuccessApi<int>()
+        //    {
+        //        Message = "Vui lòng kiểm tra mail !!!",
+        //    };
+        //}
     }
 }

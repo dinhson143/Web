@@ -1,0 +1,66 @@
+﻿@model Web.Models.ContactModel
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+</style>
+@section Scripts{
+    <script>
+        $('#sidebar').hide();
+    </script>
+}
+
+<div id="mainBody">
+    <div class="container">
+        <hr class="soften">
+        <h1>Visit us</h1>
+        <hr class="soften" />
+        <div class="row">
+            <div class="span4">
+                <h4>Contact Details</h4>
+                <p>
+                    @Model.listCT[0].Address<br />
+                    @Model.listCT[0].Email<br />
+                    ﻿Tel: @Model.listCT[0].PhoneNumber<br />
+                    BeanDy.com.vn
+                </p>
+            </div>
+
+            <div class="span4">
+                <h4>Opening Hours</h4>
+                <h5> Monday - Friday</h5>
+                <p>09:00am - 09:00pm<br /><br /></p>
+                <h5>Saturday</h5>
+                <p>09:00am - 07:00pm<br /><br /></p>
+                <h5>Sunday</h5>
+                <p>12:30pm - 06:00pm<br /><br /></p>
+            </div>
+            <div class="span4">
+                <h4>Email Us</h4>
+                <form method="post" asp-action="SendMessage" class="form-horizontal">
+                    <fieldset>
+                        <div class="control-group">
+
+                            <input type="text" asp-for="Name" placeholder="name" class="input-xlarge" />
+                        </div>
+                        <div class="control-group">
+
+                            <input type="email" asp-for="Email" placeholder="email" class="input-xlarge" />
+                        </div>
+                        <div class="control-group">
+
+                            <input type="text" asp-for="Subject" placeholder="subject" class="input-xlarge" />
+                        </div>
+                        <div class="control-group">
+                            <textarea rows="3" id="textarea" asp-for="Message" class="input-xlarge"></textarea>
+                        </div>
+
+                        <button class="btn btn-large" type="submit">Send Messages</button>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

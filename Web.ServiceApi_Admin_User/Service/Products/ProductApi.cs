@@ -334,5 +334,46 @@ namespace Web.ServiceApi_Admin_User.Service.Products
 
             return JsonConvert.DeserializeObject<ResultApi<List<ProductViewModel>>>(result);
         }
+
+        public async Task<bool> DeleteImageProduct(int id, string BearerToken)
+        {
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", BearerToken);
+
+            var response = await client.DeleteAsync($"/api/Products/remove-image/{id}");
+
+            return response.IsSuccessStatusCode;
+        }
+
+        public async Task<bool> AddImage(ProductUpdateRequest request)
+        {
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", request.BearerToken);
+
+            var requestContent = new MultipartFormDataContent();
+            if (request.ImageURL != null && request.ImageURL.Length > 0)
+            {
+                List<ByteArrayContent> bytes = new List<ByteArrayContent>();
+                for (var i = 0; i < request.ImageURL.Length; i++)
+                {
+                    byte[] data;
+                    using (var br = new BinaryReader(request.ImageURL[i].OpenReadStream()))
+                    {
+                        data = br.ReadBytes((int)request.ImageURL[i].OpenReadStream().Length);
+                    }
+                    ByteArrayContent bytesData = new ByteArrayContent(data);
+                    requestContent.Add(bytesData, "imageURL", request.ImageURL[i].FileName);
+                    bytes.Add(bytesData);
+                }
+            }
+            requestContent.Add(new StringContent(request.BearerToken.ToString()), "bearerToken");
+            requestContent.Add(new StringContent(request.LanguageId.ToString()), "languageId");
+
+            var response = await client.PutAsync("/api/Products/add_images/" + request.Id, requestContent);
+            return response.IsSuccessStatusCode;
+        }
     }
 }

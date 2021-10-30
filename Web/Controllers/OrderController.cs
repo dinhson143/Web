@@ -43,9 +43,16 @@ namespace Web.Controllers
                 TempData["msg"] = "Lỗi khi lấy danh sách đơn đặt hàng";
                 return View();
             }
+            var result2 = await _orderApi.GetOrderUserHistory(new Guid(id), culture, token);
+            if (!result2.IsSuccess)
+            {
+                TempData["msg"] = "Lỗi khi lấy danh sách lịch sử đơn đặt hàng";
+                return View();
+            }
             var data = new OrderViewModelWeb()
             {
-                listOrder = result.ResultObj
+                listOrder = result.ResultObj,
+                listOrderHistory = result2.ResultObj
             };
             return View(data);
         }

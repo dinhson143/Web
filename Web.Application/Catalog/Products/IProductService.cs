@@ -31,11 +31,11 @@ namespace Web.Application.Catalog.Products
 
         public Task<int> AddViewCount(int productId);
 
-        public Task AddImage();
+        public Task<ResultApi<int>> AddImage(ProductUpdateRequest request);
 
         public Task AddSize_Color(int productId, ProductSizeViewModel request);
 
-        public Task RemoveImage();
+        public Task<int> RemoveImage(int id);
 
         public Task UpdateImage();
 

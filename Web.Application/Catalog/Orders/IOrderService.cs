@@ -15,6 +15,8 @@ namespace Web.Application.Catalog.Orders
 
         public Task<List<OrderViewModel>> GetOrderUser(Guid userId, string languageID);
 
+        public Task<List<OrderViewModel>> GetOrderUserHistory(Guid userId, string languageID);
+
         public Task<List<OrderViewModel>> GetallOrder(string languageID);
 
         public Task<OrderViewModel> GetOrderByID(int orderId, string languageID);

@@ -13,14 +13,14 @@
     <script src="/js/demo/datatables-demo.js"></script>
     <script type="text/javascript">
         /*$('.btnListHistory').hide();*/
-        $('.dsDonhang').hide();
+        $('.dsDonhangHistory').hide();
         $(".btnListOrder").click(function () {
             $('.dsDonhang').toggle();
-            /*$('.btnListHistory').hide();*/
+            $('.dsDonhangHistory').hide();
         });
         $(".btnListHistory").click(function () {
             $('.dsDonhang').hide();
-            /*$('.btnListHistory').toggle();*/
+            $('.dsDonhangHistory').toggle();
         });
     </script>
     <script>
@@ -143,11 +143,120 @@
                                     @Html.DisplayFor(modelItem => item.OrderDate)
                                 </td>
                                 <td class="btnGroup">
-                                    <button class="btn btn-info btnCustom">
+                                    <button class="btn btn-info btnCustom" style="margin-left:auto">
                                         @Html.ActionLink("Chi tiết", "Details", new { id = item.Id })
                                     </button>
-                                    <button class="btn btn-danger btnCustom">
-                                        @Html.ActionLink("Hủy", "CancelOrder", new { id = item.Id })
+                                    @if (item.Status == "Confirmed" || item.Status == "InProgress")
+                                    {
+                                        <button class="btn btn-danger btnCustom">
+                                            @Html.ActionLink("Hủy", "CancelOrder", new { id = item.Id })
+                                        </button>
+                                    }
+                                    <button class="btn btn-info">
+                                        @Html.ActionLink("Tracking", "TrackingOrder", new { id = item.Id })
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-fluid dsDonhangHistory">
+
+    <!-- Page Heading -->
+    <h4 class="h3 mb-2 text-gray-800" style="padding:10px 0;text-align:center;margin:30px auto 30px auto;width:80%;background-color:green;color:#fff;border-radius:15px">Danh Sách Đơn Hàng</h4>
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        @if (@TempData["msg"] != null)
+        {
+            <div class="alert alert-danger" role="alert" style="text-align:center">
+                @TempData["msg"]
+            </div>
+        }
+        @if (@TempData["msgSC"] != null)
+        {
+            <div class="alert alert-success" role="alert" style="text-align:center">
+                @TempData["msgSC"]
+            </div>
+        }
+
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr class="tableHead">
+                            <th>
+                                Mã
+                            </th>
+                            <th>
+                                Tên
+                            </th>
+                            <th>
+                                Địa chỉ
+                            </th>
+                            <th>
+                                Email
+                            </th>
+                            <th>
+                                Phone
+                            </th>
+                            <th>
+                                Ngày đặt
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th>
+                                Mã
+                            </th>
+                            <th>
+                                Tên
+                            </th>
+                            <th>
+                                Địa chỉ
+                            </th>
+                            <th>
+                                Email
+                            </th>
+                            <th>
+                                Phone
+                            </th>
+                            <th>
+                                Ngày đặt
+                            </th>
+                            <th></th>
+                        </tr>
+                    </tfoot>
+                    <tbody>
+                        @foreach (var item in Model.listOrderHistory)
+                        {
+                            <tr class="dataTB">
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Id)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.ShipName)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.ShipAddress)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.ShipEmail)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.ShipPhone)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.OrderDate)
+                                </td>
+                                <td class="btnGroup">
+                                    <button class="btn btn-info btnCustom" style="margin-left:auto">
+                                        @Html.ActionLink("Chi tiết", "Details", new { id = item.Id })
                                     </button>
                                     <button class="btn btn-info">
                                         @Html.ActionLink("Tracking", "TrackingOrder", new { id = item.Id })

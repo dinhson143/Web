@@ -66,11 +66,13 @@ namespace Web.Controllers
             var orderDetails = new List<OrderDetailVM>();
             foreach (var item in data.CartItems)
             {
+                decimal percent = (item.DiscountPercent * (decimal)(0.01)) ?? 0;
+                decimal amount = item.DiscountAmount ?? 0;
                 orderDetails.Add(new OrderDetailVM()
                 {
                     ProductId = item.ProductId,
                     Quantity = item.Quantity,
-                    Price = item.Price,
+                    Price = item.Price - (item.Price * percent) - amount,
                     SizeId = item.SizeId
                 });
             }
@@ -213,11 +215,13 @@ namespace Web.Controllers
             var orderDetails = new List<OrderDetailVM>();
             foreach (var item in data.CartItems)
             {
+                decimal percent = (item.DiscountPercent * (decimal)(0.01)) ?? 0;
+                decimal amount = item.DiscountAmount ?? 0;
                 orderDetails.Add(new OrderDetailVM()
                 {
                     ProductId = item.ProductId,
                     Quantity = item.Quantity,
-                    Price = item.Price,
+                    Price = item.Price - (item.Price * percent) - amount,
                     SizeId = item.SizeId
                 });
             }
@@ -307,7 +311,9 @@ namespace Web.Controllers
                     Price = gia,
                     Image = images[0].URL,
                     SizeId = size,
-                    NameSize = namesize
+                    NameSize = namesize,
+                    DiscountAmount = product.ResultObj.DiscountAmount,
+                    DiscountPercent = product.ResultObj.DiscountPercent
                 };
 
                 currentCart.Add(cartItem);

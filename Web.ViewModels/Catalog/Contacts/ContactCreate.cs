@@ -12,5 +12,6 @@ namespace Web.ViewModels.Catalog.Contacts
         public string Email { set; get; }
         public string PhoneNumber { set; get; }
         public string Message { set; get; }
+        public string Address { set; get; }
     }
 }

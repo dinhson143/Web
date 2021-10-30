@@ -6,7 +6,6 @@
     var culture = CultureInfo.CurrentCulture.Name;
     CultureInfo cul;
 }
-
 @section slider{
     <div id="carouselBlk">
         <div id="myCarousel" class="carousel slide">
@@ -29,6 +28,14 @@
         </div>
     </div>
 }
+@section Scripts{
+    <link href="~/css/sale.css" rel="stylesheet" />
+}
+<style>
+    .btnGiamgia:hover {
+        text-decoration: line-through;
+    }
+</style>
 <div class="well well-small">
     <h4><localize>Featured Products</localize><small class="pull-right">200+ featured products</small></h4>
     <div class="row-fluid">
@@ -75,7 +82,9 @@
                                                 else
                                                 {
                                                     cul = CultureInfo.GetCultureInfo("en-US");
-                                                    <span style="font-size:11px" class="pull-right">@data.listPS[0].Price.ToString("C", cul.NumberFormat) - @data.listPS[data.listPS.Count - 1].Price.ToString("C", cul.NumberFormat)</span>
+                                                    var giaTRC = data.listPS[0].Price / 23300;
+                                                    var giaSAU = data.listPS[data.listPS.Count - 1].Price / 23300;
+                                                    <span style="font-size:11px" class="pull-right">@giaTRC.ToString("C", cul.NumberFormat) - @giaSAU.ToString("C", cul.NumberFormat)</span>
                                                 }
                                             </h4>
                                         </div>
@@ -97,33 +106,75 @@
     {
         var url = $"/{culture}/{_loc["productURL"]}/{item.Id}";
         <li class="span3">
-            <div class="thumbnail">
+            <div class="thumbnail" style="position:relative">
                 <a href="@url"><img src="@item.Image" alt="" /></a>
                 <div class="caption">
                     <h5>@item.Name</h5>
-                    <p>
-                        @item.Description
-                    </p>
+                    @*<p>
+                            @item.Description
+                        </p>*@
 
-                    <h4 style="text-align:center">
-                        <a class="btn" href="@url">
-                            <i class="icon-zoom-in"></i>
-                        </a>
-                        <a class="btn" href="@url">
-                            <localize>Add to</localize>
-                            <i class="icon-shopping-cart"></i>
-                        </a>
-                        @if (String.Compare(culture.ToString(), "vi") == 0)
+                <h4 style="text-align:center">
+                    <a class="btn" href="@url">
+                        <i class="icon-zoom-in"></i>
+                    </a>
+                    <a class="btn" href="@url">
+                        <localize>Add to</localize>
+                        <i class="icon-shopping-cart"></i>
+                    </a>
+                    @if (String.Compare(culture.ToString(), "vi") == 0)
+                    {
+                        cul = CultureInfo.GetCultureInfo("vi-VN");
+                        decimal giaTRC = 0;
+                        decimal giaSAU = 0;
+                        decimal percent = (item.DiscountPercent * (decimal)(0.01)) ?? 0;
+                        decimal amount = item.DiscountAmount ?? 0;
+                        giaTRC = item.listPS[0].Price - (item.listPS[0].Price * percent) - amount;
+                        giaSAU = item.listPS[item.listPS.Count - 1].Price - (item.listPS[item.listPS.Count - 1].Price * percent) - amount;
+                        if (item.DiscountPercent != null || item.DiscountAmount != null)
                         {
-                            cul = CultureInfo.GetCultureInfo("vi-VN");
-                            <a class="btn btn-primary" href="#">@item.listPS[0].Price.ToString("C", cul.NumberFormat) - @item.listPS[item.listPS.Count - 1].Price.ToString("C", cul.NumberFormat)</a>
+                            <del class="btnGiamgia btn btn-danger" href="#">@item.listPS[0].Price.ToString("C", cul.NumberFormat) - @item.listPS[item.listPS.Count - 1].Price.ToString("C", cul.NumberFormat)</del>
                         }
-                        else
+                        <a class="btn btn-primary" href="#">@giaTRC.ToString("C", cul.NumberFormat) - @giaSAU.ToString("C", cul.NumberFormat)</a>
+
+                        if (item.DiscountPercent != null)
                         {
-                            cul = CultureInfo.GetCultureInfo("en-US");
-                            <a class="btn btn-primary" href="#">@item.listPS[0].Price.ToString("C", cul.NumberFormat) - @item.listPS[item.listPS.Count - 1].Price.ToString("C", cul.NumberFormat)</a>
+                            <span class="sale">-@item.DiscountPercent%</span>
                         }
-                    </h4>
+                        if (item.DiscountAmount != null)
+                        {
+                            decimal x = item.DiscountAmount ?? 0;
+                            <span class="sale2">-@x.ToString("C", cul.NumberFormat)</span>
+                        }
+                    }
+                    else
+                    {
+                        cul = CultureInfo.GetCultureInfo("en-US");
+                        decimal giaTRC = 0;
+                        decimal giaSAU = 0;
+                        decimal percent = (item.DiscountPercent * (decimal)(0.01)) ?? 0;
+                        decimal amount = item.DiscountAmount ?? 0;
+                        giaTRC = (item.listPS[0].Price - (item.listPS[0].Price * percent) - amount) / 23300;
+                        giaSAU = (item.listPS[item.listPS.Count - 1].Price - (item.listPS[item.listPS.Count - 1].Price * percent) - amount) / 23300;
+                        if (item.DiscountPercent != null || item.DiscountAmount != null)
+                        {
+                            var giaGoc = item.listPS[0].Price / 23300;
+                            var giaGoc2 = item.listPS[item.listPS.Count - 1].Price / 23300;
+                            <del class="btnGiamgia btn btn-danger" href="#">@giaGoc.ToString("C", cul.NumberFormat) - @giaGoc2.ToString("C", cul.NumberFormat)</del>
+                        }
+                        <a class="btn btn-primary" href="#">@giaTRC.ToString("C", cul.NumberFormat) - @giaSAU.ToString("C", cul.NumberFormat)</a>
+
+                        if (item.DiscountPercent != null)
+                        {
+                            <span class="sale">-@item.DiscountPercent%</span>
+                        }
+                        if (item.DiscountAmount != null)
+                        {
+                            decimal x = item.DiscountAmount ?? 0;
+                            <span class="sale2">-@x.ToString("C", cul.NumberFormat)</span>
+                        }
+                    }
+                </h4>
                 </div>
             </div>
         </li>

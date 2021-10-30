@@ -14,6 +14,7 @@ namespace Web.Data.Entities
         public string Email { set; get; }
         public string PhoneNumber { set; get; }
         public string Message { set; get; }
+        public string Address { set; get; }
         public Status Status { set; get; }
     }
 }

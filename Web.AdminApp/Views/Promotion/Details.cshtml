@@ -1,0 +1,50 @@
+﻿@model Web.ViewModels.Catalog.Promotions.PromotionViewModel
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var listPro = Model.listPro;
+    var listCate = Model.listCate;
+}
+
+<h3>Chi tiết sản phẩm sự kiện</h3>
+
+<div>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-10" style="color:red;font-weight:bold">
+            Các sản phẩm giảm giá: @listPro.Count
+        </dt>
+        @foreach (var item in listPro)
+        {
+            <dd class="col-sm-10">
+                Sản phẩm: @item.Name
+            </dd>
+
+            <dd class="col-sm-10" style="overflow-x:scroll">
+                @foreach (var image in item.Images)
+                {
+
+                    <img style="margin:0 2px;width:150px" src="@image.URL" />
+                    <span></span>
+                }
+            </dd>
+
+        }
+        <dt class="col-sm-10" style="color:red;font-weight:bold">
+            Các loại sản phẩm giảm giá: @listCate.Count
+        </dt>
+        
+        <dd class="col-sm-10">
+            Loại sản phẩm:
+            @foreach (var item in listCate)
+            {
+                <span>@item.Name, </span>
+            }
+        </dd>
+       
+    </dl>
+</div>
+<div>
+    <a class="btn btn-success" asp-action="Index">Back to List</a>
+</div>

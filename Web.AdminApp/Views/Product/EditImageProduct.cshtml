@@ -1,0 +1,100 @@
+﻿@model IEnumerable<Web.ViewModels.Catalog.Products.ProductImagesModel>
+
+@{
+    ViewData["Title"] = "EditImageProduct";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .imgProduct {
+        width: 100%;
+        height: 200px;
+    }
+</style>
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">DANH SÁCH HÌNH ẢNH</h1>
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3" style="display:flex">
+            <a asp-action="Index" asp-controller="Product" class="btn btn-success btn-icon-split">
+                <span class="icon text-white-50">
+                    <i class="fas fa-long-arrow-alt-left"></i>
+                </span>
+                <span class="text">Trở về</span>
+            </a>
+            <a asp-action="AddImage" asp-controller="Product" class="btn btn-success btn-icon-split" style="margin:0 10px;">
+                <span class="icon text-white-50">
+                    <i class="fas fa-plus-circle"></i>
+                </span>
+                <span class="text">Thêm mới hình ảnh</span>
+            </a>
+        </div>
+        @if (@TempData["Message"] != null)
+        {
+            <div class="alert alert-success" role="alert" style="text-align:center">
+                @TempData["Message"]
+            </div>
+        }
+
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th style="display:block;text-align:center;">
+                                Hình ảnh
+                            </th>
+                            <th>
+                                Mặc định
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th style="display:block;text-align:center;">
+                                Hình ảnh
+                            </th>
+                            <th>
+                                Mặc định
+                            </th>
+                            <th></th>
+                        </tr>
+                    </tfoot>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <img class="imgProduct" src="@item.URL" />
+                                </td>
+                                <td>
+                                    @if (item.isDefault == true)
+                                    {
+
+                                        <p style="display:block;text-align:center;">Yes</p>
+                                    }
+                                    else
+                                    {
+                                        <p style="display:block;text-align:center;">No</p>
+                                    }
+                                </td>
+                                <td style="display:block;text-align:center;">
+                                    @Html.ActionLink("Delete", "DeleteImage", new { id = item.Id })
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        setTimeout(function () {
+            $(".alert").fadeOut('slow');
+        }, 2000);
+    </script>
+}

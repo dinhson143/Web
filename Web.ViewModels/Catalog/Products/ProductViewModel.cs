@@ -40,6 +40,8 @@ namespace Web.ViewModels.Catalog.Products
         [Display(Name = "Link Seo")]
         public string SeoAlias { get; set; }
 
+        public int? DiscountPercent { get; set; }
+        public decimal? DiscountAmount { get; set; }
         public bool? IsFeatured { get; set; }
         public string LanguageId { set; get; }
 

@@ -1,0 +1,213 @@
+﻿@model Web.ViewModels.Catalog.Promotions.PromotionCreateModel
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Scripts{
+    <script>
+        var expanded = false;
+
+        function showCheckboxes() {
+            var checkboxes = document.getElementById("checkboxes");
+            if (!expanded) {
+                checkboxes.style.display = "block";
+                expanded = true;
+            } else {
+                checkboxes.style.display = "none";
+                expanded = false;
+            }
+        }
+
+        function showCheckboxes2() {
+            var checkboxes = document.getElementById("checkboxes2");
+            if (!expanded) {
+                checkboxes.style.display = "block";
+                expanded = true;
+            } else {
+                checkboxes.style.display = "none";
+                expanded = false;
+            }
+        }
+
+        var fdate = $('#FDate');
+        var tdate = $('#TDate');
+
+
+
+        const date = new Date();
+
+        let YYYY = date.getFullYear();
+        let MTH = date.getMonth() + 1;
+        let DAY = date.getDate();
+        let HH = date.getHours();
+        let MM = date.getMinutes();
+        let MM2 = date.getMinutes()+1;
+        let SS = date.getSeconds();
+        let td = YYYY + "-" + MTH + "-" + DAY + "T" + HH + ":" + MM;
+        let td2 = YYYY + "-" + MTH + "-" + DAY + "T" + HH + ":" + MM2;
+
+        fdate.val(td);
+        tdate.val(td2);
+
+        tdate.change(function () {
+            var fromdate = new Date(fdate.val());
+            var todate = new Date(tdate.val());
+            if (todate.getTime() < fromdate.getTime()) {
+                $('.lbTD').text("Ngày kết thúc không được bé hơn ngày bắt đầu")
+                $('#vlName').val("");
+            }
+            else {
+                $('.lbTD').text("")
+            }
+        })
+        fdate.change(function () {
+            var fromdate = new Date(fdate.val());
+            var todate = new Date(tdate.val());
+            if (todate.getTime() < fromdate.getTime()) {
+                $('.lbFD').text("Ngày bắt đầu không được lớn hơn ngày kết thúc")
+                $('#vlName').val("");
+            }
+            else {
+                $('.lbFD').text("")
+            }
+        })
+    </script>
+}
+<style>
+    .multiselect {
+        /*width: 200px;*/
+    }
+
+    .selectBox {
+        position: relative;
+    }
+
+        .selectBox select {
+            width: 100%;
+            font-weight: bold;
+        }
+
+    .overSelect {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+    }
+
+    #checkboxes {
+        display: none;
+        border: 1px #dadada solid;
+    }
+
+        #checkboxes label {
+            display: block;
+            padding: 5px;
+            color: black;
+        }
+
+            #checkboxes label:hover {
+                background-color: #1e90ff;
+            }
+
+    #checkboxes2 {
+        display: none;
+        border: 1px #dadada solid;
+    }
+
+        #checkboxes2 label {
+            display: block;
+            padding: 5px;
+            color: black;
+        }
+
+            #checkboxes2 label:hover {
+                background-color: #1e90ff;
+            }
+</style>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="FromDate" class="control-label"></label>
+                <input id="FDate" asp-for="FromDate" type="datetime-local" class="form-control" />
+                <span asp-validation-for="FromDate" class="text-danger lbFD"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ToDate" class="control-label"></label>
+                <input id="TDate" asp-for="ToDate" class="form-control" />
+                <span asp-validation-for="ToDate" class="text-danger lbTD"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="ApplyAll" /> @Html.DisplayNameFor(model => model.ApplyAll)
+                </label>
+            </div>
+            <div class="form-group">
+                <label asp-for="DiscountPercent" class="control-label"></label>
+                <input asp-for="DiscountPercent" class="form-control" />
+                <span asp-validation-for="DiscountPercent" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DiscountAmount" class="control-label"></label>
+                <input asp-for="DiscountAmount" class="form-control" />
+                <span asp-validation-for="DiscountAmount" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input id="vlName" asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            @*loai sp*@
+            <div class="multiselect form-group">
+                <div class="selectBox" onclick="showCheckboxes()">
+                    <select>
+                        <option>Chọn loai sản phẩm giảm giá</option>
+                    </select>
+                    <div class="overSelect"></div>
+                </div>
+                <div id="checkboxes">
+                    @for (var i = 0; i < Model.listCate.Count; i++)
+                    {
+                        <label>
+                            <input type="checkbox" asp-for="listCate[i].Selected" />@Model.listCate[i].Name
+                            <input type="hidden" asp-for="listCate[i].Id" class="form-control" />
+                            <input type="hidden" asp-for="listCate[i].Name" class="form-control" />
+                        </label>
+                    }
+                </div>
+            </div>
+            @*san pham*@
+            <div class="multiselect form-group">
+                <div class="selectBox" onclick="showCheckboxes2()">
+                    <select>
+                        <option>Chọn sản phẩm giảm giá</option>
+                    </select>
+                    <div class="overSelect"></div>
+                </div>
+                <div id="checkboxes2">
+                    @for (var i = 0; i < Model.listPro.Count; i++)
+                    {
+                        <label>
+                            <input type="checkbox" asp-for="listPro[i].Selected" />@Model.listPro[i].Name
+                            <input type="hidden" asp-for="listPro[i].Id" class="form-control" />
+                            <input type="hidden" asp-for="listPro[i].Name" class="form-control" />
+                        </label>
+                    }
+                </div>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>

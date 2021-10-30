@@ -22,7 +22,7 @@ namespace Web.Data.Configurations
 
             builder.Property(x => x.Email).HasMaxLength(200).IsRequired();
             builder.Property(x => x.PhoneNumber).HasMaxLength(20).IsRequired();
-            builder.Property(x => x.Message).IsRequired();
+            builder.Property(x => x.Address).IsRequired();
         }
     }
 }

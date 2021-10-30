@@ -12,6 +12,7 @@
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
     <link href="~/css/Comment.css" rel="stylesheet" />
     <link href="~/css/rating.css" rel="stylesheet" />
+    <link href="~/css/sale.css" rel="stylesheet" />
     <script type="text/javascript">
         // thông báo
         $('.error').hide();
@@ -27,9 +28,13 @@
             })
         }
         var listSize = JSON.parse('@Newtonsoft.Json.JsonConvert.SerializeObject(Model.ProductInfo.listPS)'.replace(/&quot;/g, "\""));
-
+        var ProductInfo = JSON.parse('@Newtonsoft.Json.JsonConvert.SerializeObject(Model.ProductInfo)'.replace(/&quot;/g, "\""));
         // setSize sản phẩm đầu tiên
-        $('#giaSP').text(formatCash(listSize[0].Price.toString())+" VND");
+        let giatiengoc =(listSize[0].Price);
+        let giatien = listSize[0].Price - (listSize[0].Price * 0.01 * ProductInfo.DiscountPercent) - ProductInfo.DiscountAmount;
+        console.log(giatien);
+        $('#giaSP').text(formatCash(giatien.toString())+" VND");
+        $('#giaSPgoc').text(formatCash(giatiengoc.toString())+" VND");
         $('#soluongSP').text(listSize[0].Stock+" ");
         var value = $('#sizeDropdown :selected').val();
         var nameSize = $('#sizeDropdown :selected').text();
@@ -46,7 +51,10 @@
             button.setAttribute('data-nameSize', nameSize);
             for (let j = 0; j < listSize.length; j++) {
                 if (listSize[j].SizeId == value) {
-                    $('#giaSP').text(formatCash(listSize[j].Price.toString()) + " VND");
+                    let giatiengoc = (listSize[j].Price);
+                    let giatien = listSize[j].Price - (listSize[j].Price * 0.01 * ProductInfo.DiscountPercent) - ProductInfo.DiscountAmount;
+                    $('#giaSP').text(formatCash(giatien.toString()) + " VND");
+                    $('#giaSPgoc').text(formatCash(giatiengoc.toString()) + " VND");
                     $('#soluongSP').text(listSize[j].Stock+" ");
                 }
             }
@@ -157,7 +165,7 @@
         <li class="active">Product Details</li>
     </ul>
     <div class="row">
-        <div id="gallery" class="span3">
+        <div id="gallery" class="span3" style="position:relative">
             @foreach (var image in @Model.Images)
             {
                 if (image.isDefault)
@@ -377,11 +385,42 @@
                     }
                 </p>
             </div>
+
+            @if (String.Compare(culture.ToString(), "vi") == 0)
+            {
+                cul = CultureInfo.GetCultureInfo("vi-VN");
+                if (@Model.ProductInfo.DiscountPercent != null)
+                {
+                    <span class="sale">-@Model.ProductInfo.DiscountPercent%</span>
+                }
+                if (@Model.ProductInfo.DiscountAmount != null)
+                {
+                    decimal x = @Model.ProductInfo.DiscountAmount ?? 0;
+                    <span class="sale2">-@x.ToString("C", cul.NumberFormat)</span>
+                }
+            }
+            else
+            {
+                cul = CultureInfo.GetCultureInfo("en-US");
+                if (@Model.ProductInfo.DiscountPercent != null)
+                {
+                    <span class="sale">-@Model.ProductInfo.DiscountPercent%</span>
+                }
+                if (@Model.ProductInfo.DiscountAmount != null)
+                {
+                    decimal x = @Model.ProductInfo.DiscountAmount ?? 0;
+                    <span class="sale2">-@x.ToString("C", cul.NumberFormat)</span>
+                }
+            }
         </div>
         <div class="span6">
             <h3>@Model.ProductInfo.Name</h3>
             <small>@Html.Raw(@Model.ProductInfo.Details)</small>
             <hr class="soft" />
+            @if (Model.ProductInfo.DiscountAmount != null || Model.ProductInfo.DiscountPercent != null)
+            {
+                <label class="control-label" style="color:red"><del id="giaSPgoc"></del></label>
+            }
             <form class="form-horizontal qtyFrm">
                 <div class="control-group">
                     <label class="control-label"><span id="giaSP"></span></label>
@@ -672,7 +711,17 @@
                                                         @if (String.Compare(culture.ToString(), "vi") == 0)
                                                         {
                                                             cul = CultureInfo.GetCultureInfo("vi-VN");
-                                                            <span style="font-size:11px" class="pull-right">@item.listPS[0].Price.ToString("C", cul.NumberFormat) - @item.listPS[item.listPS.Count - 1].Price.ToString("C", cul.NumberFormat)</span>
+                                                            decimal giaTRC = 0;
+                                                            decimal giaSAU = 0;
+                                                            decimal percent = (item.DiscountPercent * (decimal)(0.01)) ?? 0;
+                                                            decimal amount = item.DiscountAmount ?? 0;
+                                                            giaTRC = item.listPS[0].Price - (item.listPS[0].Price * percent) - amount;
+                                                            giaSAU = item.listPS[item.listPS.Count - 1].Price - (item.listPS[item.listPS.Count - 1].Price * percent) - amount;
+                                                            if (item.DiscountPercent != null || item.DiscountAmount != null)
+                                                            {
+                                                                <del class="btnGiamgia btn btn-danger" href="#">@item.listPS[0].Price.ToString("C", cul.NumberFormat) - @item.listPS[item.listPS.Count - 1].Price.ToString("C", cul.NumberFormat)</del>
+                                                            }
+                                                            <span style="font-size:11px" class="pull-right">@giaTRC.ToString("C", cul.NumberFormat) - @giaSAU.ToString("C", cul.NumberFormat)</span>
                                                         }
                                                         else
                                                         {

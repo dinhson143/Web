@@ -15,6 +15,7 @@ using Web.ServiceApi_Admin_User.Service.LoaiPhieus;
 using Web.ServiceApi_Admin_User.Service.Orders;
 using Web.ServiceApi_Admin_User.Service.PhieuNhaps;
 using Web.ServiceApi_Admin_User.Service.Products;
+using Web.ServiceApi_Admin_User.Service.Promotions;
 using Web.ServiceApi_Admin_User.Service.Roles;
 using Web.ServiceApi_Admin_User.Service.Sizes;
 using Web.ServiceApi_Admin_User.Service.Sliders;
@@ -50,6 +51,7 @@ namespace Web.AdminApp
             services.AddTransient<ICommentApi, CommentApi>();
             services.AddTransient<IPhieuNhapApi, PhieuNhapApi>();
             services.AddTransient<IOrderApi, OrderApi>();
+            services.AddTransient<IPromotionApi, PromotionApi>();
 
             //Session
             services.AddDistributedMemoryCache();

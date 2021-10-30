@@ -8,6 +8,7 @@ namespace Web.ViewModels.Catalog.Products
 {
     public class ProductImagesModel
     {
+        public int Id { get; set; }
         public string URL { get; set; }
         public bool isDefault { get; set; }
         public string Caption { get; set; }

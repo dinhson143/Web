@@ -18,6 +18,7 @@ using Web.ViewModels.Catalog.Categories;
 using Web.ViewModels.Catalog.Common;
 using Web.ViewModels.Catalog.PhieuNhaps;
 using Web.ViewModels.Catalog.Products;
+using Web.ViewModels.Catalog.Promotions;
 using Web.ViewModels.Catalog.Sizes;
 
 namespace Web.Application.Catalog.Products
@@ -39,9 +40,89 @@ namespace Web.Application.Catalog.Products
             _userManager = userManager;
         }
 
-        public Task AddImage()
+        public async Task<ResultApi<int>> AddImage(ProductUpdateRequest request)
         {
-            throw new NotImplementedException();
+            var product = await _context.Products.FindAsync(request.Id);
+
+            var productTranslations = await _context.ProductTranslations.FirstOrDefaultAsync(x => x.ProductId == request.Id
+             && x.LanguageId == request.LanguageId);
+
+            if (product == null || productTranslations == null) throw new WebException($"Cannot find a product with id: {request.Id}");
+
+            //Save image
+            List<ProductImage> list = new List<ProductImage>();
+            if (request.ImageURL != null && request.ImageURL.Length > 0)
+            {
+                var dem = 0;
+                string folderName = "firebaseFiles";
+                string path = Path.Combine(_env.WebRootPath, $"images/{folderName}");
+                // firebase uploading
+                var auth = new FirebaseAuthProvider(new FirebaseConfig(ApiKey));
+                var a = await auth.SignInWithEmailAndPasswordAsync(AuthEmail, AuthPassword);
+                foreach (var item in request.ImageURL)
+                {
+                    FileStream fs = null;
+                    // upload file to firebase
+                    if (Directory.Exists(path))
+                    {
+                        using (fs = new FileStream(Path.Combine(path, item.FileName), FileMode.Create))
+                        {
+                            await item.CopyToAsync(fs);
+                        }
+
+                        fs = new FileStream(Path.Combine(path, item.FileName), FileMode.Open);
+                    }
+                    else
+                    {
+                        Directory.CreateDirectory(path);
+                    }
+
+                    // Cacellation token
+                    var cancellation = new CancellationTokenSource();
+                    var upload = await new FirebaseStorage(
+                            Bucket,
+                            new FirebaseStorageOptions
+                            {
+                                AuthTokenAsyncFactory = () => Task.FromResult(a.FirebaseToken),
+                                ThrowOnCancel = true
+                            }
+                        )
+                        .Child("assets")
+                        .Child($"{item.FileName}.{Path.GetExtension(item.FileName).Substring(1)}")
+                        .PutAsync(fs, cancellation.Token);
+                    try
+                    {
+                        var linkImg = upload;
+                        dem++;
+                        var x = new ProductImage()
+                        {
+                            ImagePath = linkImg,
+                            Caption = productTranslations.Name,
+                            DateCreated = DateTime.Now,
+                            FileSize = item.Length,
+                            IsDefault = false,
+                            SortOrder = dem,
+                            ProductId = product.Id
+                        };
+                        list.Add(x);
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(ex);
+                        throw;
+                    }
+                }
+            }
+            foreach (var item in list)
+            {
+                await _context.ProductImages.AddAsync(item);
+            }
+            var result = await _context.SaveChangesAsync();
+            if (result > 0)
+            {
+                return new ResultSuccessApi<int>(result);
+            }
+            return new ResultErrorApi<int>(result.ToString());
         }
 
         public async Task AddSize_Color(int productId, ProductSizeViewModel request)
@@ -316,7 +397,8 @@ namespace Web.Application.Catalog.Products
             {
                 URL = x.ImagePath,
                 isDefault = x.IsDefault,
-                Caption = x.Caption
+                Caption = x.Caption,
+                Id = x.Id
             }).ToListAsync();
             return new ResultSuccessApi<List<ProductImagesModel>>(data);
         }
@@ -396,6 +478,65 @@ namespace Web.Application.Catalog.Products
                 listPS = list,
                 Diem = diem
             };
+            //get khuyến mãi
+            var query2 = from p in _context.Promotions
+                             //where p.Status == Status.Active
+                         select new { p };
+
+            var listPromotion = await query2.Select(x => new PromotionViewModel()
+            {
+                ApplyAll = x.p.ApplyForAll,
+                DiscountAmount = x.p.DiscountAmount,
+                DiscountPercent = x.p.DiscountPercent,
+                FromDate = x.p.FromDate,
+                ToDate = x.p.ToDate,
+                Name = x.p.Name,
+                Id = x.p.Id,
+                ProductCategoryIds = x.p.ProductCategoryIds,
+                ProductIDs = x.p.ProductIds,
+                Status = x.p.Status.ToString()
+            }).ToListAsync();
+            var dn = DateTime.Now;
+            foreach (var item in listPromotion)
+            {
+                if ((dn.Ticks > item.FromDate.Ticks) && (dn.Ticks < item.ToDate.Ticks))
+                {
+                    string[] products = item.ProductIDs.Split(',');
+                    foreach (var id in products)
+                    {
+                        if (id != "" && data.Id == Int32.Parse(id))
+                        {
+                            data.DiscountPercent = item.DiscountPercent;
+                            data.DiscountAmount = item.DiscountAmount;
+                            break;
+                        }
+                    }
+                }
+            }
+            foreach (var item in listPromotion)
+            {
+                if ((dn.Ticks > item.FromDate.Ticks) && (dn.Ticks < item.ToDate.Ticks))
+                {
+                    string[] categoriesID = item.ProductCategoryIds.Split(',');
+                    foreach (var id in categoriesID)
+                    {
+                        if (id != "")
+                        {
+                            var kiemtra = (from p in _context.Products
+                                           join pic in _context.ProductInCategories on p.Id equals pic.ProductId
+                                           where p.Status == Status.Active && (Int32.Parse(id) == pic.CategoryId) && p.Id == data.Id
+                                           select new { p });
+                            int totalKiemtra = await kiemtra.CountAsync();
+                            if (totalKiemtra > 0)
+                            {
+                                if (data.DiscountPercent == null) data.DiscountPercent = item.DiscountPercent;
+                                if (data.DiscountAmount != null) data.DiscountAmount = item.DiscountAmount;
+                            }
+                        }
+                    }
+                }
+            }
+
             return new ResultSuccessApi<ProductViewModel>(data);
         }
 
@@ -421,9 +562,14 @@ namespace Web.Application.Catalog.Products
             return list;
         }
 
-        public Task RemoveImage()
+        public async Task<int> RemoveImage(int id)
         {
-            throw new NotImplementedException();
+            var image = await _context.ProductImages.FindAsync(id);
+            if (image == null) throw new WebException($"Cannot find a image: {id}");
+
+            _context.ProductImages.Remove(image);
+
+            return await _context.SaveChangesAsync();
         }
 
         public Task UpdateImage()
@@ -520,6 +666,71 @@ namespace Web.Application.Catalog.Products
                     list.Add(x);
                 }
                 product.listPS = list;
+            }
+            //get khuyến mãi
+            var query2 = from p in _context.Promotions
+                             //where p.Status == Status.Active
+                         select new { p };
+
+            var listPromotion = await query2.Select(x => new PromotionViewModel()
+            {
+                ApplyAll = x.p.ApplyForAll,
+                DiscountAmount = x.p.DiscountAmount,
+                DiscountPercent = x.p.DiscountPercent,
+                FromDate = x.p.FromDate,
+                ToDate = x.p.ToDate,
+                Name = x.p.Name,
+                Id = x.p.Id,
+                ProductCategoryIds = x.p.ProductCategoryIds,
+                ProductIDs = x.p.ProductIds,
+                Status = x.p.Status.ToString()
+            }).ToListAsync();
+            var dn = DateTime.Now;
+            foreach (var item in listPromotion)
+            {
+                if ((dn.Ticks > item.FromDate.Ticks) && (dn.Ticks < item.ToDate.Ticks))
+                {
+                    string[] products = item.ProductIDs.Split(',');
+                    foreach (var product in data)
+                    {
+                        foreach (var id in products)
+                        {
+                            if (id != "" && product.Id == Int32.Parse(id))
+                            {
+                                product.DiscountPercent = item.DiscountPercent;
+                                product.DiscountAmount = item.DiscountAmount;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            foreach (var item in listPromotion)
+            {
+                if ((dn.Ticks > item.FromDate.Ticks) && (dn.Ticks < item.ToDate.Ticks))
+                {
+                    string[] categories = item.ProductCategoryIds.Split(',');
+                    foreach (var product in data)
+                    {
+                        foreach (var id in categories)
+                        {
+                            if (id != "")
+                            {
+                                var kiemtra = (from p in _context.Products
+                                               join pic in _context.ProductInCategories on p.Id equals pic.ProductId
+                                               where p.Status == Status.Active && (Int32.Parse(id) == pic.CategoryId) && p.Id == product.Id
+                                               select new { p });
+                                int totalKiemtra = await kiemtra.CountAsync();
+                                if (totalKiemtra > 0)
+                                {
+                                    if (product.DiscountPercent == null) product.DiscountPercent = item.DiscountPercent;
+                                    if (product.DiscountAmount != null) product.DiscountAmount = item.DiscountAmount;
+                                }
+                            }
+                        }
+                    }
+                }
             }
             // 4 Select Page Result
             var pageResult = new PageResult<ProductViewModel>()
@@ -627,6 +838,44 @@ namespace Web.Application.Catalog.Products
                 product.listPS = list;
             }
 
+            //get khuyến mãi
+            var query2 = from p in _context.Promotions
+                             //where p.Status == Status.Active
+                         select new { p };
+
+            var listPromotion = await query2.Select(x => new PromotionViewModel()
+            {
+                ApplyAll = x.p.ApplyForAll,
+                DiscountAmount = x.p.DiscountAmount,
+                DiscountPercent = x.p.DiscountPercent,
+                FromDate = x.p.FromDate,
+                ToDate = x.p.ToDate,
+                Name = x.p.Name,
+                Id = x.p.Id,
+                ProductCategoryIds = x.p.ProductCategoryIds,
+                ProductIDs = x.p.ProductIds,
+                Status = x.p.Status.ToString()
+            }).ToListAsync();
+            var dn = DateTime.Now;
+            foreach (var item in listPromotion)
+            {
+                if ((dn.Ticks > item.FromDate.Ticks) && (dn.Ticks < item.ToDate.Ticks))
+                {
+                    string[] products = item.ProductIDs.Split(',');
+                    foreach (var product in data)
+                    {
+                        foreach (var id in products)
+                        {
+                            if (id != "" && product.Id == Int32.Parse(id))
+                            {
+                                product.DiscountPercent = item.DiscountPercent;
+                                product.DiscountAmount = item.DiscountAmount;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
             return new List<ProductViewModel>(data);
         }
 
@@ -692,6 +941,72 @@ namespace Web.Application.Catalog.Products
                     list.Add(x);
                 }
                 product.listPS = list;
+            }
+
+            // get list promotion
+            var query2 = from p in _context.Promotions
+                             //where p.Status == Status.Active
+                         select new { p };
+
+            var listPromotion = await query2.Select(x => new PromotionViewModel()
+            {
+                ApplyAll = x.p.ApplyForAll,
+                DiscountAmount = x.p.DiscountAmount,
+                DiscountPercent = x.p.DiscountPercent,
+                FromDate = x.p.FromDate,
+                ToDate = x.p.ToDate,
+                Name = x.p.Name,
+                Id = x.p.Id,
+                ProductCategoryIds = x.p.ProductCategoryIds,
+                ProductIDs = x.p.ProductIds,
+                Status = x.p.Status.ToString()
+            }).ToListAsync();
+            var dn = DateTime.Now;
+            foreach (var item in listPromotion)
+            {
+                if ((dn.Ticks > item.FromDate.Ticks) && (dn.Ticks < item.ToDate.Ticks))
+                {
+                    string[] products = item.ProductIDs.Split(',');
+                    foreach (var product in data)
+                    {
+                        foreach (var id in products)
+                        {
+                            if (id != "" && product.Id == Int32.Parse(id))
+                            {
+                                product.DiscountPercent = item.DiscountPercent;
+                                product.DiscountAmount = item.DiscountAmount;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            foreach (var item in listPromotion)
+            {
+                if ((dn.Ticks > item.FromDate.Ticks) && (dn.Ticks < item.ToDate.Ticks))
+                {
+                    string[] categories = item.ProductCategoryIds.Split(',');
+                    foreach (var product in data)
+                    {
+                        foreach (var id in categories)
+                        {
+                            if (id != "")
+                            {
+                                var kiemtra = (from p in _context.Products
+                                               join pic in _context.ProductInCategories on p.Id equals pic.ProductId
+                                               where p.Status == Status.Active && (Int32.Parse(id) == pic.CategoryId) && p.Id == product.Id
+                                               select new { p });
+                                int totalKiemtra = await kiemtra.CountAsync();
+                                if (totalKiemtra > 0)
+                                {
+                                    if (product.DiscountPercent == null) product.DiscountPercent = item.DiscountPercent;
+                                    if (product.DiscountAmount != null) product.DiscountAmount = item.DiscountAmount;
+                                }
+                            }
+                        }
+                    }
+                }
             }
 
             return new List<ProductViewModel>(data);
@@ -784,69 +1099,69 @@ namespace Web.Application.Catalog.Products
             productTranslations.Details = request.Details;
             product.IsFeatured = request.IsFeatured;
             //Save image
-            List<ProductImage> list = new List<ProductImage>();
-            if (request.ImageURL != null && request.ImageURL.Length > 0)
-            {
-                var dem = 0;
-                string folderName = "firebaseFiles";
-                string path = Path.Combine(_env.WebRootPath, $"images/{folderName}");
-                // firebase uploading
-                var auth = new FirebaseAuthProvider(new FirebaseConfig(ApiKey));
-                var a = await auth.SignInWithEmailAndPasswordAsync(AuthEmail, AuthPassword);
-                foreach (var item in request.ImageURL)
-                {
-                    FileStream fs = null;
-                    // upload file to firebase
-                    if (Directory.Exists(path))
-                    {
-                        using (fs = new FileStream(Path.Combine(path, item.FileName), FileMode.Create))
-                        {
-                            await item.CopyToAsync(fs);
-                        }
+            //List<ProductImage> list = new List<ProductImage>();
+            //if (request.ImageURL != null && request.ImageURL.Length > 0)
+            //{
+            //    var dem = 0;
+            //    string folderName = "firebaseFiles";
+            //    string path = Path.Combine(_env.WebRootPath, $"images/{folderName}");
+            //    // firebase uploading
+            //    var auth = new FirebaseAuthProvider(new FirebaseConfig(ApiKey));
+            //    var a = await auth.SignInWithEmailAndPasswordAsync(AuthEmail, AuthPassword);
+            //    foreach (var item in request.ImageURL)
+            //    {
+            //        FileStream fs = null;
+            //        // upload file to firebase
+            //        if (Directory.Exists(path))
+            //        {
+            //            using (fs = new FileStream(Path.Combine(path, item.FileName), FileMode.Create))
+            //            {
+            //                await item.CopyToAsync(fs);
+            //            }
 
-                        fs = new FileStream(Path.Combine(path, item.FileName), FileMode.Open);
-                    }
-                    else
-                    {
-                        Directory.CreateDirectory(path);
-                    }
+            //            fs = new FileStream(Path.Combine(path, item.FileName), FileMode.Open);
+            //        }
+            //        else
+            //        {
+            //            Directory.CreateDirectory(path);
+            //        }
 
-                    // Cacellation token
-                    var cancellation = new CancellationTokenSource();
-                    var upload = await new FirebaseStorage(
-                            Bucket,
-                            new FirebaseStorageOptions
-                            {
-                                AuthTokenAsyncFactory = () => Task.FromResult(a.FirebaseToken),
-                                ThrowOnCancel = true
-                            }
-                        )
-                        .Child("assets")
-                        .Child($"{item.FileName}.{Path.GetExtension(item.FileName).Substring(1)}")
-                        .PutAsync(fs, cancellation.Token);
-                    try
-                    {
-                        var linkImg = upload;
-                        dem++;
-                        var x = new ProductImage()
-                        {
-                            ImagePath = linkImg,
-                            Caption = request.Name,
-                            DateCreated = DateTime.Now,
-                            FileSize = item.Length,
-                            IsDefault = false,
-                            SortOrder = dem,
-                        };
-                        list.Add(x);
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine(ex);
-                        throw;
-                    }
-                }
-                product.ProductImages = list;
-            }
+            //        // Cacellation token
+            //        var cancellation = new CancellationTokenSource();
+            //        var upload = await new FirebaseStorage(
+            //                Bucket,
+            //                new FirebaseStorageOptions
+            //                {
+            //                    AuthTokenAsyncFactory = () => Task.FromResult(a.FirebaseToken),
+            //                    ThrowOnCancel = true
+            //                }
+            //            )
+            //            .Child("assets")
+            //            .Child($"{item.FileName}.{Path.GetExtension(item.FileName).Substring(1)}")
+            //            .PutAsync(fs, cancellation.Token);
+            //        try
+            //        {
+            //            var linkImg = upload;
+            //            dem++;
+            //            var x = new ProductImage()
+            //            {
+            //                ImagePath = linkImg,
+            //                Caption = request.Name,
+            //                DateCreated = DateTime.Now,
+            //                FileSize = item.Length,
+            //                IsDefault = false,
+            //                SortOrder = dem,
+            //            };
+            //            list.Add(x);
+            //        }
+            //        catch (Exception ex)
+            //        {
+            //            Debug.WriteLine(ex);
+            //            throw;
+            //        }
+            //    }
+            //    product.ProductImages = list;
+            //}
 
             return await _context.SaveChangesAsync();
         }
@@ -1036,7 +1351,70 @@ namespace Web.Application.Catalog.Products
 
                 item.Images = data;
             }
+            //get khuyến mãi
+            var query2 = from p in _context.Promotions
+                             //where p.Status == Status.Active
+                         select new { p };
 
+            var listPromotion = await query2.Select(x => new PromotionViewModel()
+            {
+                ApplyAll = x.p.ApplyForAll,
+                DiscountAmount = x.p.DiscountAmount,
+                DiscountPercent = x.p.DiscountPercent,
+                FromDate = x.p.FromDate,
+                ToDate = x.p.ToDate,
+                Name = x.p.Name,
+                Id = x.p.Id,
+                ProductCategoryIds = x.p.ProductCategoryIds,
+                ProductIDs = x.p.ProductIds,
+                Status = x.p.Status.ToString()
+            }).ToListAsync();
+            var dn = DateTime.Now;
+            foreach (var item in listPromotion)
+            {
+                if ((dn.Ticks > item.FromDate.Ticks) && (dn.Ticks < item.ToDate.Ticks))
+                {
+                    string[] products = item.ProductIDs.Split(',');
+                    foreach (var productKT in listSPLQ)
+                    {
+                        foreach (var id in products)
+                        {
+                            if (id != "" && productKT.Id == Int32.Parse(id))
+                            {
+                                productKT.DiscountPercent = item.DiscountPercent;
+                                productKT.DiscountAmount = item.DiscountAmount;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            foreach (var item in listPromotion)
+            {
+                if ((dn.Ticks > item.FromDate.Ticks) && (dn.Ticks < item.ToDate.Ticks))
+                {
+                    string[] categoriesID = item.ProductCategoryIds.Split(',');
+                    foreach (var productOB in listSPLQ)
+                    {
+                        foreach (var id in categoriesID)
+                        {
+                            if (id != "")
+                            {
+                                var kiemtra = (from p in _context.Products
+                                               join pic in _context.ProductInCategories on p.Id equals pic.ProductId
+                                               where p.Status == Status.Active && (Int32.Parse(id) == pic.CategoryId) && p.Id == productOB.Id
+                                               select new { p });
+                                int totalKiemtra = await kiemtra.CountAsync();
+                                if (totalKiemtra > 0)
+                                {
+                                    if (productOB.DiscountPercent == null) productOB.DiscountPercent = item.DiscountPercent;
+                                    if (productOB.DiscountAmount != null) productOB.DiscountAmount = item.DiscountAmount;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
             return new ResultSuccessApi<List<ProductViewModel>>(listSPLQ);
         }
     }

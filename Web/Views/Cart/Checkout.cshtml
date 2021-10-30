@@ -56,8 +56,14 @@ else
                         <td>
                             @item.Quantity
                         </td>
-                        <td>@item.Price</td>
-                        <td>@(item.Price*item.Quantity)</td>
+                        @{
+                            decimal percent = (item.DiscountPercent * (decimal)(0.01)) ?? 0;
+                            decimal amount = item.DiscountAmount ?? 0;
+                            var gia = item.Price - (item.Price * percent) - amount;
+                            var total = (item.Price * item.Quantity) - (item.Price * item.Quantity * percent) - amount;
+                        }
+                        <td>@gia.ToString("N0")</td>
+                        <td>@total.ToString("N0")</td>
                     </tr>
                 }
                 <tr>

@@ -91,9 +91,10 @@
                                 <td>
                                     @Html.ActionLink("Sửa", "Edit", new { id = item.Id }) |
                                     @Html.ActionLink("Chi tiết", "Details", new { id = item.Id }) |
-                                    @Html.ActionLink(" Xóa", "Delete", new { id = item.Id }) |
+                                    @Html.ActionLink("Xóa", "Delete", new { id = item.Id }) |
                                     @Html.ActionLink("Gán loại", "AssignCategory", new { id = item.Id }) |
-                                    @Html.ActionLink(" Thêm Size", "AssignSize", new { id = item.Id })
+                                    @Html.ActionLink("Thêm Size", "AssignSize", new { id = item.Id }) |
+                                    @Html.ActionLink("Quản Lí Image", "EditImageProduct", new { productImageId = item.Id })
                                 </td>
                             </tr>
                         }

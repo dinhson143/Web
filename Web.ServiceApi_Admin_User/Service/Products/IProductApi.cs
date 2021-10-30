@@ -44,7 +44,11 @@ namespace Web.ServiceApi_Admin_User.Service.Products
 
         public Task<bool> Update(ProductUpdateRequest request);
 
+        public Task<bool> AddImage(ProductUpdateRequest request);
+
         public Task<bool> DeleteProduct(int productId, string BearerToken);
+
+        public Task<bool> DeleteImageProduct(int id, string BearerToken);
 
         public Task<bool> DeleteProductFV(Guid userId, int productId, string BearerToken);
 

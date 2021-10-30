@@ -398,5 +398,62 @@ namespace Web.AdminApp.Controllers
             }
             return RedirectToAction("Error", "Home");
         }
+
+        [HttpGet]
+        public async Task<IActionResult> EditImageProduct(int productImageId)
+        {
+            var images = await _productApi.GetListImage(productImageId);
+            HttpContext.Session.SetString("productIDImage", productImageId.ToString());
+            return View(images.ResultObj);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> DeleteImage(int id)
+        {
+            var token = HttpContext.Session.GetString(SystemContants.AppSettings.Token);
+            var response = await _productApi.DeleteImageProduct(id, token);
+            var productImageId = HttpContext.Session.GetString("productIDImage");
+            HttpContext.Session.Remove("productIDImage");
+            if (response == true)
+            {
+                TempData["Message"] = "Xóa Image thành công";
+                return RedirectToAction("EditImageProduct", "Product", new { productImageId });
+            }
+            else
+            {
+                TempData["Message"] = "Xóa Image thất bại";
+                return RedirectToAction("EditImageProduct", "Product", new { productImageId });
+            }
+        }
+
+        [HttpGet]
+        public IActionResult AddImage()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [Consumes("multipart/form-data")]
+        [DisableRequestSizeLimit]
+        public async Task<IActionResult> AddImage([FromForm] ProductUpdateRequest request)
+        {
+            var productImageId = HttpContext.Session.GetString("productIDImage");
+            var token = HttpContext.Session.GetString(SystemContants.AppSettings.Token);
+            request.Id = int.Parse(productImageId);
+            request.BearerToken = token;
+            request.LanguageId = HttpContext.Session.GetString(SystemContants.AppSettings.DefaultLanguageId);
+            var result = await _productApi.AddImage(request);
+            string message = "";
+            if (result == true)
+            {
+                message = "Thêm ảnh thành công";
+                TempData["Message"] = message;
+            }
+            else
+            {
+                return View(request);
+            }
+            return RedirectToAction("EditImageProduct", "Product", new { productImageId });
+        }
     }
 }

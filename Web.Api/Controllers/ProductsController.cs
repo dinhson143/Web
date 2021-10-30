@@ -158,6 +158,16 @@ namespace Web.Api.Controllers
             return Ok(result);
         }
 
+        [HttpPut("add_images/{productId}")]
+        [Consumes("multipart/form-data")]
+        [DisableRequestSizeLimit]
+        public async Task<IActionResult> AddImage(int productId, [FromForm] ProductUpdateRequest request)
+        {
+            request.Id = productId;
+            var result = await _manageservice.AddImage(request);
+            return Ok(result);
+        }
+
         [HttpDelete("Delete/{productId}")]
         public async Task<IActionResult> DeleteProduct(int productId)
         {
@@ -166,6 +176,17 @@ namespace Web.Api.Controllers
                 return null;
             }
             var result = await _manageservice.DeleteProduct(productId);
+            return Ok(result);
+        }
+
+        [HttpDelete("remove-image/{id}")]
+        public async Task<IActionResult> RemoveImage(int id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return null;
+            }
+            var result = await _manageservice.RemoveImage(id);
             return Ok(result);
         }
 

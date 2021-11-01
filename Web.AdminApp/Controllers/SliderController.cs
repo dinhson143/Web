@@ -113,7 +113,7 @@ namespace Web.AdminApp.Controllers
                 message = "Xóa thất bại";
                 TempData["Message"] = message;
             }
-            return RedirectToAction("Index", "Category");
+            return RedirectToAction("Index", "Slider");
         }
     }
 }

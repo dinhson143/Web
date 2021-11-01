@@ -9,6 +9,7 @@ using Web.AdminApp.Models;
 using Web.ServiceApi_Admin_User.Service.Categories;
 using Web.ServiceApi_Admin_User.Service.Orders;
 using Web.ServiceApi_Admin_User.Service.PhieuNhaps;
+using Web.ServiceApi_Admin_User.Service.PhieuXuats;
 using Web.ServiceApi_Admin_User.Service.Products;
 using Web.ServiceApi_Admin_User.Service.Sizes;
 using Web.Utilities.Contants;
@@ -28,8 +29,9 @@ namespace Web.AdminApp.Controllers
         private readonly ISizeApi _sizeApi;
         private readonly IPhieuNhapApi _phieuNhapApi;
         private readonly IOrderApi _orderApi;
+        private readonly IPhieuXuatApi _phieuXuatApi;
 
-        public ProductController(IProductApi productApi, IOrderApi orderApi, IPhieuNhapApi phieuNhapApi, IConfiguration config, ICategoryApi categoryApi, ISizeApi sizeApi)
+        public ProductController(IProductApi productApi, IPhieuXuatApi phieuXuatApi, IOrderApi orderApi, IPhieuNhapApi phieuNhapApi, IConfiguration config, ICategoryApi categoryApi, ISizeApi sizeApi)
         {
             _productApi = productApi;
             _config = config;
@@ -37,6 +39,7 @@ namespace Web.AdminApp.Controllers
             _sizeApi = sizeApi;
             _phieuNhapApi = phieuNhapApi;
             _orderApi = orderApi;
+            _phieuXuatApi = phieuXuatApi;
         }
 
         public async Task<IActionResult> Index(int? categoryId)
@@ -357,7 +360,7 @@ namespace Web.AdminApp.Controllers
 
             HttpContext.Session.SetString("phieunhapID", "0");
             var pn = await _phieuNhapApi.GetAll(token);
-            var px = await _orderApi.GetallOrderSuccess(languageId, token);
+            var px = await _phieuXuatApi.GetAll(token);
             //
             var model = new GetManageProductPagingRequest()
             {

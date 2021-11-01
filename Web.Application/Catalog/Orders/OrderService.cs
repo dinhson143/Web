@@ -10,6 +10,8 @@ using Web.Data.Entities;
 using Web.Data.Enums;
 using Web.Utilities.Exceptions;
 using Web.ViewModels.Catalog.Common;
+using Web.ViewModels.Catalog.Congtys;
+using Web.ViewModels.Catalog.LoaiPhieus;
 using Web.ViewModels.Catalog.Orders;
 using Web.ViewModels.Catalog.Sales;
 
@@ -68,6 +70,90 @@ namespace Web.Application.Catalog.Orders
             if (order == null) throw new WebException($"Cannot find a order: {orderId}");
 
             order.Status = OrderStatus.Confirmed;
+
+            // tạo phiếu xuất
+            var list = await _context.LoaiPhieus.Where(x => x.Status == Status.Active).Select(x => new LoaiPhieuViewModel()
+            {
+                Id = x.Id,
+                Name = x.Name,
+                NgayNhap = x.NgayNhap
+            }).ToListAsync();
+
+            var query = from c in _context.CongTys
+                        where c.Status == Status.Active
+                        select new { c };
+            var listCT = await query.Select(x => new CongtyViewModel()
+            {
+                Id = x.c.Id,
+                Name = x.c.Name,
+                Diachi = x.c.Diachi,
+                Masothue = x.c.Masothue,
+                Status = x.c.Status,
+                Sdt = x.c.Sdt
+            }).ToListAsync();
+
+            var loaiphieu = new LoaiPhieuViewModel();
+            foreach (var item in list)
+            {
+                if (String.Compare(item.Name, "Xuất") == 0)
+                {
+                    loaiphieu = item;
+                    break;
+                }
+            }
+            var px = new PhieuNhap_Xuat()
+            {
+                CongTyId = listCT[0].Id,
+                LoaiPhieuId = loaiphieu.Id,
+                NgayNhap = DateTime.Now,
+                Status = Status.Active
+            };
+
+            await _context.PhieuNXs.AddAsync(px);
+            var kq = await _context.SaveChangesAsync();
+            // tạo ctpx
+            if (kq > 0)
+            {
+                var x = await _context.Orders.FindAsync(orderId);
+                var orderData = new OrderViewModel()
+                {
+                    Id = x.Id,
+                    OrderDate = x.OrderDate,
+                    ShipAddress = x.ShipAddress,
+                    ShipEmail = x.ShipEmail,
+                    ShipName = x.ShipName,
+                    ShipPhone = x.ShipPhoneNumber,
+                    Status = x.Status.ToString()
+                };
+
+                var listCTorder = new List<OrderDetailViewModel>();
+                var result = from od in _context.OrderDetails
+                             join pt in _context.ProductTranslations on od.ProductId equals pt.ProductId
+                             join pi in _context.ProductImages on od.ProductId equals pi.ProductId
+                             join ods in _context.Sizes on od.SizeId equals ods.Id
+                             where od.OrderId == order.Id && pt.LanguageId == "vi" && pi.IsDefault == true
+                             select new { od, pt, ods, pi };
+
+                var listCTPNX = new List<PhieuNhap_Xuatchitiet>();
+                foreach (var item in result)
+                {
+                    var ctpx = new PhieuNhap_Xuatchitiet()
+                    {
+                        Giaban = item.od.Price,
+                        Dongia = 1000,
+                        PhieuNXId = px.Id,
+                        ProductId = item.od.ProductId,
+                        SizeId = item.od.SizeId,
+                        Soluong = item.od.Quantity
+                    };
+                    listCTPNX.Add(ctpx);
+                }
+                foreach (var item in listCTPNX)
+                {
+                    await _context.PhieuNXchitiets.AddAsync(item);
+                }
+            }
+
             return await _context.SaveChangesAsync();
         }
 

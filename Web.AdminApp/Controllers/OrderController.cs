@@ -5,18 +5,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Web.ServiceApi_Admin_User.Service.Orders;
+using Web.ServiceApi_Admin_User.Service.PhieuXuats;
 using Web.Utilities.Contants;
 using Web.ViewModels.Catalog.Orders;
+using Web.ViewModels.Catalog.PhieuXuats;
 
 namespace Web.AdminApp.Controllers
 {
     public class OrderController : Controller
     {
         private readonly IOrderApi _orderApi;
+        private readonly IPhieuXuatApi _phieuXuatApi;
 
-        public OrderController(IOrderApi orderApi)
+        public OrderController(IOrderApi orderApi, IPhieuXuatApi phieuXuatApi)
+
         {
             _orderApi = orderApi;
+            _phieuXuatApi = phieuXuatApi;
         }
 
         public async Task<IActionResult> Index()
@@ -57,11 +62,15 @@ namespace Web.AdminApp.Controllers
             var token = HttpContext.Session.GetString(SystemContants.AppSettings.Token);
             var result = await _orderApi.ConfirmOrder(id, token);
 
+            // tạo phiếu xuất
+
             if (result != false)
             {
                 @TempData["Message"] = "Xác nhận đơn hàng thành công";
+
                 return RedirectToAction("index", "Order");
             }
+
             return RedirectToAction("Error", "Home");
         }
     }

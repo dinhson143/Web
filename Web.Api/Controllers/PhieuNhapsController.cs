@@ -44,7 +44,7 @@ namespace Web.Api.Controllers
         }
 
         [HttpGet("phieunhap_detail/{pnId}/{languageId}")]
-        public async Task<IActionResult> GetCategoryById(int pnId, string languageId)
+        public async Task<IActionResult> GetDetailPNById(int pnId, string languageId)
         {
             var ctpn = await _phieuNhapService.GetDetailPNById(pnId, languageId);
             return Ok(ctpn);

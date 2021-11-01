@@ -14,11 +14,13 @@ using Web.ServiceApi_Admin_User.Service.Languages;
 using Web.ServiceApi_Admin_User.Service.LoaiPhieus;
 using Web.ServiceApi_Admin_User.Service.Orders;
 using Web.ServiceApi_Admin_User.Service.PhieuNhaps;
+using Web.ServiceApi_Admin_User.Service.PhieuXuats;
 using Web.ServiceApi_Admin_User.Service.Products;
 using Web.ServiceApi_Admin_User.Service.Promotions;
 using Web.ServiceApi_Admin_User.Service.Roles;
 using Web.ServiceApi_Admin_User.Service.Sizes;
 using Web.ServiceApi_Admin_User.Service.Sliders;
+using Web.ServiceApi_Admin_User.Service.Thongkes;
 using Web.ServiceApi_Admin_User.Service.Users;
 using Web.ViewModels.System.User;
 
@@ -50,8 +52,10 @@ namespace Web.AdminApp
             services.AddTransient<ILoaiPhieuApi, LoaiPhieuApi>();
             services.AddTransient<ICommentApi, CommentApi>();
             services.AddTransient<IPhieuNhapApi, PhieuNhapApi>();
+            services.AddTransient<IPhieuXuatApi, PhieuXuatApi>();
             services.AddTransient<IOrderApi, OrderApi>();
             services.AddTransient<IPromotionApi, PromotionApi>();
+            services.AddTransient<IThongKeApi, ThongKeApi>();
 
             //Session
             services.AddDistributedMemoryCache();

@@ -11,5 +11,7 @@ namespace Web.ServiceApi_Admin_User.Service.Thongkes
     public interface IThongKeApi
     {
         public Task<ResultApi<List<ProductViewModel>>> ProductLovest(string languageId, string BearerToken);
+
+        public Task<ResultApi<List<ProductViewModel>>> ProductSavest(string from, string to, string languageId, string BearerToken);
     }
 }

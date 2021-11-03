@@ -25,5 +25,12 @@ namespace Web.Api.Controllers
             var listProduct = await _manageservice.ProductLovest(languageId);
             return Ok(listProduct);
         }
+
+        [HttpGet("danh-sach-ban-chay/{languageId}/{from}/{to}")]
+        public async Task<IActionResult> GetProductSavest(string to, string from, string languageId)
+        {
+            var listProduct = await _manageservice.ProductSavest(from, to, languageId);
+            return Ok(listProduct);
+        }
     }
 }

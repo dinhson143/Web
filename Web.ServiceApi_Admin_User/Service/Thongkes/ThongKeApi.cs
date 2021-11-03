@@ -34,5 +34,18 @@ namespace Web.ServiceApi_Admin_User.Service.Thongkes
             var data = JsonConvert.DeserializeObject<ResultApi<List<ProductViewModel>>>(body);
             return data;
         }
+
+        public async Task<ResultApi<List<ProductViewModel>>> ProductSavest(string from, string to, string languageId, string BearerToken)
+        {
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", BearerToken);
+
+            var response = await client.GetAsync($"/api/ThongKes/danh-sach-ban-chay/{languageId}/{from}/{to}");
+            var body = await response.Content.ReadAsStringAsync();
+            var data = JsonConvert.DeserializeObject<ResultApi<List<ProductViewModel>>>(body);
+            return data;
+        }
     }
 }

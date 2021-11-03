@@ -11,5 +11,7 @@ namespace Web.Application.Catalog.ThongKes
     public interface IThongKeService
     {
         public Task<ResultApi<List<ProductViewModel>>> ProductLovest(string languageId);
+
+        public Task<ResultApi<List<ProductViewModel>>> ProductSavest(string from, string to, string languageId);
     }
 }

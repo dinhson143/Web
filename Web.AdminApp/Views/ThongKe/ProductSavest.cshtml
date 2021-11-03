@@ -1,0 +1,122 @@
+﻿@*@model IEnumerable<Web.ViewModels.Catalog.Products.ProductViewModel>*@
+@model Web.Models.ProductSavestModel
+@{
+    ViewData["Title"] = "ProductSavest";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Scripts{
+    <script>
+        function btnXemClick() {
+            var dateF = new Date($('#dateFrom').val());
+            var dateT = new Date($('#dateTo').val());
+            var day = dateF.getDate();
+            var month = dateF.getMonth() + 1;
+            var year = dateF.getFullYear();
+            var dateFrom = [month, day, year].join('-');
+            //
+            var day2 = dateT.getDate();
+            var month2 = dateT.getMonth() + 1;
+            var year2 = dateT.getFullYear();
+            var dateTo = [month2, day2, year2].join('-');
+            if (isNaN(day) == true || isNaN(day2) == true) {
+                $('.noteMes').text("Vui lòng chọn ngày");
+                return false;
+            }
+            if (dateF.getTime() > dateT.getTime()) {
+                $('.noteMes').text("Ngày không hợp lệ");
+                return false;
+            }
+        }
+    </script>
+    <script>
+        setTimeout(function () {
+            $(".alert").fadeOut('slow');
+        }, 2000);
+    </script>
+}
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">SẢN PHẨM BÁN CHẠY</h1>
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        @if (@TempData["Message"] != null)
+        {
+            <div class="alert alert-success" role="alert" style="text-align:center">
+                @TempData["Message"]
+            </div>
+        }
+
+        <div class="card-body">
+            <!--<div asp-action="ProductSavest" asp-controller="ThongKe" style="text-align:center">
+                <label style="margin:0 5px">From</label>
+                <input type="date" id="dateFrom">
+
+                <label style="margin:0 5px">To</label>
+                <input type="date" id="dateTo">-->
+            @*<button type="submit" class="btn btn-primary btnXem">Xem</button>*@
+            <!--<button type="submit" class="btn btn-primary btnXem" onclick="return btnXemClick()">Xem</button>
+            </div>-->
+            <form asp-action="ProductSavest" asp-controller="ThongKe" method="post" style="text-align:center">
+                <label style="margin:0 5px">From</label>
+                <input asp-for="From" type="date" id="dateFrom">
+
+                <label style="margin:0 5px">To</label>
+                <input asp-for="To" type="date" id="dateTo">
+
+                <button type="submit" onclick="return btnXemClick()" class="btn btn-primary btnXem">Xem</button>
+            </form>
+            <p class="noteMes" style="text-align: center; color: red; background-color: cornsilk;"></p>
+            <div class="table-responsive" id="hfdfhd">
+                @if (Model != null)
+                {
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Hình ảnh
+                                </th>
+                                <th>
+                                    Tên sản phẩm
+                                </th>
+                                <th>
+                                    Số lượng đã bán
+                                </th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>
+                                    Hình ảnh
+                                </th>
+                                <th>
+                                    Tên sản phẩm
+                                </th>
+                                <th>
+                                    Số lượng đã bán
+                                </th>
+                            </tr>
+                        </tfoot>
+                        <tbody>
+                            @foreach (var item in Model.listPro)
+                            {
+                                <tr>
+                                    <td>
+                                        <img style="height:150px;" src="@item.Images[0].URL" />
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Name)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.SluongDaban)
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+            </div>
+        </div>
+    </div>
+</div>

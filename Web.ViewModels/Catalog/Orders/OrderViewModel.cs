@@ -17,6 +17,8 @@ namespace Web.ViewModels.Catalog.Orders
         public string ShipEmail { get; set; }
         public string ShipPhone { get; set; }
         public string Status { get; set; }
+        public decimal Tongtien { get; set; }
+        public decimal TongtienReal { get; set; }
         public List<OrderDetailViewModel> ListOrDetail { get; set; }
     }
 }

@@ -32,5 +32,12 @@ namespace Web.Api.Controllers
             var listProduct = await _manageservice.ProductSavest(from, to, languageId);
             return Ok(listProduct);
         }
+
+        [HttpGet("doanh-thu/{languageId}/{from}/{to}")]
+        public async Task<IActionResult> Doanhthu(string to, string from, string languageId)
+        {
+            var doanhthu = await _manageservice.DoanhThu(from, to, languageId);
+            return Ok(doanhthu);
+        }
     }
 }

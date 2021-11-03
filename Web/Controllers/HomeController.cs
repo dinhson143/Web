@@ -39,7 +39,7 @@ namespace Web.Controllers
             var msg = _loc.GetLocalizedString("Vietnamese");
             var Sliders = await _sliderApi.GetAll();
             var sliders = new List<SliderViewModel>();
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < Sliders.ResultObj.Count; i++)
             {
                 sliders.Add(Sliders.ResultObj[i]);
             }

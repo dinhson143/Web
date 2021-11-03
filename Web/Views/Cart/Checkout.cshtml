@@ -3,6 +3,7 @@
     ViewData["Title"] = "Checkout";
     Layout = "~/Views/Shared/_Layout.cshtml";
     var culture = CultureInfo.CurrentCulture.Name;
+    decimal tongtien = 0;
 }
 
 @section Scripts{
@@ -61,6 +62,7 @@ else
                             decimal amount = item.DiscountAmount ?? 0;
                             var gia = item.Price - (item.Price * percent) - amount;
                             var total = (item.Price * item.Quantity) - (item.Price * item.Quantity * percent) - amount;
+                            tongtien += total;
                         }
                         <td>@gia.ToString("N0")</td>
                         <td>@total.ToString("N0")</td>
@@ -68,7 +70,7 @@ else
                 }
                 <tr>
                     <td colspan="4" style="text-align:right"><strong>TOTAL =</strong></td>
-                    <td class="label label-important" style="display:block"> <strong> @Model.CartItems.Sum(x => x.Quantity * x.Price).ToString("N0")</strong></td>
+                    <td class="label label-important" style="display:block"> <strong> @tongtien.ToString("N0")</strong></td>
                 </tr>
             </tbody>
         </table>

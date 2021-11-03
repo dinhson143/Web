@@ -63,14 +63,32 @@ namespace Web.AdminApp.Controllers
             return View(kq);
         }
 
-        [HttpPost]
-        public async Task<JsonResult> ViewProductSavest(DateTime From, DateTime To)
+        [HttpGet]
+        public IActionResult Doanhthu()
         {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Doanhthu(DateTime From, DateTime To)
+        {
+            var day = From.Day;
+            var month = From.Month;
+            var year = From.Year;
+            var dateF = month.ToString() + "-" + day.ToString() + "-" + year.ToString();
+            //
+            var day2 = To.Day;
+            var month2 = To.Month;
+            var year2 = To.Year;
+            var dateT = month2.ToString() + "-" + day2.ToString() + "-" + year2.ToString();
             var token = HttpContext.Session.GetString(SystemContants.AppSettings.Token);
             var languageId = HttpContext.Session.GetString(SystemContants.AppSettings.DefaultLanguageId);
-            var data = await _thongKeApi.ProductSavest("", "", languageId, token);
-
-            return new JsonResult(data.ResultObj);
+            var data = await _thongKeApi.Doanhthu(dateF, dateT, languageId, token);
+            var kq = new ProductSavestModel()
+            {
+                listOd = data.ResultObj
+            };
+            return View(kq);
         }
     }
 }

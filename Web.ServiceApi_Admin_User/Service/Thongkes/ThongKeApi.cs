@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Web.ViewModels.Catalog.Common;
+using Web.ViewModels.Catalog.Orders;
 using Web.ViewModels.Catalog.Products;
 
 namespace Web.ServiceApi_Admin_User.Service.Thongkes
@@ -45,6 +46,19 @@ namespace Web.ServiceApi_Admin_User.Service.Thongkes
             var response = await client.GetAsync($"/api/ThongKes/danh-sach-ban-chay/{languageId}/{from}/{to}");
             var body = await response.Content.ReadAsStringAsync();
             var data = JsonConvert.DeserializeObject<ResultApi<List<ProductViewModel>>>(body);
+            return data;
+        }
+
+        public async Task<ResultApi<List<OrderViewModel>>> Doanhthu(string from, string to, string languageId, string BearerToken)
+        {
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", BearerToken);
+
+            var response = await client.GetAsync($"/api/ThongKes/doanh-thu/{languageId}/{from}/{to}");
+            var body = await response.Content.ReadAsStringAsync();
+            var data = JsonConvert.DeserializeObject<ResultApi<List<OrderViewModel>>>(body);
             return data;
         }
     }

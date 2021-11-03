@@ -8,6 +8,7 @@ using Web.Data.EF;
 using Web.Data.Enums;
 using Web.ViewModels.Catalog.Common;
 using Web.ViewModels.Catalog.Orders;
+using Web.ViewModels.Catalog.PCSs;
 using Web.ViewModels.Catalog.Products;
 
 namespace Web.Application.Catalog.ThongKes
@@ -19,6 +20,101 @@ namespace Web.Application.Catalog.ThongKes
         public ThongKeService(AppDbContext context)
         {
             _context = context;
+        }
+
+        public async Task<ResultApi<List<OrderViewModel>>> DoanhThu(string from, string to, string languageId)
+        {
+            var dateF = DateTime.Parse(from);
+            var dateT = DateTime.Parse(to);
+            // get list order
+            var query = from o in _context.Orders
+                            //where o.Status != OrderStatus.Success
+                        select new { o };
+            var orders = await query.Select(x => new OrderViewModel()
+            {
+                Id = x.o.Id,
+                OrderDate = x.o.OrderDate,
+                ShipAddress = x.o.ShipAddress,
+                ShipEmail = x.o.ShipEmail,
+                ShipName = x.o.ShipName,
+                ShipPhone = x.o.ShipPhoneNumber,
+                Status = x.o.Status.ToString(),
+                Tongtien = x.o.Tongtien
+            }).ToListAsync();
+            int tongOrder = await query.CountAsync();
+            for (int i = 0; i < tongOrder; i++)
+            {
+                foreach (var item in orders)
+                {
+                    if (item.OrderDate.Date < dateF.Date || item.OrderDate.Date > dateT.Date)
+                    {
+                        orders.Remove(item);
+                        break;
+                    }
+                }
+            }
+            foreach (var order in orders)
+            {
+                var list = new List<OrderDetailViewModel>();
+                var result = from od in _context.OrderDetails
+                             join pt in _context.ProductTranslations on od.ProductId equals pt.ProductId
+                             join pi in _context.ProductImages on od.ProductId equals pi.ProductId
+                             join ods in _context.Sizes on od.SizeId equals ods.Id
+                             where od.OrderId == order.Id && pt.LanguageId == languageId && pi.IsDefault == true
+                             select new { od, pt, ods, pi };
+                foreach (var item in result)
+                {
+                    var x = new OrderDetailViewModel()
+                    {
+                        Price = item.od.Price,
+                        ProductName = item.pt.Name,
+                        Quantity = item.od.Quantity,
+                        SizeName = item.ods.Name,
+                        Image = item.pi.ImagePath,
+                        OrderID = order.Id,
+                        ProductID = item.od.ProductId,
+                        SizeID = item.od.SizeId
+                    };
+                    list.Add(x);
+                }
+                order.ListOrDetail = list;
+            }
+
+            // list PCS
+            var query2 = from p in _context.PCSs
+                             //where o.Status != OrderStatus.Success && o.Status != OrderStatus.Canceled && o.Status != OrderStatus.Shipping
+                         select new { p };
+            var pcss = await query2.Select(x => new PCSViewModel()
+            {
+                ProductId = x.p.ProductId,
+                SizeId = x.p.SizeId,
+                OriginalPrice = x.p.Price
+            }).ToListAsync();
+
+            foreach (var item in pcss)
+            {
+                foreach (var order in orders)
+                {
+                    foreach (var orderdetail in order.ListOrDetail)
+                    {
+                        if (orderdetail.ProductID == item.ProductId && orderdetail.SizeID == item.SizeId)
+                        {
+                            orderdetail.OriginalPrice = item.OriginalPrice;
+                        }
+                    }
+                }
+            }
+            // tính tổng tiền theo giá gốc
+            foreach (var order in orders)
+            {
+                decimal tongtienReal = 0;
+                foreach (var orderdetail in order.ListOrDetail)
+                {
+                    tongtienReal += (orderdetail.OriginalPrice * orderdetail.Quantity);
+                }
+                order.TongtienReal = tongtienReal;
+            }
+            return new ResultSuccessApi<List<OrderViewModel>>(orders);
         }
 
         public async Task<ResultApi<List<ProductViewModel>>> ProductLovest(string languageId)

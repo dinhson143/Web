@@ -177,6 +177,7 @@ namespace Web.Application.Catalog.Orders
             }
 
             var orderdetails = new List<OrderDetail>();
+
             foreach (var item in request.OrderDetails)
             {
                 orderdetails.Add(new OrderDetail()
@@ -194,6 +195,12 @@ namespace Web.Application.Catalog.Orders
                     return new ResultErrorApi<string>("Tạo đơn hàng thất bại");
                 }
             }
+            // tính tổng tiền
+            decimal tongtien = 0;
+            foreach (var item in orderdetails)
+            {
+                tongtien += item.Price * item.Quantity;
+            }
             var order = new Order()
             {
                 OrderDate = DateTime.Now,
@@ -204,7 +211,8 @@ namespace Web.Application.Catalog.Orders
                 UserId = user.Id,
                 Status = OrderStatus.InProgress,
                 OrderDetails = orderdetails,
-                ThanhToan = request.ThanhToan
+                ThanhToan = request.ThanhToan,
+                Tongtien = tongtien
             };
             await _context.Orders.AddAsync(order);
             var result = await _context.SaveChangesAsync();
@@ -233,7 +241,8 @@ namespace Web.Application.Catalog.Orders
                 ShipEmail = x.o.ShipEmail,
                 ShipName = x.o.ShipName,
                 ShipPhone = x.o.ShipPhoneNumber,
-                Status = x.o.Status.ToString()
+                Status = x.o.Status.ToString(),
+                Tongtien = x.o.Tongtien
             }).ToListAsync();
 
             foreach (var order in data)
@@ -276,7 +285,8 @@ namespace Web.Application.Catalog.Orders
                 ShipEmail = x.o.ShipEmail,
                 ShipName = x.o.ShipName,
                 ShipPhone = x.o.ShipPhoneNumber,
-                Status = x.o.Status.ToString()
+                Status = x.o.Status.ToString(),
+                Tongtien = x.o.Tongtien
             }).ToListAsync();
 
             foreach (var order in data)
@@ -319,7 +329,8 @@ namespace Web.Application.Catalog.Orders
                 ShipEmail = x.o.ShipEmail,
                 ShipName = x.o.ShipName,
                 ShipPhone = x.o.ShipPhoneNumber,
-                Status = x.o.Status.ToString()
+                Status = x.o.Status.ToString(),
+                Tongtien = x.o.Tongtien
             }).ToListAsync();
 
             foreach (var order in data)
@@ -360,7 +371,8 @@ namespace Web.Application.Catalog.Orders
                 ShipEmail = x.ShipEmail,
                 ShipName = x.ShipName,
                 ShipPhone = x.ShipPhoneNumber,
-                Status = x.Status.ToString()
+                Status = x.Status.ToString(),
+                Tongtien = x.Tongtien
             };
 
             var list = new List<OrderDetailViewModel>();
@@ -401,7 +413,8 @@ namespace Web.Application.Catalog.Orders
                 ShipEmail = x.o.ShipEmail,
                 ShipName = x.o.ShipName,
                 ShipPhone = x.o.ShipPhoneNumber,
-                Status = x.o.Status.ToString()
+                Status = x.o.Status.ToString(),
+                Tongtien = x.o.Tongtien
             }).ToListAsync();
 
             foreach (var order in data)
@@ -444,7 +457,8 @@ namespace Web.Application.Catalog.Orders
                 ShipEmail = x.o.ShipEmail,
                 ShipName = x.o.ShipName,
                 ShipPhone = x.o.ShipPhoneNumber,
-                Status = x.o.Status.ToString()
+                Status = x.o.Status.ToString(),
+                Tongtien = x.o.Tongtien
             }).ToListAsync();
 
             foreach (var order in data)

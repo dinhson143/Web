@@ -10,8 +10,8 @@ using Web.Data.EF;
 namespace Web.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20211025141011_update_Table_ShipperOrder")]
-    partial class update_Table_ShipperOrder
+    [Migration("20211105135654_create-table-OrderOfShipper")]
+    partial class createtableOrderOfShipper
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -397,13 +397,16 @@ namespace Web.Data.Migrations
                         .HasAnnotation("SqlServer:IdentitySeed", 1)
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
                     b.Property<string>("Message")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
@@ -530,6 +533,9 @@ namespace Web.Data.Migrations
                         .IsUnicode(true)
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<decimal>("Tongtien")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
@@ -562,6 +568,32 @@ namespace Web.Data.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("OrderDetails");
+                });
+
+            modelBuilder.Entity("Web.Data.Entities.OrderOfShipper", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:IdentityIncrement", 1)
+                        .HasAnnotation("SqlServer:IdentitySeed", 1)
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("OrderID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("OrderOfShippers");
                 });
 
             modelBuilder.Entity("Web.Data.Entities.PhieuNhap_Xuat", b =>
@@ -659,7 +691,7 @@ namespace Web.Data.Migrations
                         new
                         {
                             Id = 1,
-                            DateCreated = new DateTime(2021, 10, 25, 21, 10, 10, 57, DateTimeKind.Local).AddTicks(7726),
+                            DateCreated = new DateTime(2021, 11, 5, 20, 56, 53, 369, DateTimeKind.Local).AddTicks(1242),
                             Status = 1,
                             ViewCount = 0
                         });
@@ -940,38 +972,12 @@ namespace Web.Data.Migrations
                         new
                         {
                             Id = new Guid("0d5b7850-46c1-4c80-99c4-d94fc38a3ea7"),
-                            ConcurrencyStamp = "463a1c24-b881-4023-94cf-845972055923",
+                            ConcurrencyStamp = "13bcd755-89da-42b8-aaa2-d7022c28d042",
                             Description = "Adminstrator Role ",
                             Name = "admin",
                             NormalizedName = "admin",
                             Status = 1
                         });
-                });
-
-            modelBuilder.Entity("Web.Data.Entities.ShipperOrder", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:IdentityIncrement", 1)
-                        .HasAnnotation("SqlServer:IdentitySeed", 1)
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("OrderID")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("ShipperId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ShipperOrders");
                 });
 
             modelBuilder.Entity("Web.Data.Entities.Size", b =>
@@ -1075,7 +1081,7 @@ namespace Web.Data.Migrations
                         new
                         {
                             Id = 1,
-                            DateCreated = new DateTime(2021, 10, 25, 21, 10, 10, 79, DateTimeKind.Local).AddTicks(5656),
+                            DateCreated = new DateTime(2021, 11, 5, 20, 56, 53, 390, DateTimeKind.Local).AddTicks(6606),
                             Description = "Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.",
                             Image = "https://gaubongonline.vn/wp-content/uploads/2021/06/gaubongonline1.jpg",
                             Name = "slider 1",
@@ -1085,7 +1091,7 @@ namespace Web.Data.Migrations
                         new
                         {
                             Id = 2,
-                            DateCreated = new DateTime(2021, 10, 25, 21, 10, 10, 79, DateTimeKind.Local).AddTicks(6987),
+                            DateCreated = new DateTime(2021, 11, 5, 20, 56, 53, 390, DateTimeKind.Local).AddTicks(8153),
                             Description = "Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.",
                             Image = "https://gaubongonline.vn/wp-content/uploads/2021/06/gaubongonline.jpg",
                             Name = "slider 1",
@@ -1095,7 +1101,7 @@ namespace Web.Data.Migrations
                         new
                         {
                             Id = 3,
-                            DateCreated = new DateTime(2021, 10, 25, 21, 10, 10, 79, DateTimeKind.Local).AddTicks(6993),
+                            DateCreated = new DateTime(2021, 11, 5, 20, 56, 53, 390, DateTimeKind.Local).AddTicks(8160),
                             Description = "Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.",
                             Image = "https://gaubongonline.vn/wp-content/uploads/2021/05/web-gaubongonline.vn_.jpg",
                             Name = "slider 1",
@@ -1186,7 +1192,7 @@ namespace Web.Data.Migrations
                             Id = new Guid("b38060f2-8b1c-47ae-80aa-2cf1b518b812"),
                             AccessFailedCount = 0,
                             Address = "Hcm city",
-                            ConcurrencyStamp = "a19deaab-7ea3-46e4-970c-163d52368039",
+                            ConcurrencyStamp = "d452bf96-d920-44b0-a3da-c169983826fd",
                             Diem = 0,
                             Dob = new DateTime(1999, 3, 14, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "dinhson14399@gmail.com",
@@ -1196,7 +1202,7 @@ namespace Web.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "dinhson14399@gmail.com",
                             NormalizedUserName = "dinhson",
-                            PasswordHash = "AQAAAAEAACcQAAAAEOvfg5pj4vDcom+iF94yE+qvUUOjogjgSRApYBXQ6XEfmA3QTpxbABnhflcs2EnaMw==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEBeNNIBm+s89/nfCwk7DrJRtDPCe0lietRm+u73p3ymI1UOgoKZ3k5c3pX3uvZqJyw==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
                             Status = 1,

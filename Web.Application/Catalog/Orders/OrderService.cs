@@ -161,7 +161,7 @@ namespace Web.Application.Catalog.Orders
         {
             var order = await _context.Orders.FirstOrDefaultAsync(x => x.Id == orderId);
             if (order == null) throw new WebException($"Cannot find a order: {orderId}");
-            var orderSP = await _context.ShipperOrders.FirstOrDefaultAsync(x => x.OrderID == orderId);
+            var orderSP = await _context.OrderOfShippers.FirstOrDefaultAsync(x => x.OrderID == orderId);
             if (orderSP == null) throw new WebException($"Cannot find a order shiper: {orderId}");
             orderSP.Status = ShipStatus.Success;
             orderSP.Date = DateTime.Now;
@@ -330,7 +330,8 @@ namespace Web.Application.Catalog.Orders
                 ShipName = x.o.ShipName,
                 ShipPhone = x.o.ShipPhoneNumber,
                 Status = x.o.Status.ToString(),
-                Tongtien = x.o.Tongtien
+                Tongtien = x.o.Tongtien,
+                LoaiThanhToan = x.o.ThanhToan
             }).ToListAsync();
 
             foreach (var order in data)

@@ -3,36 +3,24 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Web.Data.Migrations
 {
-    public partial class addtableshipperOrder : Migration
+    public partial class createtableOrderOfShipper : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "ShipperOrders",
+                name: "OrderOfShippers",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ShipperId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     OrderID = table.Column<int>(type: "int", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ShipperOrders", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_ShipperOrders_Orders_OrderID",
-                        column: x => x.OrderID,
-                        principalTable: "Orders",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ShipperOrders_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                    table.PrimaryKey("PK_OrderOfShippers", x => x.Id);
                 });
 
             migrationBuilder.UpdateData(
@@ -40,100 +28,106 @@ namespace Web.Data.Migrations
                 keyColumn: "Id",
                 keyValue: 1,
                 column: "DateCreated",
-                value: new DateTime(2021, 10, 22, 21, 37, 26, 260, DateTimeKind.Local).AddTicks(7384));
+                value: new DateTime(2021, 11, 5, 20, 56, 53, 369, DateTimeKind.Local).AddTicks(1242));
 
             migrationBuilder.UpdateData(
                 table: "Roles",
                 keyColumn: "Id",
                 keyValue: new Guid("0d5b7850-46c1-4c80-99c4-d94fc38a3ea7"),
                 column: "ConcurrencyStamp",
-                value: "4a897407-a71f-404f-8121-5e5e7b5c1605");
+                value: "13bcd755-89da-42b8-aaa2-d7022c28d042");
 
             migrationBuilder.UpdateData(
                 table: "Sliders",
                 keyColumn: "Id",
                 keyValue: 1,
                 column: "DateCreated",
-                value: new DateTime(2021, 10, 22, 21, 37, 26, 284, DateTimeKind.Local).AddTicks(2293));
+                value: new DateTime(2021, 11, 5, 20, 56, 53, 390, DateTimeKind.Local).AddTicks(6606));
 
             migrationBuilder.UpdateData(
                 table: "Sliders",
                 keyColumn: "Id",
                 keyValue: 2,
                 column: "DateCreated",
-                value: new DateTime(2021, 10, 22, 21, 37, 26, 284, DateTimeKind.Local).AddTicks(3999));
+                value: new DateTime(2021, 11, 5, 20, 56, 53, 390, DateTimeKind.Local).AddTicks(8153));
 
             migrationBuilder.UpdateData(
                 table: "Sliders",
                 keyColumn: "Id",
                 keyValue: 3,
                 column: "DateCreated",
-                value: new DateTime(2021, 10, 22, 21, 37, 26, 284, DateTimeKind.Local).AddTicks(4008));
+                value: new DateTime(2021, 11, 5, 20, 56, 53, 390, DateTimeKind.Local).AddTicks(8160));
 
             migrationBuilder.UpdateData(
                 table: "Users",
                 keyColumn: "Id",
                 keyValue: new Guid("b38060f2-8b1c-47ae-80aa-2cf1b518b812"),
                 columns: new[] { "ConcurrencyStamp", "PasswordHash" },
-                values: new object[] { "8bb4b55e-bc3e-44a3-9b68-bd278146757f", "AQAAAAEAACcQAAAAEBYiN0LA/7L0LYPClFXaxuFrglkQfwG0Ug8Hu0fKhWLGjrPIXGiZzwTOWbYW/8H7fw==" });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ShipperOrders_OrderID",
-                table: "ShipperOrders",
-                column: "OrderID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ShipperOrders_UserId",
-                table: "ShipperOrders",
-                column: "UserId");
+                values: new object[] { "d452bf96-d920-44b0-a3da-c169983826fd", "AQAAAAEAACcQAAAAEBeNNIBm+s89/nfCwk7DrJRtDPCe0lietRm+u73p3ymI1UOgoKZ3k5c3pX3uvZqJyw==" });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "ShipperOrders");
+                name: "OrderOfShippers");
+
+            migrationBuilder.CreateTable(
+                name: "ShipperOrders",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    OrderID = table.Column<int>(type: "int", nullable: false),
+                    ShipperId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ShipperOrders", x => x.Id);
+                });
 
             migrationBuilder.UpdateData(
                 table: "Products",
                 keyColumn: "Id",
                 keyValue: 1,
                 column: "DateCreated",
-                value: new DateTime(2021, 10, 19, 8, 11, 15, 120, DateTimeKind.Local).AddTicks(9267));
+                value: new DateTime(2021, 11, 3, 21, 11, 1, 882, DateTimeKind.Local).AddTicks(9357));
 
             migrationBuilder.UpdateData(
                 table: "Roles",
                 keyColumn: "Id",
                 keyValue: new Guid("0d5b7850-46c1-4c80-99c4-d94fc38a3ea7"),
                 column: "ConcurrencyStamp",
-                value: "76c64fff-703e-4b70-ab7a-c3ddc684cd7f");
+                value: "07fb42fd-3369-4713-8d7e-60915c9c97f1");
 
             migrationBuilder.UpdateData(
                 table: "Sliders",
                 keyColumn: "Id",
                 keyValue: 1,
                 column: "DateCreated",
-                value: new DateTime(2021, 10, 19, 8, 11, 15, 207, DateTimeKind.Local).AddTicks(5314));
+                value: new DateTime(2021, 11, 3, 21, 11, 1, 902, DateTimeKind.Local).AddTicks(1275));
 
             migrationBuilder.UpdateData(
                 table: "Sliders",
                 keyColumn: "Id",
                 keyValue: 2,
                 column: "DateCreated",
-                value: new DateTime(2021, 10, 19, 8, 11, 15, 208, DateTimeKind.Local).AddTicks(238));
+                value: new DateTime(2021, 11, 3, 21, 11, 1, 902, DateTimeKind.Local).AddTicks(2531));
 
             migrationBuilder.UpdateData(
                 table: "Sliders",
                 keyColumn: "Id",
                 keyValue: 3,
                 column: "DateCreated",
-                value: new DateTime(2021, 10, 19, 8, 11, 15, 208, DateTimeKind.Local).AddTicks(260));
+                value: new DateTime(2021, 11, 3, 21, 11, 1, 902, DateTimeKind.Local).AddTicks(2537));
 
             migrationBuilder.UpdateData(
                 table: "Users",
                 keyColumn: "Id",
                 keyValue: new Guid("b38060f2-8b1c-47ae-80aa-2cf1b518b812"),
                 columns: new[] { "ConcurrencyStamp", "PasswordHash" },
-                values: new object[] { "6733e202-bbf4-43cb-845c-51eeb37f6253", "AQAAAAEAACcQAAAAEKhsG0YtcDHc9t4IPB8j7AoUmVu/D3SeDDvITo49bbb2INFkQYx5QRttqPjQr9vYkw==" });
+                values: new object[] { "6ea27d8d-3045-4b7d-b205-1f8f8fa9d432", "AQAAAAEAACcQAAAAEBNE45EF1ybzGqMhJWxFGFjvyL5gUAIS10uMXJE/XLwTMOyimReYavZXohRLaBmLTQ==" });
         }
     }
 }

@@ -8,6 +8,7 @@ using Web.ViewModels.Catalog.Common;
 using Web.ViewModels.Catalog.ShipperOrders;
 using Web.ViewModels.Catalog.Orders;
 using Microsoft.EntityFrameworkCore;
+using Web.Data.Entities;
 
 namespace Web.Application.Catalog.ShipperOrder
 {
@@ -22,15 +23,15 @@ namespace Web.Application.Catalog.ShipperOrder
 
         public async Task<ResultApi<string>> CreateShipperOrder(ShipperOrderCreate request)
         {
-            var shipperOrder = new Web.Data.Entities.ShipperOrder()
+            var shipperOrder = new OrderOfShipper()
             {
                 OrderID = request.OrderID,
-                ShipperId = request.ShipperId,
+                UserId = request.ShipperId,
                 Status = ShipStatus.InProgress,
                 Date = DateTime.Now
             };
 
-            await _context.ShipperOrders.AddAsync(shipperOrder);
+            await _context.OrderOfShippers.AddAsync(shipperOrder);
 
             var order = await _context.Orders.FindAsync(request.OrderID);
             order.Status = OrderStatus.Shipping;
@@ -47,8 +48,8 @@ namespace Web.Application.Catalog.ShipperOrder
         {
             var listODsp = new List<OrderViewModel>();
 
-            var qrSPOD = from os in _context.ShipperOrders
-                         where os.ShipperId == shipperId && os.Status == ShipStatus.InProgress
+            var qrSPOD = from os in _context.OrderOfShippers
+                         where os.UserId == shipperId && os.Status == ShipStatus.InProgress
                          select os;
             var listODSP = await qrSPOD.Select(x => new ShipperOrderViewModel()
             {
@@ -101,8 +102,8 @@ namespace Web.Application.Catalog.ShipperOrder
         {
             var listODsp = new List<OrderViewModel>();
 
-            var qrSPOD = from os in _context.ShipperOrders
-                         where os.ShipperId == shipperId && os.Status == ShipStatus.Success
+            var qrSPOD = from os in _context.OrderOfShippers
+                         where os.UserId == shipperId && os.Status == ShipStatus.Success
                          select os;
             var listODSP = await qrSPOD.Select(x => new ShipperOrderViewModel()
             {

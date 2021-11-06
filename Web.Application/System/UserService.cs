@@ -247,8 +247,15 @@ namespace Web.Application.System
                 Status = Status.Active
             };
             var result = await _userManager.CreateAsync(user, request.Password);
+            if (request.Role != null)
+            {
+                await _userManager.AddToRoleAsync(user, request.Role);
+            }
+            else
+            {
+                await _userManager.AddToRoleAsync(user, "customer");
+            }
 
-            await _userManager.AddToRoleAsync(user, "customer");
             if (result.Succeeded)
             {
                 return new ResultSuccessApi<string>("Đăng kí thành công");

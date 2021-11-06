@@ -9,14 +9,14 @@ using Web.Data.Entities;
 
 namespace Web.Data.Configurations
 {
-    public class ShipperOrderConfiguration : IEntityTypeConfiguration<ShipperOrder>
+    public class OrderOfShipperConfiguration : IEntityTypeConfiguration<OrderOfShipper>
     {
-        public void Configure(EntityTypeBuilder<ShipperOrder> builder)
+        public void Configure(EntityTypeBuilder<OrderOfShipper> builder)
         {
-            builder.ToTable("ShipperOrders");
+            builder.ToTable("OrderOfShippers");
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Id).UseIdentityColumn();
-            builder.Property(x => x.ShipperId).IsRequired();
+            builder.Property(x => x.UserId).IsRequired();
             builder.Property(x => x.OrderID).IsRequired();
             builder.Property(x => x.Status).IsRequired();
             builder.Property(x => x.Date).IsRequired();

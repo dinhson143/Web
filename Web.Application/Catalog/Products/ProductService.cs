@@ -61,21 +61,22 @@ namespace Web.Application.Catalog.Products
                 var a = await auth.SignInWithEmailAndPasswordAsync(AuthEmail, AuthPassword);
                 foreach (var item in request.ImageURL)
                 {
-                    FileStream fs = null;
-                    // upload file to firebase
-                    if (Directory.Exists(path))
-                    {
-                        using (fs = new FileStream(Path.Combine(path, item.FileName), FileMode.Create))
-                        {
-                            await item.CopyToAsync(fs);
-                        }
+                    //FileStream fs = null;
+                    //// upload file to firebase
+                    //if (Directory.Exists(path))
+                    //{
+                    //    using (fs = new FileStream(Path.Combine(path, item.FileName), FileMode.Create))
+                    //    {
+                    //        await item.CopyToAsync(fs);
+                    //    }
 
-                        fs = new FileStream(Path.Combine(path, item.FileName), FileMode.Open);
-                    }
-                    else
-                    {
-                        Directory.CreateDirectory(path);
-                    }
+                    //    fs = new FileStream(Path.Combine(path, item.FileName), FileMode.Open);
+                    //}
+                    //else
+                    //{
+                    //    Directory.CreateDirectory(path);
+                    //}
+                    var fs = item.OpenReadStream();
 
                     // Cacellation token
                     var cancellation = new CancellationTokenSource();
@@ -198,22 +199,22 @@ namespace Web.Application.Catalog.Products
                 var a = await auth.SignInWithEmailAndPasswordAsync(AuthEmail, AuthPassword);
                 foreach (var item in request.ImageURL)
                 {
-                    FileStream fs = null;
-                    // upload file to firebase
-                    if (Directory.Exists(path))
-                    {
-                        using (fs = new FileStream(Path.Combine(path, item.FileName), FileMode.Create))
-                        {
-                            await item.CopyToAsync(fs);
-                        }
+                    //FileStream fs = null;
+                    //// upload file to firebase
+                    //if (Directory.Exists(path))
+                    //{
+                    //    using (fs = new FileStream(Path.Combine(path, item.FileName), FileMode.Create))
+                    //    {
+                    //        await item.CopyToAsync(fs);
+                    //    }
 
-                        fs = new FileStream(Path.Combine(path, item.FileName), FileMode.Open);
-                    }
-                    else
-                    {
-                        Directory.CreateDirectory(path);
-                    }
-
+                    //    fs = new FileStream(Path.Combine(path, item.FileName), FileMode.Open);
+                    //}
+                    //else
+                    //{
+                    //    Directory.CreateDirectory(path);
+                    //}
+                    var fs = item.OpenReadStream();
                     // Cacellation token
                     var cancellation = new CancellationTokenSource();
                     var upload = await new FirebaseStorage(

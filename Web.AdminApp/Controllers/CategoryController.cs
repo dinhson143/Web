@@ -8,6 +8,7 @@ using Web.AdminApp.Models;
 using Web.ServiceApi_Admin_User.Service.Categories;
 using Web.Utilities.Contants;
 using Web.ViewModels.Catalog.Categories;
+using Web.ViewModels.Catalog.Common;
 
 namespace Web.AdminApp.Controllers
 {
@@ -52,8 +53,34 @@ namespace Web.AdminApp.Controllers
         }
 
         [HttpGet]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            //{
+            //    var languageId = HttpContext.Session.GetString(SystemContants.AppSettings.DefaultLanguageId);
+            //    var token = HttpContext.Session.GetString(SystemContants.AppSettings.Token);
+            //    var result = await _categoryApi.GetAllCategory_parent(languageId, token);
+            //    var list = new List<SelectItems>();
+            //    var goc = new SelectItems()
+            //    {
+            //        Id = "",
+            //        Name = "Đây là danh mục gốc",
+            //        Selected = false
+            //    };
+            //    list.Add(goc);
+            //    foreach (var item in result.ResultObj)
+            //    {
+            //        var x = new SelectItems()
+            //        {
+            //            Id = item.Id.ToString(),
+            //            Name = item.Name,
+            //            Selected = false
+            //        };
+            //        list.Add(x);
+            //    }
+            //    var data = new CategoryCreate()
+            //    {
+            //        Categories = list
+            //    };
             return View();
         }
 

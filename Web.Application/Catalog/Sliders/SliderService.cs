@@ -142,21 +142,22 @@ namespace Web.Application.Catalog.Sliders
                 var auth = new FirebaseAuthProvider(new FirebaseConfig(ApiKey));
                 var a = await auth.SignInWithEmailAndPasswordAsync(AuthEmail, AuthPassword);
 
-                FileStream fs = null;
-                // upload file to firebase
-                if (Directory.Exists(path))
-                {
-                    using (fs = new FileStream(Path.Combine(path, request.Image.FileName), FileMode.Create))
-                    {
-                        await request.Image.CopyToAsync(fs);
-                    }
+                //FileStream fs = null;
+                //// upload file to firebase
+                //if (Directory.Exists(path))
+                //{
+                //    using (fs = new FileStream(Path.Combine(path, request.Image.FileName), FileMode.Create))
+                //    {
+                //        await request.Image.CopyToAsync(fs);
+                //    }
 
-                    fs = new FileStream(Path.Combine(path, request.Image.FileName), FileMode.Open);
-                }
-                else
-                {
-                    Directory.CreateDirectory(path);
-                }
+                //    fs = new FileStream(Path.Combine(path, request.Image.FileName), FileMode.Open);
+                //}
+                //else
+                //{
+                //    Directory.CreateDirectory(path);
+                //}s
+                var fs = request.Image.OpenReadStream();
 
                 // Cacellation token
                 var cancellation = new CancellationTokenSource();

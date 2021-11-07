@@ -22,9 +22,6 @@ namespace Web.ViewModels.Catalog.Products
 
             RuleFor(x => x.SeoTitle).NotEmpty().WithMessage("SeoTitle is required");
             RuleFor(x => x.SeoAlias).NotEmpty().WithMessage("SeoAlias is required");
-
-            RuleFor(x => x.Price).NotEmpty().WithMessage("Price is required");
-            RuleFor(x => x.OriginalPrice).NotEmpty().WithMessage("OriginalPrice is required");
             RuleFor(x => x.ImageURL).NotEmpty().WithMessage("Image is required");
         }
     }

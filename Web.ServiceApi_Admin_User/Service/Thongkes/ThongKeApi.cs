@@ -49,6 +49,19 @@ namespace Web.ServiceApi_Admin_User.Service.Thongkes
             return data;
         }
 
+        public async Task<ResultApi<List<ProductViewModel>>> ProductSavestFullMonth(string languageId, string BearerToken)
+        {
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", BearerToken);
+
+            var response = await client.GetAsync($"/api/ThongKes/danh-sach-ban-chay-nhat/{languageId}");
+            var body = await response.Content.ReadAsStringAsync();
+            var data = JsonConvert.DeserializeObject<ResultApi<List<ProductViewModel>>>(body);
+            return data;
+        }
+
         public async Task<ResultApi<List<OrderViewModel>>> Doanhthu(string from, string to, string languageId, string BearerToken)
         {
             var client = _httpClientFactory.CreateClient();
@@ -57,6 +70,19 @@ namespace Web.ServiceApi_Admin_User.Service.Thongkes
             client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", BearerToken);
 
             var response = await client.GetAsync($"/api/ThongKes/doanh-thu/{languageId}/{from}/{to}");
+            var body = await response.Content.ReadAsStringAsync();
+            var data = JsonConvert.DeserializeObject<ResultApi<List<OrderViewModel>>>(body);
+            return data;
+        }
+
+        public async Task<ResultApi<List<OrderViewModel>>> DoanhthuFullMonth(string languageId, string BearerToken)
+        {
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", BearerToken);
+
+            var response = await client.GetAsync($"/api/ThongKes/doanh-thu-full-month/{languageId}");
             var body = await response.Content.ReadAsStringAsync();
             var data = JsonConvert.DeserializeObject<ResultApi<List<OrderViewModel>>>(body);
             return data;

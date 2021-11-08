@@ -15,6 +15,10 @@ namespace Web.ServiceApi_Admin_User.Service.Thongkes
 
         public Task<ResultApi<List<ProductViewModel>>> ProductSavest(string from, string to, string languageId, string BearerToken);
 
+        public Task<ResultApi<List<ProductViewModel>>> ProductSavestFullMonth(string languageId, string BearerToken);
+
         public Task<ResultApi<List<OrderViewModel>>> Doanhthu(string from, string to, string languageId, string BearerToken);
+
+        public Task<ResultApi<List<OrderViewModel>>> DoanhthuFullMonth(string languageId, string BearerToken);
     }
 }

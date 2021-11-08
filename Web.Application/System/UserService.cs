@@ -145,8 +145,15 @@ namespace Web.Application.System
                     LastName = x.LastName,
                     PhoneNumber = x.PhoneNumber,
                     Username = x.UserName,
-                    Status = x.Status.ToString()
+                    Status = x.Status.ToString(),
+                    Diem = x.Diem
                 }).ToListAsync();
+            foreach (var item in data)
+            {
+                var user = await _userManager.FindByNameAsync(item.Username);
+                var roles = await _userManager.GetRolesAsync(user);
+                item.Roles = roles;
+            }
             // 4 Select Page Result
             var pageResult = new PageResult<UserViewModel>()
             {

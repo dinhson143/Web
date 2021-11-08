@@ -15,6 +15,10 @@ namespace Web.Application.Catalog.ThongKes
 
         public Task<ResultApi<List<ProductViewModel>>> ProductSavest(string from, string to, string languageId);
 
+        public Task<ResultApi<List<ProductViewModel>>> ProductSavestFullMonth(string languageId);
+
         public Task<ResultApi<List<OrderViewModel>>> DoanhThu(string from, string to, string languageId);
+
+        public Task<ResultApi<List<OrderViewModel>>> DoanhThuFullMonth(string languageId);
     }
 }

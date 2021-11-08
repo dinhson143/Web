@@ -28,7 +28,7 @@ namespace Web.Application.Catalog.ThongKes
             var dateT = DateTime.Parse(to);
             // get list order
             var query = from o in _context.Orders
-                            //where o.Status != OrderStatus.Success
+                        where o.Status == OrderStatus.Success
                         select new { o };
             var orders = await query.Select(x => new OrderViewModel()
             {
@@ -53,6 +53,99 @@ namespace Web.Application.Catalog.ThongKes
                     }
                 }
             }
+            foreach (var order in orders)
+            {
+                var list = new List<OrderDetailViewModel>();
+                var result = from od in _context.OrderDetails
+                             join pt in _context.ProductTranslations on od.ProductId equals pt.ProductId
+                             join pi in _context.ProductImages on od.ProductId equals pi.ProductId
+                             join ods in _context.Sizes on od.SizeId equals ods.Id
+                             where od.OrderId == order.Id && pt.LanguageId == languageId && pi.IsDefault == true
+                             select new { od, pt, ods, pi };
+                foreach (var item in result)
+                {
+                    var x = new OrderDetailViewModel()
+                    {
+                        Price = item.od.Price,
+                        ProductName = item.pt.Name,
+                        Quantity = item.od.Quantity,
+                        SizeName = item.ods.Name,
+                        Image = item.pi.ImagePath,
+                        OrderID = order.Id,
+                        ProductID = item.od.ProductId,
+                        SizeID = item.od.SizeId
+                    };
+                    list.Add(x);
+                }
+                order.ListOrDetail = list;
+            }
+
+            // list PCS
+            var query2 = from p in _context.PCSs
+                             //where o.Status != OrderStatus.Success && o.Status != OrderStatus.Canceled && o.Status != OrderStatus.Shipping
+                         select new { p };
+            var pcss = await query2.Select(x => new PCSViewModel()
+            {
+                ProductId = x.p.ProductId,
+                SizeId = x.p.SizeId,
+                OriginalPrice = x.p.Price
+            }).ToListAsync();
+
+            foreach (var item in pcss)
+            {
+                foreach (var order in orders)
+                {
+                    foreach (var orderdetail in order.ListOrDetail)
+                    {
+                        if (orderdetail.ProductID == item.ProductId && orderdetail.SizeID == item.SizeId)
+                        {
+                            orderdetail.OriginalPrice = item.OriginalPrice;
+                        }
+                    }
+                }
+            }
+            // tính tổng tiền theo giá gốc
+            foreach (var order in orders)
+            {
+                decimal tongtienReal = 0;
+                foreach (var orderdetail in order.ListOrDetail)
+                {
+                    tongtienReal += (orderdetail.OriginalPrice * orderdetail.Quantity);
+                }
+                order.TongtienReal = tongtienReal;
+            }
+            return new ResultSuccessApi<List<OrderViewModel>>(orders);
+        }
+
+        public async Task<ResultApi<List<OrderViewModel>>> DoanhThuFullMonth(string languageId)
+        {
+            // get list order
+            var query = from o in _context.Orders
+                        where o.Status == OrderStatus.Success
+                        select new { o };
+            var orders = await query.Select(x => new OrderViewModel()
+            {
+                Id = x.o.Id,
+                OrderDate = x.o.OrderDate,
+                ShipAddress = x.o.ShipAddress,
+                ShipEmail = x.o.ShipEmail,
+                ShipName = x.o.ShipName,
+                ShipPhone = x.o.ShipPhoneNumber,
+                Status = x.o.Status.ToString(),
+                Tongtien = x.o.Tongtien
+            }).ToListAsync();
+            //int tongOrder = await query.CountAsync();
+            //for (int i = 0; i < tongOrder; i++)
+            //{
+            //    foreach (var item in orders)
+            //    {
+            //        if (item.OrderDate.Date < dateF.Date || item.OrderDate.Date > dateT.Date)
+            //        {
+            //            orders.Remove(item);
+            //            break;
+            //        }
+            //    }
+            //}
             foreach (var order in orders)
             {
                 var list = new List<OrderDetailViewModel>();
@@ -284,6 +377,116 @@ namespace Web.Application.Catalog.ThongKes
             }
 
             listData = listData.OrderBy(o => o.SluongDaban).ToList();
+            foreach (var product in listData)
+            {
+                var list = new List<ProductSizeViewModel>();
+                var result = from p in _context.PCSs
+                             join s in _context.Sizes on p.SizeId equals s.Id
+                             where p.ProductId == product.Id
+                             select new { p, s };
+                foreach (var pcs in result)
+                {
+                    var x = new ProductSizeViewModel()
+                    {
+                        Size = pcs.s.Name,
+                        SizeId = pcs.p.SizeId,
+                        OriginalPrice = pcs.p.OriginalPrice,
+                        Price = pcs.p.Price,
+                        Stock = pcs.p.Stock
+                    };
+                    list.Add(x);
+                }
+                product.listPS = list;
+            }
+            foreach (var item in listData)
+            {
+                var product = await _context.Products.FindAsync(item.Id);
+                var images = from pi in _context.ProductImages
+                             where pi.ProductId == item.Id
+                             select pi;
+                var Listimage = await images.Select(x => new ProductImagesModel()
+                {
+                    URL = x.ImagePath,
+                    isDefault = x.IsDefault,
+                    Caption = x.Caption,
+                    Id = x.Id
+                }).ToListAsync();
+                item.Images = Listimage;
+            }
+            return new ResultSuccessApi<List<ProductViewModel>>(listData);
+        }
+
+        public async Task<ResultApi<List<ProductViewModel>>> ProductSavestFullMonth(string languageId)
+        {
+            var query = from p in _context.Products
+                        join pt in _context.ProductTranslations on p.Id equals pt.ProductId
+                        join pic in _context.ProductInCategories on p.Id equals pic.ProductId into ppic
+                        from pic in ppic.DefaultIfEmpty()
+                        join pi in _context.ProductImages on p.Id equals pi.ProductId into ppi
+                        from pi in ppi.DefaultIfEmpty()
+                        join po in _context.OrderDetails on p.Id equals po.ProductId
+                        where pt.LanguageId == languageId && p.Status == Status.Active && (pi.IsDefault == true || pi == null)
+                        select new { p, pt, pic, pi, po };
+            //
+
+            // 3 .Paging
+            int totalRow = await query.CountAsync();
+            var data = await query.OrderByDescending(x => x.po.Quantity).Select(x => new ProductViewModel()
+            {
+                Id = x.p.Id,
+                ViewCount = x.p.ViewCount,
+                DateCreated = x.p.DateCreated,
+                Name = x.pt.Name,
+                Description = x.pt.Description,
+                Details = x.pt.Details,
+                SeoDescription = x.pt.SeoDescription,
+                SeoTitle = x.pt.SeoTitle,
+                SeoAlias = x.pt.SeoAlias,
+                LanguageId = x.pt.LanguageId,
+                Image = x.pi.ImagePath,
+                SluongDaban = x.po.Quantity,
+                OrderID = x.po.OrderId
+            }).ToListAsync();
+
+            // get list order
+            var query2 = from o in _context.Orders
+                             //where o.Status != OrderStatus.Success && o.Status != OrderStatus.Canceled && o.Status != OrderStatus.Shipping
+                         select new { o };
+            var orders = await query2.Select(x => new OrderViewModel()
+            {
+                Id = x.o.Id,
+                OrderDate = x.o.OrderDate,
+                ShipAddress = x.o.ShipAddress,
+                ShipEmail = x.o.ShipEmail,
+                ShipName = x.o.ShipName,
+                ShipPhone = x.o.ShipPhoneNumber,
+                Status = x.o.Status.ToString()
+            }).ToListAsync();
+            var listData = new List<ProductViewModel>();
+            foreach (var item in data)
+            {
+                foreach (var order in orders)
+                {
+                    if (order.Id == item.OrderID)
+                    {
+                        listData.Add(item);
+                    }
+                }
+            }
+
+            for (var i = 0; i < listData.Count; i++)
+            {
+                for (var j = i + 1; j < listData.Count; j++)
+                {
+                    if (listData[i].Id == listData[j].Id)
+                    {
+                        listData[i].SluongDaban += listData[j].SluongDaban;
+                        listData.Remove(listData[j]);
+                    }
+                }
+            }
+
+            listData = listData.OrderByDescending(o => o.SluongDaban).Take(5).ToList();
             foreach (var product in listData)
             {
                 var list = new List<ProductSizeViewModel>();

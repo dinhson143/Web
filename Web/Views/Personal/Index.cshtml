@@ -7,7 +7,7 @@
 <style>
     .control-group input {
         width: 60%;
-        margin:0 10px;
+        margin: 0 10px;
     }
 </style>
 @section Scripts{
@@ -42,19 +42,19 @@
     <button style="margin:0 5px" class="btn btn-info btnLove">Danh Sách Yêu Thích</button>
     <button style="margin:0 5px" class="btn btn-info btnProfile">Thông Tin Cá Nhân</button>
     <label style="margin:0 5px" class="btn btn-info">Điểm Tích Lũy: @Model.Diem điểm</label>
-    @if (@Model.Diem <= 10)
+    @if (@Model.Diem <= 5)
     {
         <label style="margin:0 5px" class="btn btn-success">Thành Viên Mới</label>
     }
-    @if (@Model.Diem > 10)
+    @if (@Model.Diem > 5 && @Model.Diem <= 10)
     {
         <label style="margin:0 5px" class="btn btn-success">Thành Viên Đồng</label>
     }
-    @if (@Model.Diem > 50)
+    @if (@Model.Diem > 10 && @Model.Diem <= 15)
     {
         <label style="margin:0 5px" class="btn btn-success">Thành Viên Bạc</label>
     }
-    @if (@Model.Diem > 100)
+    @if (@Model.Diem > 15)
     {
         <label style="margin:0 5px" class="btn btn-success">Thành Viên Vàng</label>
     }

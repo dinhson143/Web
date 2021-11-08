@@ -33,10 +33,24 @@ namespace Web.Api.Controllers
             return Ok(listProduct);
         }
 
+        [HttpGet("danh-sach-ban-chay-nhat/{languageId}")]
+        public async Task<IActionResult> GetProductSavestFullMonth(string languageId)
+        {
+            var listProduct = await _manageservice.ProductSavestFullMonth(languageId);
+            return Ok(listProduct);
+        }
+
         [HttpGet("doanh-thu/{languageId}/{from}/{to}")]
         public async Task<IActionResult> Doanhthu(string to, string from, string languageId)
         {
             var doanhthu = await _manageservice.DoanhThu(from, to, languageId);
+            return Ok(doanhthu);
+        }
+
+        [HttpGet("doanh-thu-full-month/{languageId}")]
+        public async Task<IActionResult> DoanhThuFullMonth(string languageId)
+        {
+            var doanhthu = await _manageservice.DoanhThuFullMonth(languageId);
             return Ok(doanhthu);
         }
     }

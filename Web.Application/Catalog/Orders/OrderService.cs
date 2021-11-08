@@ -163,6 +163,7 @@ namespace Web.Application.Catalog.Orders
             if (order == null) throw new WebException($"Cannot find a order: {orderId}");
             var orderSP = await _context.OrderOfShippers.FirstOrDefaultAsync(x => x.OrderID == orderId);
             if (orderSP == null) throw new WebException($"Cannot find a order shiper: {orderId}");
+            order.Status = OrderStatus.Success;
             orderSP.Status = ShipStatus.Success;
             orderSP.Date = DateTime.Now;
             return await _context.SaveChangesAsync();

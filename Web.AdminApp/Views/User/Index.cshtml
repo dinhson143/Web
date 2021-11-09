@@ -34,10 +34,7 @@
                     <thead>
                         <tr>
                             <th>
-                                FirstName
-                            </th>
-                            <th>
-                                LastName
+                                Name
                             </th>
                             <th>
                                 Day of Birth
@@ -47,6 +44,9 @@
                             </th>
                             <th>
                                 Phone Number
+                            </th>
+                            <th>
+                                Thành viên
                             </th>
                             <th></th>
                         </tr>
@@ -54,10 +54,7 @@
                     <tfoot>
                         <tr>
                             <th>
-                                FirstName
-                            </th>
-                            <th>
-                                LastName
+                                Name
                             </th>
                             <th>
                                 Day of Birth
@@ -68,42 +65,63 @@
                             <th>
                                 Phone Number
                             </th>
+                            <th>
+                                Thành viên
+                            </th>
                             <th></th>
                         </tr>
                     </tfoot>
                     <tbody>
                         @foreach (var item in Model.Items)
                         {
-                            <tr>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.FirstName)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.LastName)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Dob)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Email)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.PhoneNumber)
-                                </td>
-                                <td>
-                                    @Html.ActionLink("Sửa", "Update", new { IdUser = item.Id }) |
-                                    @Html.ActionLink("Chi tiết", "Details", new { IdUser = item.Id }) |
-                                    @Html.ActionLink("Gán quyền", "RoleAssign", new { IdUser = item.Id }) |
-                                    @if (item.Status == "Active")
-                                    {
-                                        @Html.ActionLink("Khóa", "Delete", new { IdUser = item.Id })
-                                    }
-                                    else
-                                    {
-                                        @Html.ActionLink("Mở khóa", "Unlock", new { IdUser = item.Id })
-                                    }
-                                </td>
-                            </tr>
+                        <tr>
+                            <td>
+                                @{
+                                    var name = item.FirstName + " " + item.LastName;
+                                }
+                                <p>@name</p>
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Dob)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Email)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.PhoneNumber)
+                            </td>
+                            <td>
+                                @if (item.Diem <= 5)
+                                {
+                                    <p style="color:#fff;text-align:center; background-color:#4e73df">Mới</p>
+                                }
+                                else if (item.Diem > 5 && item.Diem <= 10)
+                                {
+                                    <p style="color:#fff;text-align:center; background-color:#1cc88a">Đồng</p>
+                                }
+                                else if (item.Diem > 10 && item.Diem <= 15)
+                                {
+                                    <p style="color:#fff;text-align:center; background-color:#36b9cc">Bạc</p>
+                                }
+                                else if (item.Diem > 15)
+                                {
+                                    <p style="color:#fff;text-align:center; background-color:#e74a3b">Vàng</p>
+                                }
+                            </td>
+                            <td>
+                                @Html.ActionLink("Sửa", "Update", new { IdUser = item.Id }) |
+                                @Html.ActionLink("Chi tiết", "Details", new { IdUser = item.Id }) |
+                                @Html.ActionLink("Gán quyền", "RoleAssign", new { IdUser = item.Id }) |
+                                @if (item.Status == "Active")
+                                {
+                                    @Html.ActionLink("Khóa", "Delete", new { IdUser = item.Id })
+                                }
+                                else
+                                {
+                                    @Html.ActionLink("Mở khóa", "Unlock", new { IdUser = item.Id })
+                                }
+                            </td>
+                        </tr>
                         }
                     </tbody>
                 </table>

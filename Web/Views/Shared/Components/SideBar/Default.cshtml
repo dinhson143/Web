@@ -68,7 +68,9 @@
                         else
                         {
                             cul = CultureInfo.GetCultureInfo("en-US");
-                            <a class="btn btn-primary" href="@url">@item.listPS[0].Price.ToString("C", cul.NumberFormat) - @item.listPS[item.listPS.Count - 1].Price.ToString("C", cul.NumberFormat)</a>
+                            var giaTRC = item.listPS[0].Price / 23300;
+                            var giaSAU = item.listPS[item.listPS.Count - 1].Price / 23300;
+                            <a class="btn btn-primary" href="@url">@giaTRC.ToString("C", cul.NumberFormat) - @giaSAU.ToString("C", cul.NumberFormat)</a>
                         }
                     </h4>
                 </div>

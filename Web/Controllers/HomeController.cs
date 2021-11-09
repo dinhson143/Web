@@ -13,6 +13,7 @@ using Web.Models;
 using Web.ServiceApi_Admin_User.Service.Products;
 using Web.ServiceApi_Admin_User.Service.Sliders;
 using Web.Utilities.Contants;
+using Web.ViewModels.Catalog.Common;
 using Web.ViewModels.Catalog.Sliders;
 
 namespace Web.Controllers
@@ -44,12 +45,12 @@ namespace Web.Controllers
                 sliders.Add(Sliders.ResultObj[i]);
             }
             var FeaturedProducts = await _productApi.GetFeaturedProducts(culture, 4);
-            var LatestProducts = await _productApi.GetLatestProducts(culture, 6);
+            var LatestProducts = await _productApi.GetLatestProducts(culture, 6);       
             var data = new HomeModel()
             {
                 sliders = sliders,
                 featured_products = FeaturedProducts,
-                latest_products = LatestProducts
+                latest_products = LatestProducts,
             };
             return View(data);
         }

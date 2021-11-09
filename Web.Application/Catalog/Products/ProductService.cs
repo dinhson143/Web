@@ -343,17 +343,13 @@ namespace Web.Application.Catalog.Products
                          from pic in ppic.DefaultIfEmpty()
                          join c in _context.Categories on pic.CategoryId equals c.Id into picc
                          from c in picc.DefaultIfEmpty()
-                         where pt.LanguageId == request.LanguageId
-                         select new { p, pt, pic });
+                         where pt.LanguageId == request.LanguageId && p.Status==Status.Active
+                         select new { p, pt, pic});
             // 2. Filter
             if (!string.IsNullOrEmpty(request.Keyword))
             {
                 query = query.Where(x => x.pt.Name.Contains(request.Keyword));
             }
-            //if (request.CategoryIds.Count > 0)
-            //{
-            //    query = query.Where(x => request.CategoryIds.Contains(x.pic.CategoryId));
-            //}
             // 3 .Paging
             int totalRow = await query.CountAsync();
             var data = await query.Skip((request.pageIndex - 1) * request.pageSize)
@@ -361,8 +357,6 @@ namespace Web.Application.Catalog.Products
                 .Select(x => new ProductViewModel()
                 {
                     Id = x.p.Id,
-                    //Price = x.p.Price,
-                    //OriginalPrice = x.p.OriginalPrice,
                     ViewCount = x.p.ViewCount,
                     DateCreated = x.p.DateCreated,
                     Name = x.pt.Name,
@@ -373,6 +367,110 @@ namespace Web.Application.Catalog.Products
                     SeoAlias = x.pt.SeoAlias,
                     LanguageId = x.pt.LanguageId,
                 }).ToListAsync();
+            // 
+            foreach (var item in data)
+            {
+                var product = await _context.Products.FindAsync(item.Id);
+                var images = from pi in _context.ProductImages
+                             where pi.ProductId == item.Id
+                             select pi;
+                var listImage = await images.Select(x => new ProductImagesModel()
+                {
+                    URL = x.ImagePath,
+                    isDefault = x.IsDefault,
+                    Caption = x.Caption,
+                    Id = x.Id
+                }).ToListAsync();
+                item.Images = listImage;
+            }
+
+            foreach (var product in data)
+            {
+                var list = new List<ProductSizeViewModel>();
+                var result = from p in _context.PCSs
+                             join s in _context.Sizes on p.SizeId equals s.Id
+                             where p.ProductId == product.Id
+                             select new { p, s };
+                foreach (var pcs in result)
+                {
+                    var x = new ProductSizeViewModel()
+                    {
+                        Size = pcs.s.Name,
+                        SizeId = pcs.p.SizeId,
+                        OriginalPrice = pcs.p.OriginalPrice,
+                        Price = pcs.p.Price,
+                        Stock = pcs.p.Stock
+                    };
+                    list.Add(x);
+                }
+                product.listPS = list;
+            }
+
+            // get list promotion
+            var query2 = from p in _context.Promotions
+                             //where p.Status == Status.Active
+                         select new { p };
+
+            var listPromotion = await query2.Select(x => new PromotionViewModel()
+            {
+                ApplyAll = x.p.ApplyForAll,
+                DiscountAmount = x.p.DiscountAmount,
+                DiscountPercent = x.p.DiscountPercent,
+                FromDate = x.p.FromDate,
+                ToDate = x.p.ToDate,
+                Name = x.p.Name,
+                Id = x.p.Id,
+                ProductCategoryIds = x.p.ProductCategoryIds,
+                ProductIDs = x.p.ProductIds,
+                Status = x.p.Status.ToString()
+            }).ToListAsync();
+            var dn = DateTime.Now;
+            foreach (var item in listPromotion)
+            {
+                if ((dn.Ticks > item.FromDate.Ticks) && (dn.Ticks < item.ToDate.Ticks))
+                {
+                    string[] products = item.ProductIDs.Split(',');
+                    foreach (var product in data)
+                    {
+                        foreach (var id in products)
+                        {
+                            if (id != "" && product.Id == Int32.Parse(id))
+                            {
+                                product.DiscountPercent = item.DiscountPercent;
+                                product.DiscountAmount = item.DiscountAmount;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            foreach (var item in listPromotion)
+            {
+                if ((dn.Ticks > item.FromDate.Ticks) && (dn.Ticks < item.ToDate.Ticks))
+                {
+                    string[] categories = item.ProductCategoryIds.Split(',');
+                    foreach (var product in data)
+                    {
+                        foreach (var id in categories)
+                        {
+                            if (id != "")
+                            {
+                                var kiemtra = (from p in _context.Products
+                                               join pic in _context.ProductInCategories on p.Id equals pic.ProductId
+                                               where p.Status == Status.Active && (Int32.Parse(id) == pic.CategoryId) && p.Id == product.Id
+                                               select new { p });
+                                int totalKiemtra = await kiemtra.CountAsync();
+                                if (totalKiemtra > 0)
+                                {
+                                    if (product.DiscountPercent == null) product.DiscountPercent = item.DiscountPercent;
+                                    if (product.DiscountAmount != null) product.DiscountAmount = item.DiscountAmount;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
             // 4 Select Page Result
             var pageResult = new PageResult<ProductViewModel>()
             {

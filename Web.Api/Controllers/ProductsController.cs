@@ -29,6 +29,14 @@ namespace Web.Api.Controllers
             return Ok(listProduct.ResultObj);
         }
 
+        [HttpGet("danh-sach-product-paging")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetAllPaging([FromQuery] GetManageProductPagingRequest request)
+        {
+            var listProduct = await _manageservice.GetAllPaging(request);
+            return Ok(listProduct);
+        }
+
         [HttpGet("danh-sach-product-size/{ProductId}")]
         public IActionResult GetProductSize(int ProductId)
         {

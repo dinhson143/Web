@@ -102,7 +102,22 @@ namespace Web.ServiceApi_Admin_User.Service.Products
             var data = JsonConvert.DeserializeObject<PageResult<ProductViewModel>>(body);
             return data;
         }
+        public async Task<PageResult<ProductViewModel>> GetAllPaging(GetManageProductPagingRequest request)
+        {
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
 
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", request.BearerToken);
+
+            var response = await client.GetAsync($"/api/Products/danh-sach-product-paging?pageIndex=" +
+                $"{request.pageIndex}&pageSize={request.pageSize}&" +
+                $"Keyword={request.Keyword}" +
+                $"&LanguageId={request.LanguageId}" +
+                $"&categoryId={request.CategoryId}");
+            var body = await response.Content.ReadAsStringAsync();
+            var data = JsonConvert.DeserializeObject<PageResult<ProductViewModel>>(body);
+            return data;
+        }
         public async Task<ResultApi<string>> AssignCategory(int productId, CategoryAssignRequest request)
         {
             var client = _httpClientFactory.CreateClient();

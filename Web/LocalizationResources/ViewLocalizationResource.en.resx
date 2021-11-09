@@ -173,6 +173,10 @@
     <value>Personal</value>
     <comment>Home/Index</comment>
   </data>
+  <data name="Products" xml:space="preserve">
+    <value>Products</value>
+    <comment>Home</comment>
+  </data>
   <data name="products are available" xml:space="preserve">
     <value>products are available</value>
     <comment>Product/ProductForCategory</comment>

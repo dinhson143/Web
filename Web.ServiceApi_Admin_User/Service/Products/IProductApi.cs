@@ -13,6 +13,7 @@ namespace Web.ServiceApi_Admin_User.Service.Products
     public interface IProductApi
     {
         public Task<PageResult<ProductViewModel>> GetAll(GetManageProductPagingRequest request);
+        public Task<PageResult<ProductViewModel>> GetAllPaging(GetManageProductPagingRequest request);
 
         public Task<List<ProductFavoriteViewModel>> GetProductsFavorite(ProductFVrequest request, string BearerToken);
 

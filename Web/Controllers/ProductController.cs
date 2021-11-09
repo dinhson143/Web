@@ -11,6 +11,7 @@ using Web.ServiceApi_Admin_User.Service.Categories;
 using Web.ServiceApi_Admin_User.Service.Comments;
 using Web.ServiceApi_Admin_User.Service.Products;
 using Web.Utilities.Contants;
+using Web.ViewModels.Catalog.Common;
 using Web.ViewModels.Catalog.Products;
 
 namespace Web.Controllers
@@ -111,6 +112,32 @@ namespace Web.Controllers
                 TempData["error"] = "Cập nhật danh sách yêu thích thất bại";
             }
             return RedirectToAction("ProductDetail", "Product", new { id = ProductId });
+        }
+
+        public async Task<IActionResult> ListProducts(int pageIndex, int? categoryId)
+        {
+            var culture = CultureInfo.CurrentCulture.Name;
+            if (pageIndex == 0) pageIndex = 1;
+            var model = new GetManageProductPagingRequest()
+            {
+                LanguageId = culture,
+                CategoryId = categoryId,
+                pageIndex = pageIndex,
+                pageSize = 6
+            };
+            var pageResult = await _productApi.GetAllPaging(model);
+            var page = new PagedResultBase()
+            {
+                PageIndex = pageIndex,
+                PageSize = 6,
+                TotalRecords = pageResult.TotalRecords
+            };
+            var data = new ListProductViewModel()
+            {
+                listPro= pageResult.Items,
+                Pager = page
+            };
+            return View(data);
         }
     }
 }

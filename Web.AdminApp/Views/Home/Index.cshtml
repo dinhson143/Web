@@ -2,6 +2,7 @@
 @{
     ViewData["Title"] = "Trang chủ";
     var month = DateTime.Now.Month;
+    var date = DateTime.Now.Day +"/" + DateTime.Now.Month+"/" + DateTime.Now.Year;
     var doanhthu = Model.listDT;
     var OD = Model.listSLOD;
     var loinhuanthangnay = Model.listDT[month - 1].ToString("N0");
@@ -377,11 +378,11 @@
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                            Đơn hàng chờ xác nhận 
+                            Đơn hàng chờ xác nhận
                         </div>
                         <div class="row no-gutters align-items-center">
                             <div class="col-auto">
-                                <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">50%</div>
+                                <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">@Model.listOdIPro.Count</div>
                             </div>
                             <div class="col">
                                 <div class="progress progress-sm mr-2">
@@ -407,9 +408,9 @@
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                            Bình luận tháng @month
+                            Bình luận mới ngày @date
                         </div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">18</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.listCM.Count </div>
                     </div>
                     <div class="col-auto">
                         <i class="fas fa-comments fa-2x text-gray-300"></i>

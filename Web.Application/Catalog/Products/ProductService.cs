@@ -1057,7 +1057,7 @@ namespace Web.Application.Catalog.Products
                 }
             }
 
-            data = data.OrderBy(o => o.SluongDaban).Take(2).ToList();
+            data = data.OrderByDescending(o => o.SluongDaban).Take(2).ToList();
 
             foreach (var product in data)
             {
@@ -1251,7 +1251,7 @@ namespace Web.Application.Catalog.Products
             var listFv = from c in _context.ProductFavorites
                          join ct in _context.ProductTranslations on c.ProductId equals ct.ProductId
                          join ci in _context.ProductImages on c.ProductId equals ci.ProductId
-                         where c.UserId == user.Id && ct.LanguageId == request.LanguageID && c.Status == Status.Active
+                         where c.UserId == user.Id && ct.LanguageId == request.LanguageID && c.Status == Status.Active && ci.IsDefault == true
                          select new { c, ct, ci };
 
             return await listFv.Select(x => new ProductFavoriteViewModel()

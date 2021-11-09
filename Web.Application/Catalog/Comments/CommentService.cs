@@ -102,6 +102,39 @@ namespace Web.Application.Catalog.Comments
             return (listData);
         }
 
+        public async Task<List<CommentViewModel>> GetAllNow(string languageId)
+        {
+            var date = DateTime.Now;
+            var list = from c in _context.Comments
+                       where c.DateCreated.Day == date.Day && c.DateCreated.Month == date.Month && c.DateCreated.Year == date.Year
+                       select new { c };
+
+            var listData = new List<CommentViewModel>();
+            foreach (var item in list)
+            {
+                var data = new CommentViewModel()
+                {
+                    Content = item.c.Content,
+                    DateCreated = item.c.DateCreated,
+                    Status = item.c.Status,
+                    ParentId = item.c.ParentId,
+                    ProductId = item.c.ProductId,
+                    UserId = item.c.UserId,
+                    Star = item.c.Star
+                };
+
+                listData.Add(data);
+            }
+            foreach (var item in listData)
+            {
+                var user = await _userManager.FindByIdAsync(item.UserId.ToString());
+                var productTranslation = await _context.ProductTranslations.FirstOrDefaultAsync(x => x.ProductId == item.ProductId && x.LanguageId == languageId);
+                item.TenSP = productTranslation.Name;
+                item.TenUser = user.UserName;
+            }
+            return (listData);
+        }
+
         public async Task<List<CommentViewModel>> GetAllweb(int productID, string languageId)
         {
             var list = from c in _context.Comments

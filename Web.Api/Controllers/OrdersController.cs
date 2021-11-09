@@ -71,6 +71,13 @@ namespace Web.Api.Controllers
             return Ok(result);
         }
 
+        [HttpGet("get-all-order-inProgress/{languageID}")]
+        public async Task<IActionResult> GetallOrderInProgress(string languageID)
+        {
+            var result = await _manageservice.GetallOrderInProgress(languageID);
+            return Ok(result);
+        }
+
         [HttpGet("cancel-order/{userId}/{orderId}")]
         public async Task<IActionResult> CancelOrder(Guid userId, int orderId)
         {

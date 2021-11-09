@@ -14,6 +14,8 @@ namespace Web.Application.Catalog.Comments
 
         public Task<List<CommentViewModel>> GetAllweb(int productID, string languageId);
 
+        public Task<List<CommentViewModel>> GetAllNow(string languageId);
+
         public Task<int> Delete(int id);
 
         public Task<ResultApi<string>> CreateComment(CommentCreate request);

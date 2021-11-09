@@ -25,6 +25,8 @@ namespace Web.Application.Catalog.Orders
 
         public Task<List<OrderViewModel>> GetallOrderConfirm(string languageID);
 
+        public Task<List<OrderViewModel>> GetallOrderInProgress(string languageID);
+
         public Task<int> CancelOrder(Guid userId, int orderId);
 
         public Task<int> ConfirmOrder(int orderId);

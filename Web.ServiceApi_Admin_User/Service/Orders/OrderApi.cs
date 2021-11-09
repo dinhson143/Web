@@ -175,5 +175,22 @@ namespace Web.ServiceApi_Admin_User.Service.Orders
 
             return response.IsSuccessStatusCode;
         }
+
+        public async Task<ResultApi<List<OrderViewModel>>> GetallOrderInProgress(string languageID, string BearerToken)
+        {
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", BearerToken);
+
+            var response = await client.GetAsync($"/api/Orders/get-all-order-inProgress/{languageID}");
+            if (response.IsSuccessStatusCode)
+            {
+                var body = await response.Content.ReadAsStringAsync();
+                var list = JsonConvert.DeserializeObject<List<OrderViewModel>>(body);
+                return new ResultSuccessApi<List<OrderViewModel>>(list);
+            }
+            return new ResultErrorApi<List<OrderViewModel>>("Không thể lấy danh sách Orders");
+        }
     }
 }

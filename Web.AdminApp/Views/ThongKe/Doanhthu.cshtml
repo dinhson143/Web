@@ -68,7 +68,7 @@
                 @if (doanhthu > 0)
             {
 
-                <h3 style="color:green; background-color:yellow">DOANH THU: @doanhthu VND</h3>
+            <h3 style="color:green; background-color:yellow">DOANH THU: @doanhthu.ToString("N0") VND</h3>
             }
             </form>
             
@@ -91,6 +91,9 @@
                                 <th>
                                     Tổng tiền gốc
                                 </th>
+                                <th>
+                                    Doanh thu
+                                </th>
                             </tr>
                         </thead>
                         <tfoot>
@@ -102,31 +105,46 @@
                                     Ngày đặt hàng
                                 </th>
                                 <th>
-                                    Tổng tiền
+                                    Tổng tiền nhận
                                 </th>
                                 <th>
                                     Tổng tiền gốc
+                                </th>
+                                <th>
+                                    Doanh thu
                                 </th>
                             </tr>
                         </tfoot>
                         <tbody>
                             @foreach (var item in Model.listOd)
                             {
-                                <tr>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.Id)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.OrderDate)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.Tongtien)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.TongtienReal)
-                                    </td>
-                                </tr>
-                            }
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Id)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.OrderDate)
+                                </td>
+                                <td>
+                                    @{
+                                        var tongtien = item.Tongtien.ToString("N0");
+                                    }
+                                    @Html.DisplayFor(modelItem => tongtien)
+                                </td>
+                                <td>
+                                    @{
+                                        var tongtienReal = item.TongtienReal.ToString("N0");
+                                    }
+                                    @Html.DisplayFor(modelItem => tongtienReal)
+                                </td>
+                                <td>
+                                    @{ 
+                                        var loinhuan = (item.TongtienReal - item.Tongtien).ToString("N0");
+                                    }
+                                    <p>@loinhuan</p>
+                                </td>
+                            </tr>
+                                        }
                         </tbody>
                     </table>
                 }

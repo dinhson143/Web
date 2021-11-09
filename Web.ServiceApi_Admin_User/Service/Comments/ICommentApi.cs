@@ -14,6 +14,8 @@ namespace Web.ServiceApi_Admin_User.Service.Comments
 
         public Task<ResultApi<List<CommentViewModel>>> GetAllWeb(int productID, string languageId);
 
+        public Task<ResultApi<List<CommentViewModel>>> GetAllNow(string languageId, string BearerToken);
+
         public Task<bool> Delete(int commentId, string BearerToken);
 
         public Task<ResultApi<string>> CreateComment(CommentCreate request, string BearerToken);

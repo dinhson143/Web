@@ -67,6 +67,23 @@ namespace Web.ServiceApi_Admin_User.Service.Comments
             return new ResultErrorApi<List<CommentViewModel>>("Không thể lấy danh sách bình luận");
         }
 
+        public async Task<ResultApi<List<CommentViewModel>>> GetAllNow(string languageId, string BearerToken)
+        {
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", BearerToken);
+
+            var response = await client.GetAsync("/api/Comments/danh-sach-now?languageId=" + languageId);
+            if (response.IsSuccessStatusCode)
+            {
+                var body = await response.Content.ReadAsStringAsync();
+                var list = JsonConvert.DeserializeObject<List<CommentViewModel>>(body);
+                return new ResultSuccessApi<List<CommentViewModel>>(list);
+            }
+            return new ResultErrorApi<List<CommentViewModel>>("Không thể lấy danh sách bình luận");
+        }
+
         public async Task<ResultApi<List<CommentViewModel>>> GetAllWeb(int productID, string languageId)
         {
             var client = _httpClientFactory.CreateClient();

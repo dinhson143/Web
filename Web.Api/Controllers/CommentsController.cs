@@ -36,6 +36,13 @@ namespace Web.Api.Controllers
             return result;
         }
 
+        [HttpGet("danh-sach-now")]
+        public async Task<List<CommentViewModel>> GetAllNow(string languageID)
+        {
+            var result = await _commentService.GetAllNow(languageID);
+            return result;
+        }
+
         [HttpGet("danh-sach-web")]
         [AllowAnonymous]
         public async Task<List<CommentViewModel>> GetAllWeb(int productID, string languageID)

@@ -10,6 +10,8 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Web.AdminApp.Models;
 using Web.Models;
+using Web.ServiceApi_Admin_User.Service.Comments;
+using Web.ServiceApi_Admin_User.Service.Orders;
 using Web.ServiceApi_Admin_User.Service.Thongkes;
 using Web.ServiceApi_Admin_User.Service.Users;
 using Web.Utilities.Contants;
@@ -22,13 +24,17 @@ namespace Web.AdminApp.Controllers
     {
         private readonly IThongKeApi _thongKeApi;
         private readonly IUserApi _userApi;
+        private readonly IOrderApi _orderApi;
+        private readonly ICommentApi _commentApi;
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger, IThongKeApi thongKeApi, IUserApi userApi)
+        public HomeController(ILogger<HomeController> logger, IThongKeApi thongKeApi, IUserApi userApi, ICommentApi commentApi, IOrderApi orderApi)
         {
             _logger = logger;
             _thongKeApi = thongKeApi;
             _userApi = userApi;
+            _orderApi = orderApi;
+            _commentApi = commentApi;
         }
 
         public async Task<IActionResult> Index()
@@ -138,13 +144,19 @@ namespace Web.AdminApp.Controllers
             listUS.Add(listTVD.Count);
             listUS.Add(listTVB.Count);
             listUS.Add(listTVV.Count);
+            //get all order inprogress
+            var orders = await _orderApi.GetallOrderInProgress(languageId, token);
+            //get bình luận theo ngày
+            var comments = await _commentApi.GetAllNow(languageId, token);
             //
             var kq = new ProductSavestModel()
             {
                 listDT = listDT,
                 listSLOD = listSLOD,
                 listPro = products.ResultObj,
-                listUS = listUS
+                listUS = listUS,
+                listOdIPro = orders.ResultObj,
+                listCM = comments.ResultObj
             };
             return View(kq);
         }

@@ -11,5 +11,6 @@ namespace Web.Models
     {
         public List<ProductViewModel> listPro { get; set; }
         public PagedResultBase Pager { get; set; }
+        public string keyWord { get; set; }
     }
 }

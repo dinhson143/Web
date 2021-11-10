@@ -189,6 +189,10 @@
     <value>Sản phẩm liên quan</value>
     <comment>ProductDetail</comment>
   </data>
+  <data name="Search" xml:space="preserve">
+    <value>Tìm kiếm</value>
+    <comment>Home / Products</comment>
+  </data>
   <data name="Sort By" xml:space="preserve">
     <value>Sắp xếp theo</value>
     <comment>Product/ProductForCategory</comment>

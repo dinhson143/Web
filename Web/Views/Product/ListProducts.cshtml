@@ -8,6 +8,7 @@
 }
 @section Scripts{
     <link href="~/css/sale.css" rel="stylesheet" />
+    <link href="~/css/SearchStyle.css" rel="stylesheet" />
 }
 <div class="span9">
     <ul class="breadcrumb">
@@ -15,15 +16,13 @@
         <li class="active"><localize>Products</localize></li>
     </ul>
     <hr class="soft" />
-    <form class="form-horizontal span6">
-        <div class="control-group">
-            <label class="control-label alignL">Sort By </label>
-            <select>
-                <option>Priduct name A - Z</option>
-                <option>Priduct name Z - A</option>
-                <option>Priduct Stoke</option>
-                <option>Price Lowest first</option>
-            </select>
+    <form class="form-horizontal span6" style="margin:20px 0" method="post" asp-action="ListProducts">
+        <div class="box">
+            <div class="container-1">
+                <span class="icon"><i class="fa fa-search"></i></span>
+                <input type="search" id="search" asp-for="keyWord" placeholder="Search..." />
+                <button type="submit" style="margin: 0 10px; height: 45px;" id="submitButton" class="btn btn-primary"><localize>Search</localize></button>
+            </div>
         </div>
     </form>
 

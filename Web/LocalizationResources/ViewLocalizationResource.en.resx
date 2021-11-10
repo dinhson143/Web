@@ -189,6 +189,10 @@
     <value>Related Products</value>
     <comment>ProductDetail</comment>
   </data>
+  <data name="Search" xml:space="preserve">
+    <value>Search</value>
+    <comment>Home / Products</comment>
+  </data>
   <data name="Sort By" xml:space="preserve">
     <value>Sort By</value>
     <comment>Product/ProductForCategory</comment>

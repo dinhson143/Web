@@ -114,7 +114,7 @@ namespace Web.Controllers
             return RedirectToAction("ProductDetail", "Product", new { id = ProductId });
         }
 
-        public async Task<IActionResult> ListProducts(int pageIndex, int? categoryId)
+        public async Task<IActionResult> ListProducts(int pageIndex,string keyWord, int? categoryId)
         {
             var culture = CultureInfo.CurrentCulture.Name;
             if (pageIndex == 0) pageIndex = 1;
@@ -123,7 +123,8 @@ namespace Web.Controllers
                 LanguageId = culture,
                 CategoryId = categoryId,
                 pageIndex = pageIndex,
-                pageSize = 6
+                pageSize = 6,
+                Keyword = keyWord
             };
             var pageResult = await _productApi.GetAllPaging(model);
             var page = new PagedResultBase()
@@ -138,6 +139,6 @@ namespace Web.Controllers
                 Pager = page
             };
             return View(data);
-        }
+        }     
     }
 }

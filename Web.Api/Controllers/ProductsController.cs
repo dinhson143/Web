@@ -52,6 +52,14 @@ namespace Web.Api.Controllers
             return Ok(Product);
         }
 
+        [HttpGet("product_detail_name/{productName}/{languageId}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetProductByName(string productName, string languageId)
+        {
+            var Product = await _manageservice.GetProductByName(productName, languageId);
+            return Ok(Product);
+        }
+
         [HttpGet("product_lienquan/{productId}/{languageId}")]
         [AllowAnonymous]
         public async Task<IActionResult> GetProductLQ(int productId, string languageId)

@@ -638,7 +638,145 @@ namespace Web.Application.Catalog.Products
 
             return new ResultSuccessApi<ProductViewModel>(data);
         }
+        public async Task<ResultApi<ProductViewModel>> GetProductByName(string productName, string languageId)
+        {
+            var query_productTranslation = from pt in _context.ProductTranslations
+                         where pt.LanguageId == languageId 
+                         select pt;
+            var productTranslation = query_productTranslation.Where(x => x.Name.Contains(productName)).First();
+            if (productTranslation == null) return null;
+            var product = await _context.Products.FindAsync(productTranslation.ProductId);
+            //
+            var categories = await (from c in _context.Categories
+                                    join ct in _context.CategoryTranslations on c.Id equals ct.CategoryId
+                                    join pc in _context.ProductInCategories on c.Id equals pc.CategoryId
+                                    where pc.ProductId == product.Id && ct.LanguageId == languageId
+                                    select ct).ToListAsync();
+            var categoryName = new List<string>();
+            foreach (var item in categories)
+            {
+                categoryName.Add(item.Name);
+            }
+            //
+            var sizes = await (from s in _context.Sizes
+                               join ps in _context.PCSs on s.Id equals ps.SizeId
+                               where ps.ProductId == product.Id
+                               select s.Name).ToListAsync();
+            //
+            var danhgia = await (from c in _context.Comments
+                                 where c.ProductId == product.Id
+                                 select c).ToListAsync();
 
+            decimal diem = 0;
+            var dem = 0;
+            foreach (var item in danhgia)
+            {
+                diem += item.Star;
+                dem++;
+            }
+            if (dem != 0)
+            {
+                decimal diemDM = diem / dem;
+                diem = Math.Round(diemDM);
+            }
+            //
+            List<ProductSizeViewModel> list = new List<ProductSizeViewModel>();
+            var query = from p in _context.PCSs
+                        join s in _context.Sizes on p.SizeId equals s.Id
+                        where p.ProductId == product.Id
+                        select new { p, s };
+            foreach (var pcs in query)
+            {
+                var x = new ProductSizeViewModel()
+                {
+                    Size = pcs.s.Name,
+                    SizeId = pcs.p.SizeId,
+                    OriginalPrice = pcs.p.OriginalPrice,
+                    Price = pcs.p.Price,
+                    Stock = pcs.p.Stock
+                };
+                list.Add(x);
+            }
+            //
+            var data = new ProductViewModel()
+            {
+                Id = product.Id,
+                ViewCount = product.ViewCount,
+                DateCreated = product.DateCreated,
+                Name = productTranslation.Name,
+                Description = productTranslation.Description,
+                Details = productTranslation.Details,
+                SeoDescription = productTranslation.SeoDescription,
+                SeoTitle = productTranslation.SeoTitle,
+                SeoAlias = productTranslation.SeoAlias,
+                LanguageId = productTranslation.LanguageId,
+                Categories = categoryName,
+                Sizes = sizes,
+                IsFeatured = product.IsFeatured,
+                listPS = list,
+                Diem = diem
+            };
+            //get khuyến mãi
+            var query2 = from p in _context.Promotions
+                             //where p.Status == Status.Active
+                         select new { p };
+
+            var listPromotion = await query2.Select(x => new PromotionViewModel()
+            {
+                ApplyAll = x.p.ApplyForAll,
+                DiscountAmount = x.p.DiscountAmount,
+                DiscountPercent = x.p.DiscountPercent,
+                FromDate = x.p.FromDate,
+                ToDate = x.p.ToDate,
+                Name = x.p.Name,
+                Id = x.p.Id,
+                ProductCategoryIds = x.p.ProductCategoryIds,
+                ProductIDs = x.p.ProductIds,
+                Status = x.p.Status.ToString()
+            }).ToListAsync();
+            var dn = DateTime.Now;
+            foreach (var item in listPromotion)
+            {
+                if ((dn.Ticks > item.FromDate.Ticks) && (dn.Ticks < item.ToDate.Ticks))
+                {
+                    string[] products = item.ProductIDs.Split(',');
+                    foreach (var id in products)
+                    {
+                        if (id != "" && data.Id == Int32.Parse(id))
+                        {
+                            data.DiscountPercent = item.DiscountPercent;
+                            data.DiscountAmount = item.DiscountAmount;
+                            break;
+                        }
+                    }
+                }
+            }
+            foreach (var item in listPromotion)
+            {
+                if ((dn.Ticks > item.FromDate.Ticks) && (dn.Ticks < item.ToDate.Ticks))
+                {
+                    string[] categoriesID = item.ProductCategoryIds.Split(',');
+                    foreach (var id in categoriesID)
+                    {
+                        if (id != "")
+                        {
+                            var kiemtra = (from p in _context.Products
+                                           join pic in _context.ProductInCategories on p.Id equals pic.ProductId
+                                           where p.Status == Status.Active && (Int32.Parse(id) == pic.CategoryId) && p.Id == data.Id
+                                           select new { p });
+                            int totalKiemtra = await kiemtra.CountAsync();
+                            if (totalKiemtra > 0)
+                            {
+                                if (data.DiscountPercent == null) data.DiscountPercent = item.DiscountPercent;
+                                if (data.DiscountAmount != null) data.DiscountAmount = item.DiscountAmount;
+                            }
+                        }
+                    }
+                }
+            }
+
+            return new ResultSuccessApi<ProductViewModel>(data);
+        }
         public List<ProductSizeViewModel> GetProductSize(int ProductId)
         {
             List<ProductSizeViewModel> list = new List<ProductSizeViewModel>();

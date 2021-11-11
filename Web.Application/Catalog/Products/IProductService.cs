@@ -22,6 +22,7 @@ namespace Web.Application.Catalog.Products
         public Task<int> DeleteProductFV(Guid userId, int productId);
 
         public Task<ResultApi<ProductViewModel>> GetProductById(int productId, string languageId);
+        public Task<ResultApi<ProductViewModel>> GetProductByName(string productName, string languageId);
 
         public Task<ResultApi<List<ProductViewModel>>> GetProductLQ(int productId, string languageId);
 

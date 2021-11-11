@@ -149,6 +149,18 @@ namespace Web.ServiceApi_Admin_User.Service.Products
             return JsonConvert.DeserializeObject<ResultApi<ProductViewModel>>(result);
         }
 
+        public async Task<ResultApi<ProductViewModel>> GetProductByName(string productName, string languageId)
+        {
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+            
+            var response = await client.GetAsync($"/api/Products/product_detail_name/{productName}/{languageId}");
+
+            var result = await response.Content.ReadAsStringAsync();
+
+            return JsonConvert.DeserializeObject<ResultApi<ProductViewModel>>(result);
+        }
+
         public async Task<List<ProductViewModel>> GetFeaturedProducts(string languageId, int soluong)
         {
             var client = _httpClientFactory.CreateClient();

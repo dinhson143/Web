@@ -28,7 +28,7 @@ namespace Web.ServiceApi_Admin_User.Service.Products
         public Task<ResultApi<string>> AddViewCount(int productId);
 
         public Task<ResultApi<ProductViewModel>> GetProductById(int productId, string BearerToken, string languageId);
-        public Task<ResultApi<ProductViewModel>> GetProductByName(string productName, string languageId);
+        public Task<string> GetProductByName(string productName, string languageId);
         public Task<ResultApi<List<ProductViewModel>>> GetProductLQ(int productId, string languageId);
 
         public Task<List<ProductViewModel>> GetFeaturedProducts(string languageId, int soluong);

@@ -114,25 +114,26 @@
     </div>
     <!-- Header End====================================================================== -->
     @RenderSection("slider", required: false)
-    <div id="mainBody">
-        <div class="container">
-            <div class="row">
-                <!-- Sidebar ================================================== -->
-                @await Component.InvokeAsync("SideBar")
-                <!-- Sidebar end=============================================== -->
-                <div class="span9">
-                    @RenderBody()
-                </div>
+<div id="mainBody">
+    <div class="container">
+        <div class="row">
+            <!-- Sidebar ================================================== -->
+            @await Component.InvokeAsync("SideBar")
+            <!-- Sidebar end=============================================== -->
+            <div class="span9">
+                @RenderBody()
             </div>
         </div>
-        <!-- ChatBot -->
-    <df-messenger 
+    </div>
+    <!-- ChatBot -->
+    <df-messenger intent="WELCOME"
+                  wait-open
                   chat-icon="https://cdn-icons-png.flaticon.com/512/134/134914.png"
                   chat-title="🙈Gấu-Bông-Online🙈"
-                  agent-id="d6ced2ea-9b93-4081-a763-20c90fb6ef9e"
-                  language-code="en"></df-messenger>
-        <!-- ChatBot end -->
-    </div>
+                  agent-id="d9bb31e0-e1db-4db4-a171-cb4edddd9f6f"
+                  language-code="vi"></df-messenger>
+    <!-- ChatBot end -->
+</div>
 
 
     <!-- Footer ================================================================== -->

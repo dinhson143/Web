@@ -134,6 +134,7 @@ namespace Web.Api
             });
             // FluentValidator
             services.AddControllers().AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<LoginRequestValidator>());
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

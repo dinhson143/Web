@@ -638,13 +638,16 @@ namespace Web.Application.Catalog.Products
 
             return new ResultSuccessApi<ProductViewModel>(data);
         }
-        public async Task<ResultApi<ProductViewModel>> GetProductByName(string productName, string languageId)
+        public async Task<string> GetProductByName(string productName, string languageId)
         {
             var query_productTranslation = from pt in _context.ProductTranslations
                          where pt.LanguageId == languageId 
                          select pt;
-            var productTranslation = query_productTranslation.Where(x => x.Name.Contains(productName)).First();
-            if (productTranslation == null) return null;
+            var productTranslations = query_productTranslation.Where(x => x.Name.Contains(productName));
+            int totalRow = await productTranslations.CountAsync();
+            if(totalRow==0) return "Không tìm thấy sản phẩm này";
+            var productTranslation = productTranslations.First();
+            if (productTranslation == null) return "Không tìm thấy sản phẩm này";
             var product = await _context.Products.FindAsync(productTranslation.ProductId);
             //
             var categories = await (from c in _context.Categories
@@ -774,8 +777,16 @@ namespace Web.Application.Catalog.Products
                     }
                 }
             }
-
-            return new ResultSuccessApi<ProductViewModel>(data);
+            string message = "Sản phẩm đã hết hàng 🤪🤪. Truy cập 💁 https://localhost:44388/vi/Product/ListProducts 💁 để xem sản phẩm khác !!!";
+            foreach(var item in data.listPS)
+            {
+                if (item.Stock > 0)
+                {
+                    message = "Sản phẩm " + data.Name + " còn hàng trong kho ⭐⭐⭐. Truy cập 💁 https://localhost:44388/vi/Product/ListProducts 💁 để xem thông tin chi tiết !!!";
+                    break;
+                }
+            }
+            return message;
         }
         public List<ProductSizeViewModel> GetProductSize(int ProductId)
         {

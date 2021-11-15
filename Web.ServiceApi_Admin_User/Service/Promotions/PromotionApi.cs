@@ -64,5 +64,14 @@ namespace Web.ServiceApi_Admin_User.Service.Promotions
             var response = await client.DeleteAsync($"/api/Promotions/Block/{promotionId}");
             return response.IsSuccessStatusCode;
         }
+
+        public async Task<string> KiemtraPromotions()
+        {
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+           var response = await client.GetAsync($"/api/Promotions/kiem-tra-khuyen-mai");
+            var result = await response.Content.ReadAsStringAsync();
+            return result;
+        }
     }
 }

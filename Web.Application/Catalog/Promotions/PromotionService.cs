@@ -82,5 +82,35 @@ namespace Web.Application.Catalog.Promotions
             }).ToListAsync();
             return list;
         }
+        public async Task<string> KiemtraPromotions()
+        {
+            string message = "Hiện tại cửa hàng không có đợt khuyến mãi nào 😅😅😅.";
+            // get list promotion
+            var query2 = from p in _context.Promotions
+                             //where p.Status == Status.Active
+                         select new { p };
+            var listPromotion = await query2.Select(x => new PromotionViewModel()
+            {
+                ApplyAll = x.p.ApplyForAll,
+                DiscountAmount = x.p.DiscountAmount,
+                DiscountPercent = x.p.DiscountPercent,
+                FromDate = x.p.FromDate,
+                ToDate = x.p.ToDate,
+                Name = x.p.Name,
+                Id = x.p.Id,
+                ProductCategoryIds = x.p.ProductCategoryIds,
+                ProductIDs = x.p.ProductIds,
+                Status = x.p.Status.ToString()
+            }).ToListAsync();
+            var dn = DateTime.Now;
+            foreach (var item in listPromotion)
+            {
+                if ((dn.Ticks >= item.FromDate.Ticks) && (dn.Ticks <= item.ToDate.Ticks))
+                {
+                    message = " Hiện tại cửa hàng đang có đợt khuyến mãi " + item.Name + " 🌟🌟🌟. Xem các sản phẩm đang được khuyến mãi 💁 https://localhost:44388/vi/Product/ListProducts 💁.";
+                }
+            }
+            return message;
+        }
     }
 }

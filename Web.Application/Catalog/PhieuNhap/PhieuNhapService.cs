@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Web.Data.EF;
 using Web.Data.Entities;
 using Web.Data.Enums;
+using Web.Utilities.Exceptions;
 using Web.ViewModels.Catalog.Common;
 using Web.ViewModels.Catalog.LoaiPhieus;
 using Web.ViewModels.Catalog.PhieuNhaps;
@@ -47,7 +48,7 @@ namespace Web.Application.Catalog.PhieuNhap
             var pcs = await _context.PCSs.FirstOrDefaultAsync(x => x.ProductId == request.ProductId
            && x.SizeId == request.SizeId);
 
-            pcs.Stock = request.Soluong;
+            pcs.Stock += request.Soluong;
             pcs.OriginalPrice = request.Giaban;
 
             var result = await _context.SaveChangesAsync();
@@ -58,7 +59,7 @@ namespace Web.Application.Catalog.PhieuNhap
             return false;
         }
 
-        public async Task<ResultApi<string>> CreatePhieuNhap(PhieuNhapCreate request)
+        public async Task<string> CreatePhieuNhap(PhieuNhapCreate request)
         {
             var list = await _context.LoaiPhieus.Where(x => x.Status == Status.Active).Select(x => new LoaiPhieuViewModel()
             {
@@ -88,9 +89,9 @@ namespace Web.Application.Catalog.PhieuNhap
             var result = await _context.SaveChangesAsync();
             if (result > 0)
             {
-                return new ResultSuccessApi<string>("Thêm Phiếu nhập thành công");
+                return pn.Id.ToString();
             }
-            return new ResultErrorApi<string>("Thêm Phiếu nhập thất bại");
+            return "Tạo mới phiếu nhập thất bại";
         }
 
         public async Task<List<PhieuNhapViewModel>> GetAll()
@@ -150,6 +151,14 @@ namespace Web.Application.Catalog.PhieuNhap
                 ctpn.TenSP = productTranslation.Name;
             }
             return listCTPN;
+        }
+        public async Task<int> Delete(int id)
+        {
+            var pn = await _context.PhieuNXs.FindAsync(id);
+            if (pn == null) throw new WebException($"Cannot find a bình luận with id: {id}");
+
+            pn.Status = Status.InActive;
+            return await _context.SaveChangesAsync();
         }
     }
 }

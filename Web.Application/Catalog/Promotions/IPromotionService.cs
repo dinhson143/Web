@@ -15,5 +15,6 @@ namespace Web.Application.Catalog.Promotions
         public Task<List<PromotionViewModel>> GetAll();
 
         public Task<int> Block(int id);
+        public Task<string> KiemtraPromotions();
     }
 }

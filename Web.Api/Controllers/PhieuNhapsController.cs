@@ -49,5 +49,11 @@ namespace Web.Api.Controllers
             var ctpn = await _phieuNhapService.GetDetailPNById(pnId, languageId);
             return Ok(ctpn);
         }
+        [HttpDelete("Delete/{pnId}")]
+        public async Task<IActionResult> Delete(int pnId)
+        {
+            var result = await _phieuNhapService.Delete(pnId);
+            return Ok(result);
+        }
     }
 }

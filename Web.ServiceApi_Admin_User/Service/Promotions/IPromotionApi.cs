@@ -15,5 +15,6 @@ namespace Web.ServiceApi_Admin_User.Service.Promotions
         public Task<ResultApi<List<PromotionViewModel>>> GetAll();
 
         public Task<bool> Block(int promotionId, string BearerToken);
+        public Task<string> KiemtraPromotions();
     }
 }

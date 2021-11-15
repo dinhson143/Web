@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -59,28 +60,74 @@ namespace Web.AdminApp.Controllers
             }
             var data = new PhieuNhapCreateViewModel();
             data.Congtys = result.ResultObj;
+            // ctpn
+            var languageId = HttpContext.Session.GetString(SystemContants.AppSettings.DefaultLanguageId);
+            var token = HttpContext.Session.GetString(SystemContants.AppSettings.Token);
+
+            var model = new GetManageProductPagingRequest()
+            {
+                LanguageId = languageId,
+                BearerToken = token
+            };
+            var pageResult = await _productApi.GetAll(model);
+
+            foreach (var product in pageResult.Items)
+            {
+                var result2 = await _productApi.GetProductSize(product.Id, token);
+                var ps = new SizeofProductViewModel()
+                {
+                    Id = product.Id,
+                    Name = product.Name,
+                    listPS = result2.ResultObj
+                };
+                data.listProduct.Add(ps);
+            }
+            //
             return View(data);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(int CurrentCongtyId)
+        public async Task<string> Create(int CurrentCongtyId, List<CTPhieuNhapCreateViewModel> listCTPN)
         {
             var request = new PhieuNhapCreate();
             request.CongTyId = CurrentCongtyId;
-            if (!ModelState.IsValid)
-            {
-                return View();
-            }
+            var languageId = HttpContext.Session.GetString(SystemContants.AppSettings.DefaultLanguageId);
             var token = HttpContext.Session.GetString(SystemContants.AppSettings.Token);
-            var result = await _phieuNhapApi.CreatePhieuNhap(request, token);
+            bool check = true;
+            Dictionary<string, object> data = new Dictionary<string, object>();
 
+            var result = await _phieuNhapApi.CreatePhieuNhap(request, token);
             if (result.IsSuccess == false)
             {
                 ModelState.AddModelError("", result.Message);
-                return View(request);
+                check = false;
+                data.Add("mgs", check);
+                return JsonConvert.SerializeObject(data);
             }
-            TempData["Message"] = "Thêm phiếu nhập thành công";
-            return RedirectToAction("Index", "PhieuNhap");
+            var pnId = Int32.Parse(result.ResultObj);
+            foreach(var item in listCTPN)
+            {
+                var ctpnOB = new CTPhieuNhapCreate()
+                {
+                    Dongia = item.Dongia,
+                    Giaban = item.Giaban,
+                    PhieuNXId = pnId,
+                    ProductId = item.ProductId,
+                    SizeId = item.SizeId,
+                    Soluong = item.Soluong
+                };
+                
+                var taomoiCTPN = await _phieuNhapApi.CreateCTPhieuNhap(ctpnOB, token);
+                if (taomoiCTPN == false)
+                {
+                    check = false;
+                    data.Add("mgs", check);
+                    return JsonConvert.SerializeObject(data);
+                }
+            }
+            TempData["Message"] = "Thêm phiếu nhập thành công";              
+            data.Add("mgs", check);
+            return JsonConvert.SerializeObject(data);
         }
 
         [HttpGet]
@@ -163,6 +210,24 @@ namespace Web.AdminApp.Controllers
         {
             HttpContext.Session.SetString("ProductID", ProductId.ToString());
             return RedirectToAction("CreateCTPN", "PhieuNhap");
+        }
+        [HttpGet]
+        public async Task<IActionResult> Delete(int Id)
+        {
+            var token = HttpContext.Session.GetString(SystemContants.AppSettings.Token);
+            var result = await _phieuNhapApi.Delete(Id, token);
+            string message = "";
+            if (result == true)
+            {
+                message = "Xóa thành công";
+                TempData["Message"] = message;
+            }
+            else
+            {
+                message = "Xóa thất bại";
+                TempData["Message"] = message;
+            }
+            return RedirectToAction("Index", "PhieuNhap");
         }
     }
 }

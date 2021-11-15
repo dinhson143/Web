@@ -4,12 +4,97 @@
     ViewData["Title"] = "Create";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+@section Scripts{
+    <link href="~/css/Table.css" rel="stylesheet" />
+    <script type="text/javascript">
+
+        var listPro = JSON.parse('@Newtonsoft.Json.JsonConvert.SerializeObject(Model.listProduct)'.replace(/&quot;/g, "\""));
+
+        // setSize sản phẩm đầu tiên
+        var listSize = listPro[0].listPS;
+        for (let j = 0; j < listSize.length; j++) {
+            $('#size').append(`<option asp-for="SizeId" value="${listSize[j].SizeId}">
+                                ${listSize[j].Size}
+                            </option>`);
+        }
+
+        function chonsp() {
+            $('#size').empty();
+            var value = $('#sanphamDropdown :selected').val();
+
+            for (let i = 0; i < listPro.length; i++) {
+                if (value == listPro[i].Id) {
+                    var listSize = listPro[i].listPS;
+                    for (let j = 0; j < listSize.length; j++) {
+                        $('#size').append(`<option  value="${listSize[j].SizeId}">
+                                       ${listSize[j].Size}
+                                  </option>`);
+                    }
+                    break;
+                }
+            }
+
+        }
+    </script>
+    <script>
+        var listCTPN = [];        
+        $(document).ready(function () {
+            $(".add-row").click(function () {
+                var tenSP = $("#sanphamDropdown option:selected").text();
+                var size = $("#size option:selected").text();
+                var soluong = $("#soluong").val();
+                var giaban = $("#giaban").val();
+                var dongia = $("#dongia").val();
+
+                listCTPN.push({
+                    'ProductId': $("#sanphamDropdown").val(),
+                    'SizeId': $("#size ").val(),
+                    'Soluong': soluong,
+                    'Dongia': giaban,
+                    'Giaban': dongia
+                });
+                var markup = "<tr><td>" + tenSP + "</td><td>" + size + "</td><td>" + soluong + "</td><td>" + giaban + "</td><td>" + dongia + "</td><td><input type='checkbox' name='record'></td></tr>";
+                $("table tbody").append(markup);
+            });
+
+            // Find and remove selected table rows
+            $(".delete-row").click(function () {
+                $("table tbody").find('input[name="record"]').each(function () {
+                    if ($(this).is(":checked")) {
+                        $(this).parents("tr").remove();
+                    }
+                });
+            });
+        });
+    </script>
+    <script>
+        function CreatePN() {
+            var congtyID = $("#congtyID").val();
+            $.ajax({
+                url: "/PhieuNhap/Create",
+                data: { 'CurrentCongtyId': congtyID, 'listCTPN': listCTPN },
+                type: "POST",
+                dataType: "json",
+                //contentType: "application/json",
+                success: function (data) {
+                    console.log(data);
+                    if (data['mgs'] == true) {
+                        window.location = '/PhieuNhap/Index';
+                    }
+                }, error: function (er) {
+                    console.log(er);
+                }
+            });
+        }
+    </script>
+}
 <style>
     select {
         -webkit-appearance: none;
         -moz-appearance: none;
         appearance: none;
     }
+
     .dropdownx {
         -moz-border-bottom-colors: none;
         -moz-border-left-colors: none;
@@ -90,9 +175,48 @@
             padding: 6px 8px;
             text-shadow: none;
         }
-</style>
-<h1>Create</h1>
 
+    #sanphamDropdown {
+        font-size: 15px;
+        line-height: unset;
+        display: block;
+        font-weight: 600;
+        height: max-content;
+        margin: auto;
+        width: 100%;
+    }
+
+    #size {
+        height: max-content;
+        display: block;
+        margin: auto;
+        padding: 5px;
+    }
+
+    .form-group {
+        margin: auto;
+    }
+
+    .formCTPN {
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
+        padding: 10px 0;
+        border: solid 2px #000;
+        border-radius: 5px;
+        padding: 5px;
+        margin: 20px 0;
+    }
+    /*  table*/
+</style>
+<h4>Tạo mới phiếu nhập</h4>
+
+<div style="display:flex">
+    <div style="margin: 5px 0 5px auto">
+        <a class="btn btn-info" asp-action="Index">Trở về</a>
+    </div>
+    <button onclick="return CreatePN()" type="button" style="display:block;margin:5px 0 5px 5px" class="delete-row btn btn-success">Hoàn thành</button>
+</div>
 <hr />
 <div class="row">
     <div class="col-md-6">
@@ -100,16 +224,59 @@
         <form asp-action="Create" method="post">
 
             <div class="dropdownx">
-                <select class="dropdownx-select" asp-for="CurrentCongtyId" asp-items="@(new SelectList(Model.Congtys,"Id","Name",Model.CurrentCongtyId))">
+                <select id="congtyID" style="background:#fff !important;color:#000;" class="dropdownx-select" asp-for="CurrentCongtyId" asp-items="@(new SelectList(Model.Congtys,"Id","Name",Model.CurrentCongtyId))">
                 </select>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
-
+<div class="row">
+    @*<form class="formCTPN" asp-action="CreateCTPN" method="post">*@
+        <form class="formCTPN">
+            <div class="form-group">
+                <label class="control-label" style="padding:6px 10px;">Chọn sản phẩm</label>
+                <select id="sanphamDropdown" onchange="return chonsp()" class="dropdownx-select" asp-for="ProductId" asp-items="@(new SelectList(Model.listProduct,"Id","Name",Model.ProductId))">
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Size</label>
+                <select id="size" asp-for="SizeId">
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Số lượng</label>
+                <input id="soluong" asp-for="Soluong" class="form-control" />
+                <span asp-validation-for="Soluong" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Giá bán</label>
+                <input id="giaban" asp-for="Giaban" class="form-control" />
+                <span asp-validation-for="Giaban" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Đơn giá</label>
+                <input id="dongia" asp-for="Dongia" class="form-control" />
+                <span asp-validation-for="Dongia" class="text-danger"></span>
+            </div>
+            <input type="button" style="height:max-content; margin:auto 0 5px 0;" value="Thêm" class="btn btn-primary add-row" />
+            @*<a class="btn btn-primary" asp-action="Index">Back to List</a>*@
+        </form>
+</div>
 <div>
-    <a asp-action="Index">Back to List</a>
+    <button type="button" style="display:block;margin:5px 0 5px auto" class="delete-row btn btn-danger">Delete Row</button>
+    <table>
+        <thead>
+            <tr>
+                <th>TÊN SẢN PHẨM</th>
+                <th>SIZE</th>
+                <th>SỐ LƯỢNG</th>
+                <th>ĐƠN GIÁ</th>
+                <th>GIÁ BÁN</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
 </div>

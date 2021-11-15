@@ -89,5 +89,15 @@ namespace Web.ServiceApi_Admin_User.Service.PhieuNhaps
             }
             return null;
         }
+
+        public async Task<bool> Delete(int pnId, string BearerToken)
+        {
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", BearerToken);
+            var response = await client.DeleteAsync($"/api/PhieuNhaps/Delete/{pnId}");
+            return response.IsSuccessStatusCode;
+        }
     }
 }

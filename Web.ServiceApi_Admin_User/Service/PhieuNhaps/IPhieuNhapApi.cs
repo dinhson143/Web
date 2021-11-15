@@ -17,5 +17,6 @@ namespace Web.ServiceApi_Admin_User.Service.PhieuNhaps
         public Task<List<PhieuNXchitietViewModel>> GetPhieuNhapById(int id, string languageId, string BearerToken);
 
         public Task<bool> CreateCTPhieuNhap(CTPhieuNhapCreate request, string BearerToken);
+        public Task<bool> Delete(int pnId, string BearerToken);
     }
 }

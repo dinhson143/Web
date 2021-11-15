@@ -2,7 +2,7 @@
 @{
     ViewData["Title"] = "Trang chủ";
     var month = DateTime.Now.Month;
-    var date = DateTime.Now.Day +"/" + DateTime.Now.Month+"/" + DateTime.Now.Year;
+    var date = DateTime.Now.Day + "/" + DateTime.Now.Month + "/" + DateTime.Now.Year;
     var doanhthu = Model.listDT;
     var OD = Model.listSLOD;
     var loinhuanthangnay = Model.listDT[month - 1].ToString("N0");
@@ -324,6 +324,33 @@
             },
         });
     </script>
+    @*validate ngày*@
+<script>
+    var dateF = $('#dateFrom').val("");
+    var dateT = $('#dateTo').val("");
+    function btnXemClick() {
+        //alert("aaa");
+        //var dateF = new Date($('#dateFrom').val());
+        //var dateT = new Date($('#dateTo').val());
+        var day = dateF.getDate();
+        var month = dateF.getMonth() + 1;
+        var year = dateF.getFullYear();
+        var dateFrom = [month, day, year].join('-');
+        //
+        var day2 = dateT.getDate();
+        var month2 = dateT.getMonth() + 1;
+        var year2 = dateT.getFullYear();
+        var dateTo = [month2, day2, year2].join('-');
+        if (isNaN(day) == true || isNaN(day2) == true) {
+            $('.noteMes').text("Vui lòng chọn ngày");
+            return false;
+        }
+        if (dateF.getTime() > dateT.getTime()) {
+            $('.noteMes').text("Ngày không hợp lệ");
+            return false;
+        }
+    }
+</script>
 }
 @*Page Heading*@
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
@@ -501,6 +528,15 @@
 </div>
 
 <!-- Content Row  sản phẩm bán chạy nhất-->
+<form asp-action="Index" asp-controller="Home" method="post" style="text-align:center">
+    <label style="margin:0 5px">From</label>
+    <input placeholder="dd-mm-yyyy" value="(DATE)" asp-for="From" type="date" id="dateFrom">
+    <label style="margin:0 5px">To</label>
+    <input placeholder="dd-mm-yyyy" value="" asp-for="To" type="date" id="dateTo">
+
+    <button type="submit" onclick="return btnXemClick()" class="btn btn-primary btnXem">Xem</button>
+</form>
+<p class="noteMes" style="text-align: center; color: red; background-color: cornsilk;"></p>
 <div class="row">
 
     <!-- Content Column -->
@@ -509,7 +545,11 @@
         <!-- Project Card Example -->
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">5 Sản phẩm bán chạy nhất</h6>
+                @{ 
+                    var from = Model.From.Day + "/" + Model.From.Month + "/" + Model.From.Year;
+                    var to = @Model.To.Day + "/" + @Model.To.Month + "/" + @Model.To.Year;
+                }
+                <h6 class="m-0 font-weight-bold text-primary">5 Sản phẩm bán chạy nhất từ @from tới @to</h6>
             </div>
             <div class="card-body">
                 <h4 class="small font-weight-bold">

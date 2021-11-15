@@ -92,7 +92,7 @@
                                     @Html.DisplayFor(modelItem => item.Status)
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.Tongtien)
+                                    <p>@item.Tongtien.ToString("N0")</p>
                                 </td>
                                 <td>
                                     @Html.ActionLink("Details", "Details", new { id = item.Id }) |

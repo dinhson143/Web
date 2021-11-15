@@ -37,6 +37,14 @@ namespace Web.Api.Controllers
             return result;
         }
 
+        [HttpGet("kiem-tra-khuyen-mai")]
+        [AllowAnonymous]
+        public async Task<string> KiemtraPromotions()
+        {
+            var result = await _manageservice.KiemtraPromotions();
+            return result;
+        }
+
         [HttpDelete("Block/{promotionId}")]
         public async Task<IActionResult> Delete(int promotionId)
         {

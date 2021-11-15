@@ -10,7 +10,8 @@ namespace Web.Application.Catalog.PhieuNhap
 {
     public interface IPhieuNhapService
     {
-        public Task<ResultApi<string>> CreatePhieuNhap(PhieuNhapCreate request);
+        public Task<int> Delete(int id);
+        public Task<string> CreatePhieuNhap(PhieuNhapCreate request);
 
         public Task<bool> CreateCTPhieuNhap(CTPhieuNhapCreate request);
 

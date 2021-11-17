@@ -34,6 +34,16 @@ namespace Web.Api.Controllers
             var result = await _userService.GetAllPaging(request);
             return result.ResultObj;
         }
+        [HttpGet("get-all-shippers")]
+        public async Task<PageResult<UserViewModel>> GetAllShipperPaging([FromQuery] GetUserPagingRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return null;
+            }
+            var result = await _userService.GetAllShipperPaging(request);
+            return result.ResultObj;
+        }
 
         [HttpGet("getUser/{IdUser}")]
         public async Task<UserViewModel> GetUserById(Guid IdUser)

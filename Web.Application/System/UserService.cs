@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using MimeKit;
 using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
@@ -383,6 +384,58 @@ namespace Web.Application.System
                 Diem = user.Diem
             };
             return new ResultSuccessApi<UserViewModel>(userViewmodel);
+        }
+        public async Task<ResultApi<PageResult<UserViewModel>>> GetAllShipperPaging(GetUserPagingRequest request)
+        {
+            var listSP = new List<UserViewModel>();
+            var query =  _userManager.Users;
+            if (!string.IsNullOrEmpty(request.Keyword))
+            {
+                query = query.Where(x => x.UserName.Contains(request.Keyword) || x.PhoneNumber.Contains(request.Keyword) || x.Email.Contains(request.Keyword));
+            }
+
+            // 3 .Paging
+            int totalRow = await query.CountAsync();
+            var data = await query
+                //.Skip((request.pageIndex - 1) * request.pageSize)
+                //.Take(request.pageSize)
+                .Select(x => new UserViewModel()
+                {
+                    Id = x.Id,
+                    Dob = x.Dob,
+                    Address = x.Address,
+                    Email = x.Email,
+                    FirstName = x.FirstName,
+                    LastName = x.LastName,
+                    PhoneNumber = x.PhoneNumber,
+                    Username = x.UserName,
+                    Status = x.Status.ToString(),
+                    Diem = x.Diem
+                }).ToListAsync();
+            foreach (var item in data)
+            {
+                var user = await _userManager.FindByNameAsync(item.Username);
+                var roles = await _userManager.GetRolesAsync(user);
+                var dem = 0;
+                foreach(var role in roles)
+                {
+                    if (role == "shipper")
+                    {
+                        dem++;
+                        item.Roles = roles;
+                        listSP.Add(item);
+                        break;
+                    }
+                }
+            }
+            // 4 Select Page Result
+            var pageResult = new PageResult<UserViewModel>()
+            {
+                TotalRecords = totalRow,
+                Items = listSP
+            };
+
+            return new ResultSuccessApi<PageResult<UserViewModel>>(pageResult);
         }
     }
 }

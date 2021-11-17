@@ -32,6 +32,7 @@ namespace Web.Application.System
         public Task<ResultApi<string>> UnlockUser(Guid IdUser);
 
         public Task<ResultApi<PageResult<UserViewModel>>> GetAllPaging(GetUserPagingRequest request);
+        public Task<ResultApi<PageResult<UserViewModel>>> GetAllShipperPaging(GetUserPagingRequest request);
 
         public Task<ResultApi<string>> RoleAssign(Guid IdUser, RoleAssignRequest request);
     }

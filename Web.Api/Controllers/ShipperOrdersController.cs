@@ -37,6 +37,14 @@ namespace Web.Api.Controllers
             return Ok(result);
         }
 
+        [HttpGet("danh-sach-order-shipper-wait-confirm/{languageID}/{ShipperID}")]
+        [Authorize]
+        public async Task<IActionResult> GetallOrderSPrequest(Guid ShipperID,string languageID)
+        {
+            var result = await _manageservice.GetallOrderSPrequest(ShipperID,languageID);
+            return Ok(result);
+        }
+
         [HttpGet("lich-su-order-shipper/{shipperId}")]
         [Authorize]
         public async Task<IActionResult> GetAll_HistorySP(Guid shipperId)

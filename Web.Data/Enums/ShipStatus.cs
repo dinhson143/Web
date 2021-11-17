@@ -10,6 +10,7 @@ namespace Web.Data.Enums
     {
         Success,
         Return,
-        InProgress
+        InProgress,
+        AdminConfirm
     }
 }

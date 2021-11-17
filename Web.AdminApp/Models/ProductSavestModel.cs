@@ -10,7 +10,9 @@ namespace Web.Models
     public class ProductSavestModel
     {
         public List<ProductViewModel> listPro { get; set; }
+        public List<ProductViewModel> listProSalest { get; set; }
         public List<OrderViewModel> listOd { get; set; }
+        public List<OrderViewModel> listDoanhthuFromTo { get; set; }
         public List<OrderViewModel> listOdIPro { get; set; }
         public List<CommentViewModel> listCM { get; set; }
         public List<int> listUS { get; set; }

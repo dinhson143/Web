@@ -78,6 +78,20 @@ namespace Web.ServiceApi_Admin_User.Service.Users
             return list;
         }
 
+        public async Task<PageResult<UserViewModel>> GetAllShipperPaging(GetUserPagingRequest request)
+        {
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", request.BearerToken);
+
+            var response = await client.GetAsync($"/api/Users/get-all-shippers?pageIndex=" +
+                $"{request.pageIndex}&pageSize={request.pageSize}&Keyword={request.Keyword}");
+            var body = await response.Content.ReadAsStringAsync();
+            var list = JsonConvert.DeserializeObject<PageResult<UserViewModel>>(body);
+            return list;
+        }
+
         public async Task<UserViewModel> GetUserById(Guid IdUser, string BearerToken)
         {
             var client = _httpClientFactory.CreateClient();

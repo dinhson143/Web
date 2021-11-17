@@ -33,5 +33,6 @@ namespace Web.ServiceApi_Admin_User.Service.Users
         public Task<ResultApi<string>> RoleAssign(Guid IdUser, RoleAssignRequest request);
 
         public Task<PageResult<UserViewModel>> GetAllPaging(GetUserPagingRequest request);
+        public Task<PageResult<UserViewModel>> GetAllShipperPaging(GetUserPagingRequest request);
     }
 }

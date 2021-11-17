@@ -18,6 +18,7 @@ using Web.ServiceApi_Admin_User.Service.PhieuXuats;
 using Web.ServiceApi_Admin_User.Service.Products;
 using Web.ServiceApi_Admin_User.Service.Promotions;
 using Web.ServiceApi_Admin_User.Service.Roles;
+using Web.ServiceApi_Admin_User.Service.ShipperOrder;
 using Web.ServiceApi_Admin_User.Service.Sizes;
 using Web.ServiceApi_Admin_User.Service.Sliders;
 using Web.ServiceApi_Admin_User.Service.Thongkes;
@@ -55,6 +56,7 @@ namespace Web.AdminApp
             services.AddTransient<IPhieuXuatApi, PhieuXuatApi>();
             services.AddTransient<IOrderApi, OrderApi>();
             services.AddTransient<IPromotionApi, PromotionApi>();
+            services.AddTransient<IShipperOrderApi, ShipperOrderApi>();
             services.AddTransient<IThongKeApi, ThongKeApi>();
 
             //Session

@@ -147,5 +147,11 @@ namespace Web.AdminApp.Controllers
             }
             return roleAssignRequest;
         }
+        
+        [HttpGet]
+        public async Task<IActionResult> OrderRequestShipper(RoleAssignRequest request)
+        {
+            return View();
+        }
     }
 }

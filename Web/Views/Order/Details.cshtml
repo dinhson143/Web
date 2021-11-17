@@ -3,6 +3,11 @@
     ViewData["Title"] = "Details";
     Layout = "~/Views/Shared/_Layout.cshtml";
     var culture = CultureInfo.CurrentCulture.Name;
+    decimal gia = 0;
+    foreach (var item in Model)
+    {
+        gia += item.Price*item.Quantity;
+    }
 }
 @section Scripts{
     <link href="~/css/personal.css" rel="stylesheet" />
@@ -20,7 +25,8 @@
 <div class="container-fluid dsDonHang">
 
     <!-- Page Heading -->
-    <h4 class="h3 mb-2 text-gray-800" style="padding:10px 0;text-align:center;margin:30px auto 30px auto;width:80%;background-color:green;color:#fff;border-radius:15px">Chi Tiết Đơn Hàng Số @Model[0].OrderID</h4>
+    <h4 class="h3 mb-2 text-gray-800" style="padding:10px 0;text-align:center;margin:30px auto 30px auto;width:80%;background-color:green;color:#fff;border-radius:15px">Chi Tiết Đơn Hàng Số @Model[0].OrderID  </h4>
+    <h4 class="h3 mb-2 text-gray-800" style="padding:10px 0;text-align:center;margin:30px auto 30px auto;width:50%;background-color:orange;color:#fff;border-radius:15px">Tổng: @gia.ToString("N0")  VND</h4>
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
         @if (@TempData["msg"] != null)
@@ -88,7 +94,7 @@
                                     @Html.DisplayFor(modelItem => item.Quantity)
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.Price)
+                                    <p>@item.Price.ToString("N0")</p>
                                 </td>
                             </tr>
                         }

@@ -10,17 +10,9 @@
 <div class="container-fluid">
 
     <!-- Page Heading -->
-    <h1 class="h3 mb-2 text-gray-800">DANH SÁCH NGƯỜI DÙNG</h1>
+    <h1 class="h3 mb-2 text-gray-800">DANH SÁCH SHIPPERS</h1>
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
-        <div class="card-header py-3" style="display:flex">
-            <a asp-action="Register" asp-controller="Login" class="btn btn-success btn-icon-split">
-                <span class="icon text-white-50">
-                    <i class="fas fa-plus-circle"></i>
-                </span>
-                <span class="text">Tạo mới người dùng</span>
-            </a>
-        </div>
         @if (@TempData["Message"] != null)
         {
             <div class="alert alert-success" role="alert" style="text-align:center">
@@ -46,7 +38,7 @@
                                 Phone Number
                             </th>
                             <th>
-                                Thành viên
+                                Address
                             </th>
                             <th></th>
                         </tr>
@@ -66,7 +58,7 @@
                                 Phone Number
                             </th>
                             <th>
-                                Thành viên
+                                Address
                             </th>
                             <th></th>
                         </tr>
@@ -74,59 +66,31 @@
                     <tbody>
                         @foreach (var item in Model.Items)
                         {
-                        <tr>
-                            <td>
-                                @{
-                                    var name = item.FirstName + " " + item.LastName;
-                                }
-                                <p>@name</p>
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Dob)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Email)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.PhoneNumber)
-                            </td>
-                            <td>
-                                @foreach (var role in item.Roles)
-                                {
-
-                                    if (role == "customer")
-                                    {
-                                        <p style="color:#fff;text-align:center; background-color:#4e73df">@role</p>
+                            <tr>
+                                <td>
+                                    @{
+                                        var name = item.FirstName + " " + item.LastName;
                                     }
-                                    else if (role == "admin")
-                                    {
-                                        <p style="color:#fff;text-align:center; background-color:#ff0000">@role</p>
-                                    }
-                                    else if (role == "shipper")
-                                    {
-                                        <p style="color:#fff;text-align:center; background-color:#ffd800">@role</p>
-                                    }
-                                    else if (role == "user")
-                                    {
-                                        <p style="color:#fff;text-align:center; background-color:#4cff00">@role</p>
-                                    }
-                                }
-                            </td>
-                            <td>
-                                @Html.ActionLink("Sửa", "Update", new { IdUser = item.Id }) |
-                                @Html.ActionLink("Chi tiết", "Details", new { IdUser = item.Id }) |
-                                @Html.ActionLink("Gán quyền", "RoleAssign", new { IdUser = item.Id }) |
-                                @if (item.Status == "Active")
-                                {
-                                    @Html.ActionLink("Khóa", "Delete", new { IdUser = item.Id })
-                                }
-                                else
-                                {
-                                    @Html.ActionLink("Mở khóa", "Unlock", new { IdUser = item.Id })
-                                }
-                            </td>
-                        </tr>
-                        }
+                                    <p>@name</p>
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Dob)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Email)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.PhoneNumber)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Address)
+                                </td>
+                                <td>
+                                    @Html.ActionLink("Đơn hàng yêu cầu", "OrderRequire", new { IdUser = item.Id }) |
+                                    @Html.ActionLink("Lịch sử  giao hàng", "OrderRequire", new { IdUser = item.Id }) 
+                                </td>
+                            </tr>
+                        }   
                     </tbody>
                 </table>
             </div>

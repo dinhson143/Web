@@ -6,6 +6,7 @@
         Confirmed,
         Shipping,
         Success,
-        Canceled
+        Canceled,
+        ShipperRequest
     }
 }

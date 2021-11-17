@@ -77,7 +77,19 @@ namespace Web.AdminApp.Controllers
                 }
             }
             // sản phẩm bán chạy nhất
-            var products = await _thongKeApi.ProductSavestFullMonth(languageId, token);
+            var From = DateTime.Now;
+            var To = DateTime.Now;
+
+            var day = From.Day;
+            var month = From.Month;
+            var year = From.Year;
+            var dateF = month.ToString() + "-" + day.ToString() + "-" + year.ToString();
+            //
+            var day2 = To.Day;
+            var month2 = To.Month;
+            var year2 = To.Year;
+            var dateT = month2.ToString() + "-" + day2.ToString() + "-" + year2.ToString();
+            var products = await _thongKeApi.ProductSavest(dateF, dateT, languageId, token);
             // get user cua cua hàng
             string keyword = "";
             int pageIndex = 1;
@@ -148,6 +160,8 @@ namespace Web.AdminApp.Controllers
             var orders = await _orderApi.GetallOrderInProgress(languageId, token);
             //get bình luận theo ngày
             var comments = await _commentApi.GetAllNow(languageId, token);
+            // Sản phẩm yêu thích nhất
+            var listProSalest = await _thongKeApi.ProductLovest(languageId, token);
             //
             var kq = new ProductSavestModel()
             {
@@ -156,7 +170,10 @@ namespace Web.AdminApp.Controllers
                 listPro = products.ResultObj,
                 listUS = listUS,
                 listOdIPro = orders.ResultObj,
-                listCM = comments.ResultObj
+                listCM = comments.ResultObj,
+                From = From,
+                To = To,
+                listProSalest = listProSalest.ResultObj
             };
             return View(kq);
         }
@@ -281,17 +298,23 @@ namespace Web.AdminApp.Controllers
             var orders = await _orderApi.GetallOrderInProgress(languageId, token);
             //get bình luận theo ngày
             var comments = await _commentApi.GetAllNow(languageId, token);
+            // Doanh thu từ ngày đền ngày
+            var doanhthuFromTo = await _thongKeApi.Doanhthu(dateF, dateT, languageId, token);
+            // Sản phẩm yêu thích nhất
+            var listProSalest = await _thongKeApi.ProductLovest(languageId, token);
             //
             var kq = new ProductSavestModel()
             {
                 listDT = listDT,
                 listSLOD = listSLOD,
+                listDoanhthuFromTo = doanhthuFromTo.ResultObj,
                 listPro = products.ResultObj,
                 listUS = listUS,
                 listOdIPro = orders.ResultObj,
                 listCM = comments.ResultObj,
                 From = From,
-                To = To
+                To = To,
+                listProSalest = listProSalest.ResultObj
             };
             return View(kq);
         }

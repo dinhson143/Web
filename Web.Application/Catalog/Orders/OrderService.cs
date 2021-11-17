@@ -320,7 +320,7 @@ namespace Web.Application.Catalog.Orders
         public async Task<List<OrderViewModel>> GetallOrderConfirm(string languageID)
         {
             var query = from o in _context.Orders
-                        where o.Status == OrderStatus.Confirmed
+                        where o.Status == OrderStatus.Confirmed || o.Status == OrderStatus.ShipperRequest
                         select new { o };
             var data = await query.Select(x => new OrderViewModel()
             {
@@ -450,7 +450,7 @@ namespace Web.Application.Catalog.Orders
         public async Task<List<OrderViewModel>> GetOrderUser(Guid userId, string languageID)
         {
             var query = from o in _context.Orders
-                        where o.Status != OrderStatus.Success && o.Status != OrderStatus.Canceled && o.UserId == userId
+                        where o.Status != OrderStatus.Canceled && o.UserId == userId && o.Status != OrderStatus.Success
                         select new { o };
             var data = await query.Select(x => new OrderViewModel()
             {
@@ -534,5 +534,6 @@ namespace Web.Application.Catalog.Orders
             }
             return new List<OrderViewModel>(data);
         }
+        
     }
 }

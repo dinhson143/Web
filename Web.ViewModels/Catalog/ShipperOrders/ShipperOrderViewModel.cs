@@ -11,5 +11,6 @@ namespace Web.ViewModels.Catalog.ShipperOrders
         public int OrderID { get; set; }
         public DateTime DateSuccess { get; set; }
         public string Status { get; set; }
+        public string IdUser { get; set; }
     }
 }

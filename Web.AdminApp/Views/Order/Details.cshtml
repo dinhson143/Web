@@ -1,14 +1,19 @@
-﻿@model IEnumerable<Web.ViewModels.Catalog.Orders.OrderDetailViewModel>
+﻿@model List<Web.ViewModels.Catalog.Orders.OrderDetailViewModel>
 
 @{
     ViewData["Title"] = "Details";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    decimal total = 0;
+    foreach(var item in Model)
+    {
+        total += item.Price * item.Quantity;
+    }
 }
 
 <div class="container-fluid">
 
     <!-- Page Heading -->
-    <h1 class="h3 mb-2 text-gray-800">DANH SÁCH ĐƠN HÀNG</h1>
+    <h1 class="h3 mb-2 text-gray-800">CHI TIẾT ĐƠN HÀNG @Model[0].OrderID</h1>
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
         <div class="card-header py-3" style="display:flex">
@@ -17,6 +22,12 @@
                     <i class="fas fa-long-arrow-alt-left"></i>
                 </span>
                 <span class="text">Trở về</span>
+            </a>
+            <a class="btn btn-danger btn-icon-split" style="margin-left:auto">
+                <span class="icon text-white-50">
+                    <i class="fas fa-hryvnia"></i>
+                </span>
+                <span class="text">Total: @total.ToString("N0") VND</span>
             </a>
         </div>
             @if (@TempData["Message"] != null)
@@ -32,38 +43,38 @@
                         <thead>
                             <tr>
                                 <th>
-                                    @Html.DisplayNameFor(model => model.Image)
+                                    Hình ảnh
                                 </th>
                                 <th>
-                                    @Html.DisplayNameFor(model => model.ProductName)
+                                    Tên sản phẩm
                                 </th>
                                 <th>
-                                    @Html.DisplayNameFor(model => model.SizeName)
+                                    Size
                                 </th>
                                 <th>
-                                    @Html.DisplayNameFor(model => model.Price)
+                                    Giá
                                 </th>
                                 <th>
-                                    @Html.DisplayNameFor(model => model.Quantity)
+                                    Số lượng
                                 </th>
                             </tr>
                         </thead>
                         <tfoot>
                             <tr>
                                 <th>
-                                    @Html.DisplayNameFor(model => model.Image)
+                                    Hình ảnh
                                 </th>
                                 <th>
-                                    @Html.DisplayNameFor(model => model.ProductName)
+                                    Tên sản phẩm
                                 </th>
                                 <th>
-                                    @Html.DisplayNameFor(model => model.SizeName)
+                                    Size
                                 </th>
                                 <th>
-                                    @Html.DisplayNameFor(model => model.Price)
+                                    Giá
                                 </th>
                                 <th>
-                                    @Html.DisplayNameFor(model => model.Quantity)
+                                    Số lượng
                                 </th>
                             </tr>
                         </tfoot>
@@ -71,9 +82,6 @@
                             @foreach (var item in Model)
                             {
                                 <tr>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.OrderID)
-                                    </td>
                                     <td>
                                         <img style="margin:0 2px;height:120px;width:100%" src="@item.Image" />
                                     </td>
@@ -84,7 +92,7 @@
                                         @Html.DisplayFor(modelItem => item.SizeName)
                                     </td>
                                     <td>
-                                        @Html.DisplayFor(modelItem => item.Price)
+                                        <p>@item.Price.ToString("N0")</p>
                                     </td>
                                     <td>
                                         @Html.DisplayFor(modelItem => item.Quantity)

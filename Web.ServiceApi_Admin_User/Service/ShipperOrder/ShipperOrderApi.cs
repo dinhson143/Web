@@ -23,6 +23,22 @@ namespace Web.ServiceApi_Admin_User.Service.ShipperOrder
             _configuration = configuration;
         }
 
+        public async Task<string> ConfirmOrderSP(int orderId, Guid ShipperID, string token)
+        {
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
+            var response = await client.GetAsync($"/api/ShipperOrders/confirm-orderSP/{orderId}/{ShipperID}");
+            if (response.IsSuccessStatusCode)
+            {
+                var result = await response.Content.ReadAsStringAsync();
+                return (result);
+            }
+            return "";
+        }
+
         public async Task<ResultApi<string>> CreateShipperOrder(ShipperOrderCreate request)
         {
             var client = _httpClientFactory.CreateClient();
@@ -72,12 +88,12 @@ namespace Web.ServiceApi_Admin_User.Service.ShipperOrder
             return new List<OrderViewModel>(null);
         }
 
-        public async Task<List<OrderViewModel>> GetAll_HistorySP(Guid shipperId)
+        public async Task<List<OrderViewModel>> GetAll_HistorySP(Guid shipperId,string BearerToken)
         {
             var client = _httpClientFactory.CreateClient();
             client.BaseAddress = new Uri(_configuration["BaseAddress"]);
 
-            //client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", BearerToken);
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", BearerToken);
 
             var response = await client.GetAsync($"/api/ShipperOrders/lich-su-order-shipper/{shipperId}");
             if (response.IsSuccessStatusCode)

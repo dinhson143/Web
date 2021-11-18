@@ -8,7 +8,7 @@
 <div class="container-fluid">
 
     <!-- Page Heading -->
-    <h1 class="h3 mb-2 text-gray-800">DANH SÁCH ĐƠN HÀNG</h1>
+    <h1 class="h3 mb-2 text-gray-800">LỊCH SỬ GIAO HÀNG</h1>
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
         @if (@TempData["Message"] != null)
@@ -17,7 +17,15 @@
                 @TempData["Message"]
             </div>
         }
-
+        <div class="card-header py-3" style="display:flex">
+            <a asp-action="Index" asp-controller="ShipperOrder" class="btn btn-success btn-icon-split">
+                <span class="icon text-white-50">
+                    <i class="fas fa-long-arrow-alt-left"></i>
+                </span>
+                <span class="text">Trở về</span>
+            </a>
+        </div>
+        
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
@@ -89,32 +97,18 @@
                                     @Html.DisplayFor(modelItem => item.ShipPhone)
                                 </td>
                                 <td>
-                                    @if (item.Status == "Success")
-                                    {
-                                        <p style="background-color:#00ff21;text-align:center; color:#000">@item.Status</p>
-                                    }
-                                    else if (item.Status == "InProgress")
-                                    {
-                                        <p style="background-color:orange;text-align:center;color:#000">@item.Status</p>
-                                    }
-                                    else if (item.Status == "Shipping")
-                                    {
-                                        <p style="background-color:#0094ff;text-align:center;color:#000">@item.Status</p>
-                                    }
-                                    else if (item.Status == "ShipperRequest")
-                                    {
-                                        <p style="background-color:#b200ff;text-align:center;color:#000">@item.Status</p>
-                                    }
+                                    <p style="background-color:#00ff21;text-align:center; color:#000">@item.Status</p>
                                 </td>
                                 <td>
-                                    <p>@item.Tongtien.ToString("N0")</p>
-                                </td>
-                                <td>
-                                    @Html.ActionLink("Details", "Details", new { id = item.Id }) |
-                                    @if (item.Status.ToString() == "InProgress")
-                                    {
-                                        @Html.ActionLink("Confirm", "ConfirmOrder", new { id = item.Id })
+                                    @{
+                                        decimal total = 0;
+                                        foreach (var ODDT in item.ListOrDetail)
+                                        {
+                                            total += ODDT.Price * ODDT.Quantity;
+                                        }
                                     }
+                                    <p>@total.ToString("N0")</p>
+
                                 </td>
                             </tr>
                         }

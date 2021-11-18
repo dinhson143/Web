@@ -16,6 +16,7 @@ namespace Web.ServiceApi_Admin_User.Service.ShipperOrder
         public Task<List<OrderViewModel>> GetAll(Guid shipperId);
         public Task<List<OrderViewModel>> GetallOrderSPrequest(Guid ShipperID, string languageID , string token);
 
-        public Task<List<OrderViewModel>> GetAll_HistorySP(Guid shipperId);
+        public Task<List<OrderViewModel>> GetAll_HistorySP(Guid shipperId, string BearerToken);
+        public Task<string> ConfirmOrderSP(int orderId, Guid ShipperID, string token);
     }
 }

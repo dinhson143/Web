@@ -52,5 +52,12 @@ namespace Web.Api.Controllers
             var result = await _manageservice.GetAll_HistorySP(shipperId);
             return Ok(result);
         }
+
+        [HttpGet("confirm-orderSP/{orderId}/{shipperId}")]
+        public async Task<IActionResult> ConfirmOrderSP(int orderId, Guid ShipperID)
+        {
+            var result = await _manageservice.ConfirmOrderSP(orderId,ShipperID);
+            return Ok(result);
+        }
     }
 }

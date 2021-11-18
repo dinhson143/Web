@@ -20,6 +20,7 @@ namespace Web.ViewModels.Catalog.Orders
         public string LoaiThanhToan { get; set; }
         public decimal Tongtien { get; set; }
         public decimal TongtienReal { get; set; }
+        public string IdUser { get; set; }
         public List<OrderDetailViewModel> ListOrDetail { get; set; }
     }
 }

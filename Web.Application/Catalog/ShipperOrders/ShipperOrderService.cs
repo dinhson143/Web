@@ -9,6 +9,7 @@ using Web.ViewModels.Catalog.ShipperOrders;
 using Web.ViewModels.Catalog.Orders;
 using Microsoft.EntityFrameworkCore;
 using Web.Data.Entities;
+using Web.Utilities.Exceptions;
 
 namespace Web.Application.Catalog.ShipperOrder
 {
@@ -56,12 +57,26 @@ namespace Web.Application.Catalog.ShipperOrder
             var listODsp = new List<OrderViewModel>();
 
             var qrSPOD = from os in _context.OrderOfShippers
-                         where os.Status == ShipStatus.AdminConfirm && os.UserId == ShipperID
+                         where os.Status == ShipStatus.AdminConfirm || os.Status == ShipStatus.InProgress && os.UserId == ShipperID
                          select os;
+
+
             var listODSP = await qrSPOD.Select(x => new ShipperOrderViewModel()
             {
-                OrderID = x.OrderID
+                OrderID = x.OrderID,
+                Status = x.Status.ToString(),
+                IdUser = x.UserId.ToString()
             }).ToListAsync();
+            for (var i = 0; i < listODSP.Count; i++)
+            {
+                for (var j = i + 1; j < listODSP.Count; j++)
+                {
+                    if (listODSP[i].OrderID == listODSP[j].OrderID)
+                    {
+                        listODSP.Remove(listODSP[j]);
+                    }
+                }
+            }
             foreach (var item in listODSP)
             {
                 var order = await _context.Orders.FindAsync(item.OrderID);
@@ -73,11 +88,11 @@ namespace Web.Application.Catalog.ShipperOrder
                     ShipEmail = order.ShipEmail,
                     ShipName = order.ShipName,
                     ShipPhone = order.ShipPhoneNumber,
-                    Status = order.Status.ToString()
+                    Status = item.Status
                 };
                 listODsp.Add(data);
             }
-
+            
             foreach (var order in listODsp)
             {
                 var list = new List<OrderDetailViewModel>();
@@ -102,6 +117,7 @@ namespace Web.Application.Catalog.ShipperOrder
                 }
                 order.ListOrDetail = list;
             }
+
             return new List<OrderViewModel>(listODsp);
         }
         public async Task<List<OrderViewModel>> GetAll(Guid shipperId)
@@ -213,6 +229,30 @@ namespace Web.Application.Catalog.ShipperOrder
                 order.ListOrDetail = list;
             }
             return new List<OrderViewModel>(listODsp);
+        }
+        public async Task<int> ConfirmOrderSP(int orderId, Guid ShipperID)
+        {
+            var order = await _context.OrderOfShippers.FirstOrDefaultAsync(x => x.OrderID == orderId && x.UserId == ShipperID);
+            if (order == null) throw new WebException($"Cannot find a order: {orderId}");
+
+           
+
+            order.Status = ShipStatus.InProgress;
+
+            // xóa các shpper order ko dc confirm
+            var orderSP = from os in _context.OrderOfShippers
+                          where os.UserId != ShipperID && os.OrderID == orderId
+                          select os; ;
+
+            foreach(var item in orderSP)
+            {
+                _context.OrderOfShippers.Remove(item);
+            }
+
+            var orderOB = await _context.Orders.FirstOrDefaultAsync(x => x.Id == orderId);
+            if (order == null) throw new WebException($"Cannot find a order: {orderId}");
+            orderOB.Status = OrderStatus.Shipping;
+            return await _context.SaveChangesAsync();
         }
     }
 }

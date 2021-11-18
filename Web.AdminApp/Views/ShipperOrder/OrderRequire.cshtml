@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    
 }
 
 <div class="container-fluid">
@@ -31,6 +32,9 @@
                     <thead>
                         <tr>
                             <th>
+                                @Html.DisplayNameFor(model => model.Id)
+                            </th>
+                            <th>
                                 @Html.DisplayNameFor(model => model.OrderDate)
                             </th>
                             <th>
@@ -54,6 +58,9 @@
                     </thead>
                     <tfoot>
                         <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Id)
+                            </th>
                             <th>
                                 @Html.DisplayNameFor(model => model.OrderDate)
                             </th>
@@ -79,36 +86,45 @@
                     <tbody>
                         @foreach (var item in Model)
                         {
-                            <tr>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.OrderDate)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.ShipName)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.ShipAddress)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.ShipEmail)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.ShipPhone)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Status)
-                                </td>
-                                <td>
-                                    <p>@item.Tongtien.ToString("N0")</p>
-                                </td>
-                                <td>
-                                    @Html.ActionLink("Details", "Details", new { id = item.Id }) |
-                                    @if (item.Status.ToString() == "InProgress")
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Id)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.OrderDate)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ShipName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ShipAddress)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ShipEmail)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ShipPhone)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Status)
+                            </td>
+                            <td>
+                                @{
+                                    decimal total = 0;
+                                    foreach (var ODDT in item.ListOrDetail)
                                     {
-                                        @Html.ActionLink("Confirm", "ConfirmOrder", new { id = item.Id })
+                                        total += ODDT.Price * ODDT.Quantity;
                                     }
-                                </td>
-                            </tr>
+                                }
+                                <p>@total.ToString("N0")</p>
+                            </td>
+                            <td>
+                                @if (item.Status.ToString() == "AdminConfirm")
+                                {
+                                    @Html.ActionLink("Confirm", "ConfirmOrderSP", new { id = item.Id, userId = item.IdUser })
+                                }
+                            </td>
+                        </tr>
                         }
                     </tbody>
                 </table>

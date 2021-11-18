@@ -42,6 +42,35 @@ namespace Web.AdminApp.Controllers.Components
             var languageId = HttpContext.Session.GetString(SystemContants.AppSettings.DefaultLanguageId);
             var token = HttpContext.Session.GetString(SystemContants.AppSettings.Token);
             var list = await _shipperOrderApi.GetallOrderSPrequest(Id,languageId,token);
+            foreach(var item in list)
+            {
+                item.IdUser = IdUser;
+            }
+            return View(list);
+        }
+        public async Task<IActionResult> ConfirmOrderSP(int id,string userId)
+        {
+            Guid IDUser = Guid.Parse(userId);
+            var languageId = HttpContext.Session.GetString(SystemContants.AppSettings.DefaultLanguageId);
+            var token = HttpContext.Session.GetString(SystemContants.AppSettings.Token);
+            var result = await _shipperOrderApi.ConfirmOrderSP(id, IDUser, token);
+            var ktra = Int32.Parse(result);
+            if (ktra>0)
+            {
+                @TempData["Message"] = "Xác nhận đơn hàng thành công";
+
+                return RedirectToAction("OrderRequire", new {IdUser= userId });
+                }
+
+            return RedirectToAction("Error", "Home");
+        }
+
+        public async Task<IActionResult> OrderHistory(string IdUser)
+        {
+            Guid userID = Guid.Parse(IdUser);
+            var languageId = HttpContext.Session.GetString(SystemContants.AppSettings.DefaultLanguageId);
+            var token = HttpContext.Session.GetString(SystemContants.AppSettings.Token);
+            var list = await _shipperOrderApi.GetAll_HistorySP(userID,token);
             return View(list);
         }
     }

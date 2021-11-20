@@ -12,5 +12,6 @@ namespace Web.Models
     {
         public PageResult<ProductViewModel> Products { get; set; }
         public CategoryViewModel Categories { get; set; }
+        public string keyWord { get; set; }
     }
 }

@@ -14,6 +14,7 @@ namespace Web.Application.Catalog.Orders
         public Task<ResultApi<string>> CreateOrder(CheckoutRequest request);
 
         public Task<List<OrderViewModel>> GetOrderUser(Guid userId, string languageID);
+        public Task<List<OrderViewModel>> GetAllOrderUser(Guid userId, string languageID);
 
         public Task<List<OrderViewModel>> GetOrderUserHistory(Guid userId, string languageID);
 

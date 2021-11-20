@@ -34,7 +34,7 @@ namespace Web.Controllers
             return View();
         }
 
-        public async Task<IActionResult> ProductforCategory(int id, int PageIndex)
+        public async Task<IActionResult> ProductforCategory(int id, int PageIndex, string keyWord)
         {
             if (PageIndex == 0)
             {
@@ -46,7 +46,9 @@ namespace Web.Controllers
                 CategoryId = id,
                 LanguageId = culture,
                 pageIndex = PageIndex,
-                pageSize = 6
+                pageSize = 6,
+                Keyword = keyWord
+                
             };
             var category = await _categoryApi.GetCategoryById(id, culture);
 

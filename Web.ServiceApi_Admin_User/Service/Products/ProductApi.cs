@@ -188,6 +188,7 @@ namespace Web.ServiceApi_Admin_User.Service.Products
 
             var response = await client.GetAsync($"/api/Products/products-category?pageIndex=" +
                 $"{request.pageIndex}&pageSize={request.pageSize}&" +
+                $"Keyword={request.Keyword}" +
                 $"&LanguageId={request.LanguageId}" +
                 $"&categoryId={request.CategoryId}");
             var body = await response.Content.ReadAsStringAsync();

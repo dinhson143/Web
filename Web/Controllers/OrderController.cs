@@ -73,7 +73,7 @@ namespace Web.Controllers
             }
             var token = HttpContext.Session.GetString(SystemContants.AppSettings.Token);
             var culture = CultureInfo.CurrentCulture.Name;
-            var result = await _orderApi.GetOrderUser(new Guid(userId), culture, token);
+            var result = await _orderApi.GetAllOrderUser(new Guid(userId), culture, token);
 
             var data = new List<OrderDetailViewModel>();
             foreach (var order in result.ResultObj)

@@ -57,6 +57,22 @@ namespace Web.ServiceApi_Admin_User.Service.Orders
             }
             return new ResultErrorApi<List<OrderViewModel>>("Không thể lấy danh sách Orders");
         }
+        public async Task<ResultApi<List<OrderViewModel>>> GetAllOrderUser(Guid userId, string languageID, string BearerToken)
+        {
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", BearerToken);
+
+            var response = await client.GetAsync($"/api/Orders/danh-sach-order-user/{languageID}/{userId}");
+            if (response.IsSuccessStatusCode)
+            {
+                var body = await response.Content.ReadAsStringAsync();
+                var list = JsonConvert.DeserializeObject<List<OrderViewModel>>(body);
+                return new ResultSuccessApi<List<OrderViewModel>>(list);
+            }
+            return new ResultErrorApi<List<OrderViewModel>>("Không thể lấy danh sách Orders");
+        }
 
         public async Task<ResultApi<List<OrderViewModel>>> GetOrderUserHistory(Guid userId, string languageID, string BearerToken)
         {

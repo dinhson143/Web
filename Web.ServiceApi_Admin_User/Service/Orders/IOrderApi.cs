@@ -14,6 +14,7 @@ namespace Web.ServiceApi_Admin_User.Service.Orders
         public Task<ResultApi<string>> CreateOrder(CheckoutRequest request, string BearerToken);
 
         public Task<ResultApi<List<OrderViewModel>>> GetOrderUser(Guid userId, string languageID, string BearerToken);
+        public Task<ResultApi<List<OrderViewModel>>> GetAllOrderUser(Guid userId, string languageID, string BearerToken);
 
         public Task<ResultApi<List<OrderViewModel>>> GetOrderUserHistory(Guid userId, string languageID, string BearerToken);
 

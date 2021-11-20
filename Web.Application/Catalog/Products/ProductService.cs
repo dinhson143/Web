@@ -861,6 +861,10 @@ namespace Web.Application.Catalog.Products
                          select new { p, pt, pic, pi, ps });
 
             // 2. Filter
+            if (!string.IsNullOrEmpty(request.Keyword))
+            {
+                query = query.Where(x => x.pt.Name.Contains(request.Keyword));
+            }
             if (request.CategoryId.Value > 0 && request.CategoryId.HasValue)
             {
                 query = query.Where(x => x.pic.CategoryId == request.CategoryId);

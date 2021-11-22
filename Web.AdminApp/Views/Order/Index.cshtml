@@ -24,6 +24,9 @@
                     <thead>
                         <tr>
                             <th>
+                                Mã Đơn Hàng
+                            </th>
+                            <th>
                                 @Html.DisplayNameFor(model => model.OrderDate)
                             </th>
                             <th>
@@ -47,6 +50,9 @@
                     </thead>
                     <tfoot>
                         <tr>
+                            <th>
+                                Mã Đơn Hàng
+                            </th>
                             <th>
                                 @Html.DisplayNameFor(model => model.OrderDate)
                             </th>
@@ -73,6 +79,9 @@
                         @foreach (var item in Model)
                         {
                             <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Id)
+                                </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.OrderDate)
                                 </td>

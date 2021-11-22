@@ -37,7 +37,7 @@
         }
     </script>
     <script>
-        var listCTPN = [];        
+        var listCTPN = [];
         $(document).ready(function () {
             $(".add-row").click(function () {
                 var tenSP = $("#sanphamDropdown option:selected").text();
@@ -53,10 +53,14 @@
                     'Dongia': giaban,
                     'Giaban': dongia
                 });
-                var markup = "<tr><td>" + tenSP + "</td><td>" + size + "</td><td>" + soluong + "</td><td>" + giaban + "</td><td>" + dongia + "</td><td><input type='checkbox' name='record'></td></tr>";
+            //    var markup = "<tr><td>" + tenSP + "</td><td>" + size + "</td><td>" + soluong + "</td><td>" + giaban + "</td><td>" + dongia + "</td><td><label for='toggle'>Xóa</label><input  type='checkbox' class='visually-hidden' id='toggle' name='record'></td></tr>";
+                var markup = "<tr><td>" + tenSP + "</td><td>" + size + "</td><td>" + soluong + "</td><td>" + giaban + "</td><td>" + dongia + "</td><td><button class='btnDelete'>Delete</button></td></tr>";
                 $("table tbody").append(markup);
             });
 
+            $("#tbUser").on('click', '.btnDelete', function () {
+                $(this).closest('tr').remove();
+            });
             // Find and remove selected table rows
             $(".delete-row").click(function () {
                 $("table tbody").find('input[name="record"]').each(function () {
@@ -89,6 +93,11 @@
     </script>
 }
 <style>
+    .visually-hidden {
+        position: absolute;
+        left: -100vw;
+        
+      }
     select {
         -webkit-appearance: none;
         -moz-appearance: none;
@@ -215,7 +224,7 @@
     <div style="margin: 5px 0 5px auto">
         <a class="btn btn-info" asp-action="Index">Trở về</a>
     </div>
-    <button onclick="return CreatePN()" type="button" style="display:block;margin:5px 0 5px 5px" class="delete-row btn btn-success">Hoàn thành</button>
+    <button onclick="return CreatePN()" type="button" style="display:block;margin:5px 0 5px 5px" class=" btn btn-success">Hoàn thành</button>
 </div>
 <hr />
 <div class="row">
@@ -263,8 +272,8 @@
         </form>
 </div>
 <div>
-    <button type="button" style="display:block;margin:5px 0 5px auto" class="delete-row btn btn-danger">Delete Row</button>
-    <table>
+    @*<button type="button" style="display:block;margin:5px 0 5px auto" class="delete-row btn btn-danger">Delete Row</button>*@
+    <table id="tbUser">
         <thead>
             <tr>
                 <th>TÊN SẢN PHẨM</th>

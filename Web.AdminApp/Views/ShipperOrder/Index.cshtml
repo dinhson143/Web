@@ -5,10 +5,81 @@
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+@section Scripts {
+    <script>
+        setInterval(function () {
+            $.ajax({
+                url: '/ShipperOrder/Reload',
+                data: { 'keyword': "" },
+                type: "POST",
+                dataType: "json",
+                //contentType: "application/json",
+                success: function (data) {
+                    console.log(data.data.Items);
+                    BindDataTable(data.data.Items);
+                }, error: function (er) {
+                    console.log("Fail");
+                }
+            });
+        }, 3000);
 
+        function BindDataTable(response) {
+            $('#dataTable').DataTable().destroy();
+            table = $('#dataTable').DataTable({
+                data: response,
+                "columns": [
+                    { "data": "FirstName" },
+                    { "data": "Ngaysinh" },
+                    { "data": "Email" },
+                    { "data": "PhoneNumber" },
+                    { "data": "Address" },
+                    {
+                        "mData": "SoluongYC",
+                        "mRender": function (data, type, row) {
+                            return "<p style='padding:3px;background-color:red;color:#000; border-radius:20px;text-align:center'>"+data+"</p>";
+                          }
+                    },
+                    {
+                        "mData": "Id",
+                        "mRender": function (data, type, row) {
+                            return "<a class='linkReload'>Đơn hàng yêu cầu <input type='hidden' value='" + data + "'/></a>";
+                            //return "<form method='post' asp-action='OrderRequireReload'><input type='hidden' asp-for='IdUser' value='" + data + "'/><button type='submit'>Link</button></form>";
+                        }
+                    }
+                ]
+            });
+
+            $('.linkReload').click(function () {
+                var ob = $(this).children('input')[0];
+                var idUser = $(ob).val();
+                // ajax
+                $.ajax({
+                    url: '/ShipperOrder/OrderRequireReload',
+                    data: { 'IdUser': idUser },
+                    type: "POST",
+                    dataType: "json",
+                    //contentType: "application/json",
+                    success: function (data) {
+                        console.log(data);
+                        window.location = '/ShipperOrder/OrderRequire';
+                    }, error: function (er) {
+                        console.log("1");
+                    }
+                });
+            });
+        }
+    </script>
+    <script>
+        function deleteUser(id) {
+
+        }
+        setTimeout(function () {
+            $(".alert").fadeOut('slow');
+        }, 2000);
+    </script>
+}
 <!-- Begin Page Content -->
 <div class="container-fluid">
-
     <!-- Page Heading -->
     <h1 class="h3 mb-2 text-gray-800">DANH SÁCH SHIPPERS</h1>
     <!-- DataTales Example -->
@@ -19,7 +90,6 @@
                 @TempData["Message"]
             </div>
         }
-
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
@@ -40,6 +110,7 @@
                             <th>
                                 Address
                             </th>
+                            <th>Yêu cầu</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -60,6 +131,7 @@
                             <th>
                                 Address
                             </th>
+                            <th>Yêu cầu</th>
                             <th></th>
                         </tr>
                     </tfoot>
@@ -74,7 +146,7 @@
                                     <p>@name</p>
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.Dob)
+                                    @Html.DisplayFor(modelItem => item.Ngaysinh)
                                 </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.Email)
@@ -86,47 +158,18 @@
                                     @Html.DisplayFor(modelItem => item.Address)
                                 </td>
                                 <td>
-                                    @Html.ActionLink("Đơn hàng yêu cầu", "OrderRequire", new { IdUser = item.Id }) |
-                                    @Html.ActionLink("Lịch sử  giao hàng", "OrderHistory", new { IdUser = item.Id }) 
+                                    <p style="padding:3px;background-color:red;color:#000; border-radius:20px;text-align:center">@item.SoluongYC</p>
+                                </td>
+                                <td>
+                                    @Html.ActionLink("Đơn hàng yêu cầu", "OrderRequire", new { IdUser = item.Id }) 
+                                    @*@Html.ActionLink("Lịch sử  giao hàng", "OrderHistory", new { IdUser = item.Id })*@
                                 </td>
                             </tr>
-                        }   
+                        }
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
 </div>
-<div class="modal fade" id="logoutModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Xác nhận xóa?</h5>
-                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                </button>
-            </div>
-            <div class="modal-body">Select "Delete" user.</div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                <form method="post" asp-controller="User" asp-action="Delete" data-toggle="modal" data-target="#logoutModal2">
-                    <button type="submit" class="btn btn-danger" style="color:#fff">
-                        Xác nhận
-                    </button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-@section Scripts {
-    <script>
-        function deleteUser(id) {
 
-        }
-
-        setTimeout(function () {
-            $(".alert").fadeOut('slow');
-        }, 2000);
-    </script>
-}

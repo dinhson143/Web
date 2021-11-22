@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,11 +34,76 @@ namespace Web.AdminApp.Controllers.Components
                 pageSize = pageSize
             };
             var response = await _userApi.GetAllShipperPaging(newRequest);
-            
+            foreach (var item in response.Items)
+            {
+                item.Ngaysinh = item.Dob.Day + "/" + item.Dob.Month + "/" + item.Dob.Year;
+            }
+            // check so luong 
+            foreach (var item in response.Items)
+            {
+
+                var list = await _shipperOrderApi.GetallOrderSPrequest(item.Id, languageId, token);
+                var dem = 0;
+                foreach (var us in list)
+                {
+                    if (us.Status == "AdminConfirm")
+                    {
+                        dem++;
+                    }
+                }
+                item.SoluongYC = dem;
+            }
             return View(response);
         }
-        public async Task<IActionResult> OrderRequire(string IdUser)
+        [HttpPost]
+        public async Task<Object> Reload(string keyword, int pageIndex = 1, int pageSize = 10)
         {
+            var languageId = HttpContext.Session.GetString(SystemContants.AppSettings.DefaultLanguageId);
+            var token = HttpContext.Session.GetString(SystemContants.AppSettings.Token);
+            var newRequest = new GetUserPagingRequest()
+            {
+                BearerToken = token,
+                Keyword = keyword,
+                pageIndex = pageIndex,
+                pageSize = pageSize
+            };
+            var response = await _userApi.GetAllShipperPaging(newRequest);
+            foreach(var item in response.Items)
+            {
+                item.FirstName = item.FirstName + " " + item.LastName;
+                item.Ngaysinh = item.Dob.Day + "/" + item.Dob.Month + "/" + item.Dob.Year;
+            }
+            // check so luong 
+            foreach(var item in response.Items)
+            {
+                
+                var list = await _shipperOrderApi.GetallOrderSPrequest(item.Id, languageId, token);
+                var dem = 0;
+                foreach (var us in list)
+                {
+                    if(us.Status == "AdminConfirm")
+                    {
+                        dem++;
+                    }
+                }
+                item.SoluongYC = dem;
+            }
+            
+            // 
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data.Add("data",response);
+            return JsonConvert.SerializeObject(data);
+        }
+        [HttpPost]
+        public async Task<Object> OrderRequireReload(string IdUser)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            HttpContext.Session.SetString("IdUser", IdUser);
+            return JsonConvert.SerializeObject(data);
+        }
+        public async Task<IActionResult> OrderRequire()
+        {
+            string IdUser = HttpContext.Session.GetString("IdUser");
             Guid Id = Guid.Parse(IdUser);
             var languageId = HttpContext.Session.GetString(SystemContants.AppSettings.DefaultLanguageId);
             var token = HttpContext.Session.GetString(SystemContants.AppSettings.Token);

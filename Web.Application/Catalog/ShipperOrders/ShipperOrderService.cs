@@ -57,9 +57,8 @@ namespace Web.Application.Catalog.ShipperOrder
             var listODsp = new List<OrderViewModel>();
 
             var qrSPOD = from os in _context.OrderOfShippers
-                         where os.Status == ShipStatus.AdminConfirm || os.Status == ShipStatus.InProgress && os.UserId == ShipperID
+                         where os.Status == ShipStatus.AdminConfirm && os.UserId == ShipperID
                          select os;
-
 
             var listODSP = await qrSPOD.Select(x => new ShipperOrderViewModel()
             {
@@ -120,6 +119,7 @@ namespace Web.Application.Catalog.ShipperOrder
 
             return new List<OrderViewModel>(listODsp);
         }
+
         public async Task<List<OrderViewModel>> GetAll(Guid shipperId)
         {
             var listODsp = new List<OrderViewModel>();

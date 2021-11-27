@@ -104,6 +104,7 @@ namespace Web.AdminApp.Controllers.Components
         public async Task<IActionResult> OrderRequire()
         {
             string IdUser = HttpContext.Session.GetString("IdUser");
+            HttpContext.Session.Remove("IdUser");
             Guid Id = Guid.Parse(IdUser);
             var languageId = HttpContext.Session.GetString(SystemContants.AppSettings.DefaultLanguageId);
             var token = HttpContext.Session.GetString(SystemContants.AppSettings.Token);
@@ -124,9 +125,9 @@ namespace Web.AdminApp.Controllers.Components
             if (ktra>0)
             {
                 @TempData["Message"] = "Xác nhận đơn hàng thành công";
-
-                return RedirectToAction("OrderRequire", new {IdUser= userId });
-                }
+                HttpContext.Session.SetString("IdUser", userId);
+                return RedirectToAction("OrderRequire");
+            }
 
             return RedirectToAction("Error", "Home");
         }

@@ -7,17 +7,17 @@
     var To = Model.To.Day + "/" + Model.To.Month + "/" + Model.To.Year;
     var doanhthu = Model.listDT;
     var OD = Model.listSLOD;
-    var loinhuanthangnay = Model.listDT[month - 1].ToString("N0");
+    decimal loinhuanthangnay = Model.listDT[month - 1];
     var SLODthangnay = Model.listSLOD[month - 1];
     var listUS = Model.listUS;
-    decimal doanhthuFromTo = 0;
+    decimal doanhthuFromTo = loinhuanthangnay;
     var soluongdonhangFT = -1;
     if (Model.listDoanhthuFromTo != null)
     {
         soluongdonhangFT = Model.listDoanhthuFromTo.Count;
         foreach (var item in Model.listDoanhthuFromTo)
         {
-            doanhthuFromTo += (item.TongtienReal - item.Tongtien);
+            doanhthuFromTo += (item.Tongtien - item.TongtienReal);
         }
     }
     var dem = 0;
@@ -434,7 +434,7 @@
                         }
                         else
                         {
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">@loinhuanthangnay VND</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@loinhuanthangnay.ToString("N0") VND</div>
                         }
                     </div>
                     <div class="col-auto">

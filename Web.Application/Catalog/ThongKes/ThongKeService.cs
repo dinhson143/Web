@@ -88,7 +88,7 @@ namespace Web.Application.Catalog.ThongKes
             {
                 ProductId = x.p.ProductId,
                 SizeId = x.p.SizeId,
-                OriginalPrice = x.p.Price
+                OriginalPrice = x.p.OriginalPrice
             }).ToListAsync();
 
             foreach (var item in pcss)
@@ -134,18 +134,6 @@ namespace Web.Application.Catalog.ThongKes
                 Status = x.o.Status.ToString(),
                 Tongtien = x.o.Tongtien
             }).ToListAsync();
-            //int tongOrder = await query.CountAsync();
-            //for (int i = 0; i < tongOrder; i++)
-            //{
-            //    foreach (var item in orders)
-            //    {
-            //        if (item.OrderDate.Date < dateF.Date || item.OrderDate.Date > dateT.Date)
-            //        {
-            //            orders.Remove(item);
-            //            break;
-            //        }
-            //    }
-            //}
             foreach (var order in orders)
             {
                 var list = new List<OrderDetailViewModel>();
@@ -181,7 +169,7 @@ namespace Web.Application.Catalog.ThongKes
             {
                 ProductId = x.p.ProductId,
                 SizeId = x.p.SizeId,
-                OriginalPrice = x.p.Price
+                OriginalPrice = x.p.OriginalPrice
             }).ToListAsync();
 
             foreach (var item in pcss)

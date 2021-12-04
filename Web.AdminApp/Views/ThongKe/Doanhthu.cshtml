@@ -138,7 +138,7 @@
                                 </td>
                                 <td>
                                     @{ 
-                                        var loinhuan = (item.TongtienReal - item.Tongtien).ToString("N0");
+                                        var loinhuan = (-item.TongtienReal + item.Tongtien).ToString("N0");
                                     }
                                     <p>@loinhuan</p>
                                 </td>

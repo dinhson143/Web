@@ -65,16 +65,18 @@ namespace Web.AdminApp.Controllers
             }
             foreach (var item in data.ResultObj)
             {
-                if (item.OrderDate.Month == date.Month && listDT[date.Month - 1] == 0)
-                {
-                    listDT[date.Month - 1] = (item.TongtienReal - item.Tongtien);
-                    listSLOD[date.Month - 1] += 1;
-                }
-                else if (item.OrderDate.Month == date.Month && listDT[date.Month - 1] > 0)
-                {
-                    listDT[date.Month - 1] += (item.TongtienReal - item.Tongtien);
-                    listSLOD[date.Month - 1] += 1;
-                }
+                //if (item.OrderDate.Month == 1 && listDT[date.Month - 1] == 0)
+                //{
+                //    listDT[date.Month - 1] = (item.Tongtien - item.TongtienReal);
+                //    listSLOD[date.Month - 1] += 1;
+                //}
+                //else if (item.OrderDate.Month == 1 && listDT[date.Month - 1] > 0)
+                //{
+                //    listDT[date.Month - 1] += (item.Tongtien - item.TongtienReal);
+                //    listSLOD[date.Month - 1] += 1;
+                //}
+                listDT[item.OrderDate.Month-1] += (item.Tongtien - item.TongtienReal);
+                listSLOD[item.OrderDate.Month-1] += 1;
             }
             // sản phẩm bán chạy nhất
             var From = DateTime.Now;
@@ -208,12 +210,12 @@ namespace Web.AdminApp.Controllers
             {
                 if (item.OrderDate.Month == date.Month && listDT[date.Month - 1] == 0)
                 {
-                    listDT[date.Month - 1] = (item.TongtienReal - item.Tongtien);
+                    listDT[date.Month - 1] = (item.Tongtien - item.TongtienReal);
                     listSLOD[date.Month - 1] += 1;
                 }
                 else if (item.OrderDate.Month == date.Month && listDT[date.Month - 1] > 0)
                 {
-                    listDT[date.Month - 1] += (item.TongtienReal - item.Tongtien);
+                    listDT[date.Month - 1] += (item.Tongtien - item.TongtienReal);
                     listSLOD[date.Month - 1] += 1;
                 }
             }
